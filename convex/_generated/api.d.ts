@@ -8,13 +8,19 @@
  * @module
  */
 
+import type * as _schema from "../_schema.js";
+import type * as messages from "../messages.js";
+
 import type {
   ApiFromModules,
   FilterApi,
   FunctionReference,
 } from "convex/server";
 
-declare const fullApi: ApiFromModules<{}>;
+declare const fullApi: ApiFromModules<{
+  _schema: typeof _schema;
+  messages: typeof messages;
+}>;
 
 /**
  * A utility for referencing Convex functions in your app's public API.

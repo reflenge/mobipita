@@ -6,6 +6,11 @@ import "@/styles/globals.css";
 import { cn } from "@/lib/utils";
 import ConvexClientProvider from "./ConvexClientProvider";
 import Header from "@/components/header";
+import Messages from "@/components/messages";
+import { Toaster } from "@/components/ui/sonner"
+// import { Analytics } from "@vercel/analytics/next";
+// import { SpeedInsights } from "@vercel/speed-insights/next";
+// import ClarityInit from "@/components/clarity-init";
 
 const geistSans = Geist({
     variable: "--font-geist-sans",
@@ -40,6 +45,11 @@ export default function RootLayout({
                     <ConvexClientProvider>
                         <Header />
                         {children}
+                        <Messages />
+                        <Toaster richColors closeButton />
+                        {/* <SpeedInsights />
+                        <Analytics />
+                        <ClarityInit /> */}
                     </ConvexClientProvider>
                 </body>
             </html>
