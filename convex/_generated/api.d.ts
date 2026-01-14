@@ -8,7 +8,6 @@
  * @module
  */
 
-import type * as _schema from "../_schema.js";
 import type * as messages from "../messages.js";
 
 import type {
@@ -18,7 +17,6 @@ import type {
 } from "convex/server";
 
 declare const fullApi: ApiFromModules<{
-  _schema: typeof _schema;
   messages: typeof messages;
 }>;
 

@@ -6,7 +6,7 @@ import "@/styles/globals.css";
 import { cn } from "@/lib/utils";
 import ConvexClientProvider from "./ConvexClientProvider";
 import Header from "@/components/header";
-import Messages from "@/components/messages";
+import Messages from "@/components/samples/messages";
 import { Toaster } from "@/components/ui/sonner"
 // import { Analytics } from "@vercel/analytics/next";
 // import { SpeedInsights } from "@vercel/speed-insights/next";
