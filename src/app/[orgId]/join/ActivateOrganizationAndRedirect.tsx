@@ -3,6 +3,7 @@
 import { useClerk } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import { Spinner } from "@/components/ui/spinner";
 
 type ActivateOrganizationAndRedirectProps = {
     organizationId: string;
@@ -96,8 +97,11 @@ export default function ActivateOrganizationAndRedirect({
 
     return (
         <main className="mx-auto flex min-h-[60vh] w-full max-w-2xl flex-col items-center justify-center gap-3 px-6 py-10 text-center">
-            <h1 className="text-xl font-semibold">組織へ参加中...</h1>
-            <p className="text-sm text-muted-foreground">
+            <h1 className="text-2xl font-semibold justify-center flex items-center gap-2">
+                組織へ参加中
+                <Spinner />
+            </h1>
+            <p className="text-muted-foreground">
                 参加した組織をアクティブにしています。まもなく移動します。
             </p>
         </main>
