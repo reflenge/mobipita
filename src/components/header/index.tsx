@@ -1,19 +1,12 @@
 "use client";
 
-import {
-    OrganizationSwitcher,
-    SignInButton,
-    SignUpButton,
-    UserButton,
-} from "@clerk/nextjs";
+import { SignInButton, SignUpButton, UserButton } from "@clerk/nextjs";
 import { Authenticated, Unauthenticated } from "convex/react";
-import React from "react";
 
 const Header = () => {
     return (
         <header className="flex justify-end items-center p-4 gap-4 h-16">
             <Authenticated>
-                <OrganizationSwitcher />
                 <UserButton />
             </Authenticated>
             <Unauthenticated>
