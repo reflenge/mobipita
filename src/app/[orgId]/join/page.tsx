@@ -1,5 +1,6 @@
 import { auth, clerkClient } from "@clerk/nextjs/server";
-import { notFound, redirect } from "next/navigation";
+import { notFound } from "next/navigation";
+import ActivateOrganizationAndRedirect from "./ActivateOrganizationAndRedirect";
 
 type JoinPageProps = {
     params: Promise<{
@@ -48,6 +49,10 @@ export default async function JoinPage({ params }: JoinPageProps) {
         });
     }
 
-    // 参加完了後は組織スコープの画面へ遷移する。
-    redirect(`/${organization.id}`);
+    return (
+        <ActivateOrganizationAndRedirect
+            organizationId={organization.id}
+            redirectTo={`/${organization.id}`}
+        />
+    );
 }

@@ -1,5 +1,5 @@
 import { clerkClient } from "@clerk/nextjs/server";
-import OrganizationAdminPanel from "./OrganizationAdminPanel";
+import OrganizationAdminPanel from "../OrganizationAdminPanel";
 
 type OrganizationPageProps = {
     params: Promise<{
