@@ -1,7 +1,8 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 import { NextResponse, type NextRequest } from "next/server";
 
-const isPublicRoute = createRouteMatcher(["/sign-in(.*)", "/sign-up(.*)"]);
+// 認証不要なルート（サインイン/サインアップ）。
+const isPublicRoute = createRouteMatcher(["/", "/sign-in(.*)", "/sign-up(.*)"]);
 
 /**
  * LINE内ブラウザを判定し、必要に応じてリダイレクトを行う
@@ -35,17 +36,27 @@ function handleLineInAppBrowser(req: NextRequest): NextResponse | null {
     return null;
 }
 
-export default clerkMiddleware(async (auth, req) => {
-    // LINE内ブラウザ判定
-    const lineRedirect = handleLineInAppBrowser(req);
-    if (lineRedirect) {
-        return lineRedirect;
-    }
+export default clerkMiddleware(
+    async (auth, req) => {
+        // LINE内ブラウザ判定（外部ブラウザへの誘導は最優先）。
+        const lineRedirect = handleLineInAppBrowser(req);
+        if (lineRedirect) {
+            return lineRedirect;
+        }
 
-    if (!isPublicRoute(req)) {
-        await auth.protect();
-    }
-});
+        // サインイン/サインアップ以外は必ず認証が必要。
+        if (!isPublicRoute(req)) {
+            await auth.protect();
+        }
+    },
+    {
+        organizationSyncOptions: {
+            // /:orgId 配下に来たら、その orgId の Organization をアクティブに同期する。
+            // これにより「組織URL = 組織ID」の固定スコープを実現する。
+            organizationPatterns: ["/:orgId", "/:orgId/(.*)"],
+        },
+    },
+);
 
 export const config = {
     matcher: [

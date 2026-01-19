@@ -5,7 +5,6 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "@/styles/globals.css";
 import { cn } from "@/lib/utils";
 import ConvexClientProvider from "./ConvexClientProvider";
-import Header from "@/components/header";
 import Messages from "@/components/samples/messages";
 import { Toaster } from "@/components/ui/sonner";
 // import { Analytics } from "@vercel/analytics/next";
@@ -44,7 +43,6 @@ export default function RootLayout({
                     )}
                 >
                     <ConvexClientProvider>
-                        <Header />
                         {children}
                         <Toaster richColors closeButton />
                         {/* <SpeedInsights />
