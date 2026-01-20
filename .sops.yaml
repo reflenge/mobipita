@@ -1,0 +1,5 @@
+# .sops.yaml
+creation_rules:
+  - path_regex: "^\\.env(\\..*)?$"
+    age: >-
+      age19c40zf7qel4dnnx30gvwnvtk56fg9lkg2rz9xukj9fzjj02qzguqae4h86,
