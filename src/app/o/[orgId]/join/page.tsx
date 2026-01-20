@@ -49,6 +49,5 @@ export default async function JoinPage({ params }: JoinPageProps) {
         });
     }
 
-    revalidatePath(`/o/${orgId}`);
     redirect(`/o/${organization.id}`);
 }
