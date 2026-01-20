@@ -1,6 +1,6 @@
 import { auth, clerkClient } from "@clerk/nextjs/server";
 import { notFound, redirect } from "next/navigation";
-import ActivateOrganizationAndRedirect from "./ActivateOrganizationAndRedirect";
+import { revalidatePath } from "next/cache";
 
 type JoinPageProps = {
     params: Promise<{
@@ -14,7 +14,7 @@ const DEFAULT_ROLE = "org:customer";
 export default async function JoinPage({ params }: JoinPageProps) {
     // URL の orgId から参加対象の Organization を決める。
     const { orgId } = await params;
-    console.log("?? => JoinPage => orgId:", orgId)
+    console.log("?? => JoinPage => orgId:", orgId);
     // サーバー側で認証情報を取得し、未ログインならサインインへ誘導する。
     const { userId, redirectToSignIn } = await auth();
 
@@ -29,7 +29,7 @@ export default async function JoinPage({ params }: JoinPageProps) {
     const organization = await client.organizations
         .getOrganization({ organizationId: orgId })
         .catch(() => notFound());
-    console.log("?? => JoinPage => organization:", organization)
+    console.log("?? => JoinPage => organization:", organization);
 
     // すでに参加済みかどうかを、ユーザー ID で絞って確認する。
     const membership = await client.organizations.getOrganizationMembershipList(
@@ -37,7 +37,7 @@ export default async function JoinPage({ params }: JoinPageProps) {
             organizationId: organization.id,
             userId: [userId],
             limit: 1,
-        }
+        },
     );
 
     if (membership.totalCount === 0) {
@@ -49,12 +49,6 @@ export default async function JoinPage({ params }: JoinPageProps) {
         });
     }
 
+    revalidatePath(`/o/${orgId}`);
     redirect(`/o/${organization.id}`);
-
-    // return (
-    //     <ActivateOrganizationAndRedirect
-    //         organizationId={organization.id}
-    //         redirectTo={`/o/${organization.id}`}
-    //     />
-    // );
 }
