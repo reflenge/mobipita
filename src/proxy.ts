@@ -51,9 +51,9 @@ export default clerkMiddleware(
     },
     {
         organizationSyncOptions: {
-            // /:orgId 配下に来たら、その orgId の Organization をアクティブに同期する。
+            // /o/:id 配下に来たら、その id の Organization をアクティブに同期する。
             // これにより「組織URL = 組織ID」の固定スコープを実現する。
-            organizationPatterns: ["/o/:orgId", "/o/:orgId/(.*)"],
+            organizationPatterns: ["/o/:id", "/o/:id/(.*)"],
         },
     },
 );
