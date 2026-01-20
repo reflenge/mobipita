@@ -1,5 +1,5 @@
 import { auth, clerkClient } from "@clerk/nextjs/server";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import ActivateOrganizationAndRedirect from "./ActivateOrganizationAndRedirect";
 
 type JoinPageProps = {
@@ -20,7 +20,7 @@ export default async function JoinPage({ params }: JoinPageProps) {
 
     if (!userId) {
         // サインイン後に同じ参加 URL へ戻す。
-        return redirectToSignIn({ returnBackUrl: `${orgId}/join` });
+        return redirectToSignIn({ returnBackUrl: `/o/${orgId}/join` });
     }
 
     // Clerk のバックエンド API クライアントを取得する（Secret Key が必要）。
@@ -49,10 +49,12 @@ export default async function JoinPage({ params }: JoinPageProps) {
         });
     }
 
-    return (
-        <ActivateOrganizationAndRedirect
-            organizationId={organization.id}
-            redirectTo={`/${organization.id}`}
-        />
-    );
+    redirect(`/o/${organization.id}`);
+
+    // return (
+    //     <ActivateOrganizationAndRedirect
+    //         organizationId={organization.id}
+    //         redirectTo={`/o/${organization.id}`}
+    //     />
+    // );
 }

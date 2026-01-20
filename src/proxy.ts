@@ -53,7 +53,7 @@ export default clerkMiddleware(
         organizationSyncOptions: {
             // /:orgId 配下に来たら、その orgId の Organization をアクティブに同期する。
             // これにより「組織URL = 組織ID」の固定スコープを実現する。
-            organizationPatterns: ["/:orgId", "/:orgId/(.*)"],
+            organizationPatterns: ["/o/:orgId", "/o/:orgId/(.*)"],
         },
     },
 );

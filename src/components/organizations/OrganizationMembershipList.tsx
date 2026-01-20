@@ -41,7 +41,7 @@ export default function OrganizationMembershipList({
     //         return;
     //     }
 
-    //     if (pathname !== "/") {
+    //     if (pathname !== "/o") {
     //         return;
     //     }
 
@@ -85,7 +85,7 @@ export default function OrganizationMembershipList({
 
                         return (
                             <li key={membership.id}>
-                                <Link href={`/${organizationId}`}>
+                                <Link href={`/o/${organizationId}`}>
                                     <Card className="transition hover:border-foreground/40 cursor-pointer">
                                         <CardHeader>
                                             <div className="flex items-start justify-between gap-4">
@@ -116,7 +116,7 @@ export default function OrganizationMembershipList({
                                                                 }
                                                             </span>
                                                             <span className="text-xs">
-                                                                /
+                                                                /o/
                                                                 {organizationId}
                                                             </span>
                                                         </CardDescription>

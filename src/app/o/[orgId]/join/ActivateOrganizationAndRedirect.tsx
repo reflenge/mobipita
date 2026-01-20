@@ -22,7 +22,7 @@ export default function ActivateOrganizationAndRedirect({
     useEffect(() => {
         let isMounted = true;
         // 最終的な遷移先を一度だけ決め、リトライやフォールバックで使い回す。
-        const targetPath = redirectTo ?? `/${organizationId}`;
+        const targetPath = redirectTo ?? `/o/${organizationId}`;
         // Clerk API を短時間に叩き過ぎないための簡単なバックオフ。
         const sleep = (ms: number) =>
             new Promise((resolve) => setTimeout(resolve, ms));
