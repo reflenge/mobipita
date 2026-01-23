@@ -60,6 +60,7 @@ export function AppSidebar({ org, user }: AppSidebarProps) {
                             <OrganizationSwitcher
                                 afterSelectOrganizationUrl="/o/:id"
                                 hidePersonal={true}
+                                fallback={<SidebarMenuSkeleton />}
                             />
                         </ClerkLoaded>
                     </SidebarMenuItem>
@@ -78,7 +79,7 @@ export function AppSidebar({ org, user }: AppSidebarProps) {
                     <SidebarMenuSkeleton />
                 </ClerkLoading>
                 <ClerkLoaded>
-                    <UserButton />
+                    <UserButton fallback={<SidebarMenuSkeleton />} />
                 </ClerkLoaded>
             </SidebarFooter>
             <SidebarRail />
