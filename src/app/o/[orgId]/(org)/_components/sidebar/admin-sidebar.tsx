@@ -24,7 +24,7 @@ import {
     SidebarSeparator,
     useSidebar,
 } from "@/components/ui/sidebar";
-import { ShieldUser } from "lucide-react";
+import { ShieldUser, Store } from "lucide-react";
 
 const AdminSidebar = ({ org }: { org: { id: string } }) => {
     return (
@@ -39,6 +39,14 @@ const AdminSidebar = ({ org }: { org: { id: string } }) => {
                                 <Link href={`/o/${org.id}/admin`}>
                                     <ShieldUser />
                                     <span>Admin</span>
+                                </Link>
+                            </SidebarMenuButton>
+                        </SidebarMenuItem>
+                        <SidebarMenuItem>
+                            <SidebarMenuButton asChild>
+                                <Link href={`/o/${org.id}/admin/tenant`}>
+                                    <Store />
+                                    <span>Tenant</span>
                                 </Link>
                             </SidebarMenuButton>
                         </SidebarMenuItem>

@@ -47,18 +47,18 @@ export default async function OrganizationLayout({
             <AppSidebar org={org} user={{ role: userRole }} />
             <section className="w-full flex flex-col min-h-dvh">
                 <h2 className="sr-only">Organization Content</h2>
-                <header className="bg-red-100">
+                <header className="bg-red-100 m-2 p-2">
                     <SidebarTrigger />
                 </header>
-                <main className="bg-green-100 grow">{children}</main>
-                <footer className="bg-blue-100">
+                <main className="bg-green-100 grow m-2 p-2">{children}</main>
+                <footer className="bg-blue-100 m-2 p-2">
                     <section>
                         <p className="text-sm text-muted-foreground">
                             このエリアは単一の組織にスコープされています。
                         </p>
                     </section>
                     <section>
-                        <p className="text-xs text-muted-foreground text-center py-1">
+                        <p className="text-xs text-muted-foreground text-center">
                             mobipita © reflenge 2025
                         </p>
                     </section>

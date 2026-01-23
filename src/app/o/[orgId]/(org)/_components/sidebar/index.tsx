@@ -26,7 +26,12 @@ import {
     useSidebar,
 } from "@/components/ui/sidebar";
 import { Link } from "@/components/link";
-import { UserButton } from "@clerk/nextjs";
+import {
+    ClerkLoaded,
+    ClerkLoading,
+    OrganizationSwitcher,
+    UserButton,
+} from "@clerk/nextjs";
 import AdminSidebar from "./admin-sidebar";
 import CustomerSidebar from "./customer-sidebar";
 import MemberSidebar from "./member-sidebar";
@@ -48,18 +53,15 @@ export function AppSidebar({ org, user }: AppSidebarProps) {
             <SidebarHeader>
                 <SidebarMenu>
                     <SidebarMenuItem>
-                        <SidebarMenuButton asChild>
-                            <Link href={`/o/${org.id}`}>
-                                <Image
-                                    src={org.imageUrl}
-                                    alt={`${org.name} logo`}
-                                    width={32}
-                                    height={32}
-                                    className="rounded-sm"
-                                />
-                                <span>{org.name}</span>
-                            </Link>
-                        </SidebarMenuButton>
+                        <ClerkLoading>
+                            <SidebarMenuSkeleton />
+                        </ClerkLoading>
+                        <ClerkLoaded>
+                            <OrganizationSwitcher
+                                afterSelectOrganizationUrl="/o/:id"
+                                hidePersonal={true}
+                            />
+                        </ClerkLoaded>
                     </SidebarMenuItem>
                 </SidebarMenu>
             </SidebarHeader>
@@ -72,7 +74,12 @@ export function AppSidebar({ org, user }: AppSidebarProps) {
                 {user.role === "org:admin" && <AdminSidebar org={org} />}
             </SidebarContent>
             <SidebarFooter>
-                <UserButton />
+                <ClerkLoading>
+                    <SidebarMenuSkeleton />
+                </ClerkLoading>
+                <ClerkLoaded>
+                    <UserButton />
+                </ClerkLoaded>
             </SidebarFooter>
             <SidebarRail />
         </Sidebar>
