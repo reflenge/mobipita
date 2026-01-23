@@ -52,7 +52,7 @@ export function AppSidebar({ org, user }: AppSidebarProps) {
         <Sidebar variant="floating" collapsible="icon">
             <SidebarHeader>
                 <SidebarMenu>
-                    <SidebarMenuItem>
+                    <SidebarMenuItem className="mx-auto">
                         <ClerkLoading>
                             <SidebarMenuSkeleton />
                         </ClerkLoading>
