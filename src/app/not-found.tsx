@@ -9,15 +9,15 @@ export default function NotFound() {
             <div className="pointer-events-none absolute inset-0 -z-10">
                 <div className="absolute -left-16 -top-24 h-72 w-[18rem] rounded-full bg-[radial-gradient(circle_at_top,var(--accent),transparent_70%)] opacity-30 blur-3xl" />
                 <div className="absolute -right-20 top-16 h-72 w-[18rem] rounded-full bg-[radial-gradient(circle_at_top,var(--accent-2),transparent_70%)] opacity-25 blur-3xl" />
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(15,23,42,0.08)_1px,transparent_1px)] bg-size-[26px_26px] opacity-20" />
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(15,23,42,0.08)_1px,transparent_1px)] bg-[length:26px_26px] opacity-20" />
             </div>
 
             <main className="mx-auto flex min-h-[70vh] w-full max-w-5xl flex-col gap-10 px-6 py-16">
                 <section className="rounded-3xl border border-foreground/10 bg-white/80 p-8 shadow-sm backdrop-blur-sm">
                     <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
                         <div className="max-w-xl">
-                            <p className="text-xs font-mono uppercase tracking-[0.35em] text-muted-foreground">
-                                404
+                            <p className="text-5xl font-mono uppercase tracking-[0.35em] text-muted-foreground">
+                                404 Not Found
                             </p>
                             <h1 className="mt-3 text-3xl font-semibold sm:text-4xl">
                                 ページが見つかりません
@@ -90,10 +90,7 @@ export default function NotFound() {
                                 利用中の組織を選択して運用画面へ戻れます。
                             </p>
                         </div>
-                        <OrganizationMembershipList
-                            title="所属組織"
-                            className="min-h-0 max-w-none px-0 py-0"
-                        />
+                        <OrganizationMembershipList />
                     </section>
                 </SignedIn>
             </main>

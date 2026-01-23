@@ -376,10 +376,7 @@ export default function Home() {
                                 運用中の組織を選択して、予約管理に進めます。
                             </p>
                         </div>
-                        <OrganizationMembershipList
-                            title="所属組織"
-                            className="min-h-0 max-w-none px-0 py-0"
-                        />
+                        <OrganizationMembershipList />
                     </section>
                 </SignedIn>
 

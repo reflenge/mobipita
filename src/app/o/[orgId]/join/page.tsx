@@ -14,7 +14,6 @@ const DEFAULT_ROLE = "org:customer";
 export default async function JoinPage({ params }: JoinPageProps) {
     // URL の orgId から参加対象の Organization を決める。
     const { orgId } = await params;
-    console.log("?? => JoinPage => orgId:", orgId);
     // サーバー側で認証情報を取得し、未ログインならサインインへ誘導する。
     const { userId, redirectToSignIn } = await auth();
 
@@ -29,7 +28,6 @@ export default async function JoinPage({ params }: JoinPageProps) {
     const organization = await client.organizations
         .getOrganization({ organizationId: orgId })
         .catch(() => notFound());
-    console.log("?? => JoinPage => organization:", organization);
 
     // すでに参加済みかどうかを、ユーザー ID で絞って確認する。
     const membership = await client.organizations.getOrganizationMembershipList(

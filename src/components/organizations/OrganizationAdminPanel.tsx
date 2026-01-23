@@ -13,7 +13,6 @@ const OrganizationAdminPanel = () => {
     if (!isLoaded || !membership) {
         return null;
     }
-    console.log("🚀 => OrganizationAdminPanel => membership:", membership)
 
     // admin 以外は管理 UI を表示しない。
     if (membership.role !== ADMIN_ROLE) {

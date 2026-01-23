@@ -1,8 +1,8 @@
-import { auth } from "@clerk/nextjs/server";
+import { auth, clerkClient } from "@clerk/nextjs/server";
 import { notFound } from "next/navigation";
 
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { AppSidebar } from "./app-sidebar";
+import { AppSidebar } from "./_components/sidebar";
 
 type OrganizationLayoutProps = {
     children: React.ReactNode;
@@ -17,28 +17,41 @@ export default async function OrganizationLayout({
 }: OrganizationLayoutProps) {
     // clerkMiddleware の organizationSyncOptions により、
     // URL の :id がアクティブ Org と同期される前提。
-    const { orgId: activeOrgId } = await auth();
-    console.log("🚀 => OrganizationLayout => activeOrgId:", activeOrgId);
+    const { orgId: activeOrgId, orgRole } = await auth();
     const { orgId } = await params;
-    console.log("🚀 => OrganizationLayout => orgId:", orgId);
 
     // URL とアクティブ Org が食い違う場合は不正アクセス扱いで 404。
     if (activeOrgId !== orgId) {
-        console.log("test------------*************");
         notFound();
     }
+
+    // アクティブ Organization のロールを取得する。
+    // orgRole は "org:admin" | "org:member" | "org:customer" など。
+    const userRole = orgRole ?? "org:customer";
+
+    // AppSidebar に渡す組織情報を取得する。
+    const client = await clerkClient();
+    const organization = await client.organizations
+        .getOrganization({ organizationId: activeOrgId })
+        .catch(() => null);
+    const orgName = organization?.name ?? "不明";
+    const org = {
+        id: organization?.id ?? "",
+        name: orgName,
+        imageUrl: organization?.imageUrl ?? "",
+    };
 
     // スコープが一致している場合のみ配下コンテンツを描画する。
     return (
         <SidebarProvider>
-            <AppSidebar />
+            <AppSidebar org={org} user={{ role: userRole }} />
             <section className="w-full flex flex-col min-h-dvh">
                 <h2 className="sr-only">Organization Content</h2>
-                <header className="bg-red-400">
+                <header className="bg-red-100">
                     <SidebarTrigger />
                 </header>
-                <main className="bg-green-400 grow">{children}</main>
-                <footer className="bg-blue-400">
+                <main className="bg-green-100 grow">{children}</main>
+                <footer className="bg-blue-100">
                     <section>
                         <p className="text-sm text-muted-foreground">
                             このエリアは単一の組織にスコープされています。

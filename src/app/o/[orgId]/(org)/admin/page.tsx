@@ -1,5 +1,6 @@
 import { clerkClient } from "@clerk/nextjs/server";
 import OrganizationAdminPanel from "@/components/organizations/OrganizationAdminPanel";
+import { OrganizationList } from "@clerk/nextjs";
 
 type OrganizationPageProps = {
     params: Promise<{
@@ -34,6 +35,10 @@ export default async function OrganizationPage({
                 このエリアは単一の組織にスコープされています。
             </p>
             <OrganizationAdminPanel />
+            <OrganizationList
+                afterSelectOrganizationUrl="/o/:id"
+                hidePersonal={true}
+            />
         </main>
     );
 }
