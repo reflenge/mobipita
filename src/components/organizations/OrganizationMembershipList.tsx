@@ -1,7 +1,7 @@
 "use client";
 
 import { useOrganizationList } from "@clerk/nextjs";
-import Link from "next/link";
+import { Link } from "@/components/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
 import {

@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { Link } from "@/components/link";
 import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 import OrganizationMembershipList from "@/components/organizations/OrganizationMembershipList";
 import { Button } from "@/components/ui/button";
@@ -122,11 +122,7 @@ export default function Home() {
                     </nav>
                     <div className="flex items-center gap-2">
                         <SignedOut>
-                            <Button
-                                asChild
-                                size="sm"
-                                className="rounded-full"
-                            >
+                            <Button asChild size="sm" className="rounded-full">
                                 <Link href="/sign-up">無料で始める</Link>
                             </Button>
                             <Button
@@ -162,7 +158,9 @@ export default function Home() {
                         <div className="space-y-4">
                             <h1 className="text-4xl font-semibold leading-tight tracking-tight sm:text-5xl lg:text-6xl">
                                 移動型ビジネスの運用を、
-                                <span className="text-foreground/70">10分単位で最適化。</span>
+                                <span className="text-foreground/70">
+                                    10分単位で最適化。
+                                </span>
                             </h1>
                             <p className="text-base leading-relaxed text-muted-foreground sm:text-lg">
                                 「Mobile（移動）」+「Pita（ピタッと決まる・合わせる）」。
@@ -172,8 +170,14 @@ export default function Home() {
                         </div>
                         <div className="flex flex-wrap items-center gap-3">
                             <SignedOut>
-                                <Button asChild size="lg" className="rounded-full">
-                                    <Link href="/sign-up">導入相談を始める</Link>
+                                <Button
+                                    asChild
+                                    size="lg"
+                                    className="rounded-full"
+                                >
+                                    <Link href="/sign-up">
+                                        導入相談を始める
+                                    </Link>
                                 </Button>
                                 <Button
                                     asChild
@@ -185,10 +189,12 @@ export default function Home() {
                                 </Button>
                             </SignedOut>
                             <SignedIn>
-                                <Button asChild size="lg" className="rounded-full">
-                                    <Link href="#memberships">
-                                        組織を選ぶ
-                                    </Link>
+                                <Button
+                                    asChild
+                                    size="lg"
+                                    className="rounded-full"
+                                >
+                                    <Link href="#memberships">組織を選ぶ</Link>
                                 </Button>
                             </SignedIn>
                         </div>
@@ -197,7 +203,9 @@ export default function Home() {
                                 <div
                                     key={item.title}
                                     className="rounded-2xl border border-foreground/10 bg-white/75 p-4 shadow-sm backdrop-blur-sm animate-in fade-in slide-in-from-bottom-4 duration-700 motion-reduce:animate-none"
-                                    style={{ animationDelay: `${150 + index * 120}ms` }}
+                                    style={{
+                                        animationDelay: `${150 + index * 120}ms`,
+                                    }}
                                 >
                                     <p className="text-sm font-semibold">
                                         {item.title}
@@ -298,7 +306,9 @@ export default function Home() {
                             <div
                                 key={feature.title}
                                 className="flex h-full flex-col gap-4 rounded-3xl border border-foreground/10 bg-white/75 p-6 shadow-sm backdrop-blur-sm animate-in fade-in slide-in-from-bottom-4 duration-700 motion-reduce:animate-none"
-                                style={{ animationDelay: `${120 + index * 140}ms` }}
+                                style={{
+                                    animationDelay: `${120 + index * 140}ms`,
+                                }}
                             >
                                 <span className="w-fit rounded-full bg-[var(--accent-soft)] px-3 py-1 text-xs font-medium text-amber-950">
                                     {feature.tag}
@@ -318,18 +328,18 @@ export default function Home() {
                     <div className="rounded-3xl border border-foreground/10 bg-white/80 p-6 shadow-sm backdrop-blur-sm">
                         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                             <div>
-                            <p className="text-xs font-mono uppercase tracking-[0.35em] text-muted-foreground">
-                                FLOW
+                                <p className="text-xs font-mono uppercase tracking-[0.35em] text-muted-foreground">
+                                    FLOW
+                                </p>
+                                <h2 className="mt-3 text-2xl font-semibold sm:text-3xl">
+                                    導入後の運用は、3ステップで完結
+                                </h2>
+                            </div>
+                            <p className="max-w-md text-sm text-muted-foreground">
+                                設定・監視・通知までを一貫して設計。担当者の負担を
+                                抑えながら、品質を維持できます。
                             </p>
-                            <h2 className="mt-3 text-2xl font-semibold sm:text-3xl">
-                                導入後の運用は、3ステップで完結
-                            </h2>
                         </div>
-                        <p className="max-w-md text-sm text-muted-foreground">
-                            設定・監視・通知までを一貫して設計。担当者の負担を
-                            抑えながら、品質を維持できます。
-                        </p>
-                    </div>
                         <div className="mt-6 grid gap-4 md:grid-cols-3">
                             {steps.map((step) => (
                                 <div

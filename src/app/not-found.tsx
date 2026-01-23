@@ -1,15 +1,15 @@
 import OrganizationMembershipList from "@/components/organizations/OrganizationMembershipList";
 import { SignedIn, SignedOut } from "@clerk/nextjs";
-import Link from "next/link";
+import { Link } from "@/components/link";
 import { Button } from "@/components/ui/button";
 
 export default function NotFound() {
     return (
         <div className="relative overflow-hidden [--accent:oklch(0.78_0.12_55)] [--accent-soft:oklch(0.96_0.03_55)] [--accent-2:oklch(0.7_0.12_190)] [--accent-2-soft:oklch(0.95_0.04_190)]">
             <div className="pointer-events-none absolute inset-0 -z-10">
-                <div className="absolute -left-16 top-[-6rem] h-[18rem] w-[18rem] rounded-full bg-[radial-gradient(circle_at_top,var(--accent),transparent_70%)] opacity-30 blur-3xl" />
-                <div className="absolute -right-20 top-16 h-[18rem] w-[18rem] rounded-full bg-[radial-gradient(circle_at_top,var(--accent-2),transparent_70%)] opacity-25 blur-3xl" />
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(15,23,42,0.08)_1px,transparent_1px)] bg-[length:26px_26px] opacity-20" />
+                <div className="absolute -left-16 -top-24 h-72 w-[18rem] rounded-full bg-[radial-gradient(circle_at_top,var(--accent),transparent_70%)] opacity-30 blur-3xl" />
+                <div className="absolute -right-20 top-16 h-72 w-[18rem] rounded-full bg-[radial-gradient(circle_at_top,var(--accent-2),transparent_70%)] opacity-25 blur-3xl" />
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(15,23,42,0.08)_1px,transparent_1px)] bg-size-[26px_26px] opacity-20" />
             </div>
 
             <main className="mx-auto flex min-h-[70vh] w-full max-w-5xl flex-col gap-10 px-6 py-16">
@@ -38,9 +38,7 @@ export default function NotFound() {
                                     variant="outline"
                                     className="rounded-full bg-white/80"
                                 >
-                                    <Link href="/sign-in">
-                                        担当者ログイン
-                                    </Link>
+                                    <Link href="/sign-in">担当者ログイン</Link>
                                 </Button>
                             </SignedOut>
                         </div>
