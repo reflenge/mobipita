@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 import ConvexClientProvider from "./ConvexClientProvider";
 import Messages from "@/components/samples/messages";
 import { Toaster } from "@/components/ui/sonner";
+import { NuqsAdapter } from "nuqs/adapters/next/app";
 // import { Analytics } from "@vercel/analytics/next";
 // import { SpeedInsights } from "@vercel/speed-insights/next";
 // import ClarityInit from "@/components/clarity-init";
@@ -43,8 +44,10 @@ export default function RootLayout({
                     )}
                 >
                     <ConvexClientProvider>
-                        {children}
-                        <Toaster richColors closeButton />
+                        <NuqsAdapter>
+                            {children}
+                            <Toaster richColors closeButton />
+                        </NuqsAdapter>
                         {/* <SpeedInsights />
                         <Analytics />
                         <ClarityInit /> */}
