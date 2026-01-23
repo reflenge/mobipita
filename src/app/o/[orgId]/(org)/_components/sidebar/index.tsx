@@ -52,17 +52,19 @@ export function AppSidebar({ org, user }: AppSidebarProps) {
         <Sidebar variant="floating" collapsible="icon">
             <SidebarHeader>
                 <SidebarMenu>
-                    <SidebarMenuItem className="mx-auto">
-                        <ClerkLoading>
-                            <SidebarMenuSkeleton />
-                        </ClerkLoading>
-                        <ClerkLoaded>
-                            <OrganizationSwitcher
-                                afterSelectOrganizationUrl="/o/:id"
-                                hidePersonal={true}
-                                fallback={<SidebarMenuSkeleton />}
-                            />
-                        </ClerkLoaded>
+                    <SidebarMenuItem >
+                        <SidebarMenuButton asChild>
+                            <Link href={`/o/${org.id}`}>
+                                <Image
+                                    src={org.imageUrl}
+                                    alt={`${org.name} logo`}
+                                    width={32}
+                                    height={32}
+                                    className="rounded-sm"
+                                />
+                                <span>{org.name}</span>
+                            </Link>
+                        </SidebarMenuButton>
                     </SidebarMenuItem>
                 </SidebarMenu>
             </SidebarHeader>
