@@ -24,7 +24,12 @@ import {
     SidebarSeparator,
     useSidebar,
 } from "@/components/ui/sidebar";
-import { ShieldUser, Store } from "lucide-react";
+import {
+    Collapsible,
+    CollapsibleContent,
+    CollapsibleTrigger,
+} from "@/components/ui/collapsible";
+import { ShieldUser, Store, PackagePlus } from "lucide-react";
 
 const AdminSidebar = ({ org }: { org: { id: string } }) => {
     return (
@@ -42,14 +47,28 @@ const AdminSidebar = ({ org }: { org: { id: string } }) => {
                                 </Link>
                             </SidebarMenuButton>
                         </SidebarMenuItem>
-                        <SidebarMenuItem>
-                            <SidebarMenuButton asChild>
-                                <Link href={`/o/${org.id}/admin/tenant`}>
-                                    <Store />
-                                    <span>Tenant</span>
-                                </Link>
-                            </SidebarMenuButton>
-                        </SidebarMenuItem>
+                        <Collapsible defaultOpen className="group/collapsible">
+                            <SidebarMenuItem>
+                                <SidebarMenuButton asChild>
+                                    <Link href={`/o/${org.id}/admin/tenant`}>
+                                        <Store />
+                                        <span>Tenant</span>
+                                    </Link>
+                                </SidebarMenuButton>
+                                <SidebarMenuSub>
+                                    <SidebarMenuSubItem>
+                                        <SidebarMenuButton asChild>
+                                            <Link
+                                                href={`/o/${org.id}/admin/tenant/create`}
+                                            >
+                                                <PackagePlus />
+                                                <span>作成</span>
+                                            </Link>
+                                        </SidebarMenuButton>
+                                    </SidebarMenuSubItem>
+                                </SidebarMenuSub>
+                            </SidebarMenuItem>
+                        </Collapsible>
                     </SidebarMenu>
                 </SidebarGroupContent>
             </SidebarGroup>
