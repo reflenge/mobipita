@@ -15,7 +15,7 @@ export default function OrganizationMembershipList() {
 
     if (userMemberships.count === 0) {
         return (
-            <div className="flex items-center justify-center">
+            <div className="flex items-center justify-center p-2">
                 <p className="text-sm text-muted-foreground">
                     あなたは組織に所属していません。
                 </p>
@@ -24,7 +24,7 @@ export default function OrganizationMembershipList() {
     }
 
     return (
-        <div className="flex items-center justify-center">
+        <div className="flex items-center justify-center p-2">
             <OrganizationList
                 afterSelectOrganizationUrl="/o/:id"
                 hidePersonal={true}
