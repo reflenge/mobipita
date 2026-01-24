@@ -77,7 +77,7 @@ export function AppSidebar({ org, user }: AppSidebarProps) {
                 {user.role === "org:admin" && <AdminSidebar org={org} />}
             </SidebarContent>
             <SidebarFooter>
-                <UserButton fallback={<SidebarMenuSkeleton />} />
+                <UserButton />
             </SidebarFooter>
             <SidebarRail />
         </Sidebar>
