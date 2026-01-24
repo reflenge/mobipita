@@ -52,7 +52,7 @@ export function AppSidebar({ org, user }: AppSidebarProps) {
         <Sidebar variant="floating" collapsible="icon">
             <SidebarHeader>
                 <SidebarMenu>
-                    <SidebarMenuItem >
+                    <SidebarMenuItem>
                         <SidebarMenuButton asChild>
                             <Link href={`/o/${org.id}`}>
                                 <Image
@@ -77,12 +77,7 @@ export function AppSidebar({ org, user }: AppSidebarProps) {
                 {user.role === "org:admin" && <AdminSidebar org={org} />}
             </SidebarContent>
             <SidebarFooter>
-                <ClerkLoading>
-                    <SidebarMenuSkeleton />
-                </ClerkLoading>
-                <ClerkLoaded>
-                    <UserButton fallback={<SidebarMenuSkeleton />} />
-                </ClerkLoaded>
+                <UserButton fallback={<SidebarMenuSkeleton />} />
             </SidebarFooter>
             <SidebarRail />
         </Sidebar>

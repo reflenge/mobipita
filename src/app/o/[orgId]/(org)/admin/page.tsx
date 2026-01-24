@@ -1,6 +1,4 @@
 import { clerkClient } from "@clerk/nextjs/server";
-import OrganizationAdminPanel from "@/components/organizations/OrganizationAdminPanel";
-import { OrganizationList } from "@clerk/nextjs";
 
 type OrganizationPageProps = {
     params: Promise<{
@@ -12,7 +10,6 @@ export default async function OrganizationPage({
     params,
 }: OrganizationPageProps) {
     const { orgId } = await params;
-    console.log("🚀 => OrganizationPage => orgId:", orgId);
     const client = await clerkClient();
     const organization = await client.organizations
         .getOrganization({ organizationId: orgId })
@@ -34,11 +31,6 @@ export default async function OrganizationPage({
             <p className="text-sm text-muted-foreground">
                 このエリアは単一の組織にスコープされています。
             </p>
-            <OrganizationAdminPanel />
-            <OrganizationList
-                afterSelectOrganizationUrl="/o/:id"
-                hidePersonal={true}
-            />
         </main>
     );
 }
