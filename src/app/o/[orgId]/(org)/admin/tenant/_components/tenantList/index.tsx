@@ -79,7 +79,7 @@ const TenantList = ({ orgId }: TenantListProps) => {
     }
 
     return (
-        <div className="grid gap-4 md:grid-cols-2">
+        <div className="grid gap-4 lg:grid-cols-2">
             {tenants.map((tenant) => {
                 const status = statusLabels[tenant.tenantStatus] ?? "不明";
                 const type = typeLabels[tenant.tenantType] ?? "不明";
