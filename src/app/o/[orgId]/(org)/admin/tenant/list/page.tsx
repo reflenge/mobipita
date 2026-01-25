@@ -1,4 +1,3 @@
-import { OrganizationProfile, OrganizationSwitcher } from "@clerk/nextjs";
 import { clerkClient } from "@clerk/nextjs/server";
 
 type OrganizationPageProps = {
@@ -19,12 +18,8 @@ export default async function OrganizationPage({
     const organizationName = organization?.name ?? "不明";
 
     return (
-        <div className="mx-auto container px-6 py-10">
-            <div>admin top page</div>
-            <section>
-                <div>組織の管理は このボタンから</div>
-                <OrganizationSwitcher defaultOpen={true} hidePersonal={true} />
-            </section>
+        <div>
+            Tenant Create Page for {organizationName} ({organizationId})
         </div>
     );
 }

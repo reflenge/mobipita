@@ -1,5 +1,5 @@
 import { clerkClient } from "@clerk/nextjs/server";
-import Link from "next/link";
+import { Link } from "@/components/link";
 
 type OrganizationPageProps = {
     params: Promise<{
@@ -19,7 +19,7 @@ export default async function OrganizationPage({
     const organizationName = organization?.name ?? "不明";
 
     return (
-        <div className="mx-auto flex min-h-[60vh] w-full max-w-4xl flex-col gap-4 px-6 py-10">
+        <div className="mx-auto container px-6 py-10">
             {/* 現在の組織を表示（組織スコープの目印） */}
             <h1 className="text-2xl font-semibold">組織: {organizationName}</h1>
             <p className="text-sm text-muted-foreground">

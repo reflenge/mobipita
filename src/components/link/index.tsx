@@ -22,7 +22,7 @@ const Link = React.forwardRef<HTMLAnchorElement, LinkProps>(
                 <Indicator />
             </NextLink>
         );
-    }
+    },
 );
 
 Link.displayName = "Link";

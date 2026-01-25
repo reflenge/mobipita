@@ -9,6 +9,8 @@
  */
 
 import type * as files from "../files.js";
+import type * as lib_clerkAuth from "../lib/clerkAuth.js";
+import type * as tenants from "../tenants.js";
 
 import type {
   ApiFromModules,
@@ -18,6 +20,8 @@ import type {
 
 declare const fullApi: ApiFromModules<{
   files: typeof files;
+  "lib/clerkAuth": typeof lib_clerkAuth;
+  tenants: typeof tenants;
 }>;
 
 /**
