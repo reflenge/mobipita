@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "./_components/sidebar";
+import { Link } from "@/components/link";
 
 type OrganizationLayoutProps = {
     children: React.ReactNode;
@@ -54,7 +55,9 @@ export default async function OrganizationLayout({
                 <footer className="bg-blue-100 m-2 p-2">
                     <section>
                         <p className="text-sm text-muted-foreground">
-                            このエリアは単一の組織にスコープされています。
+                            <Link href="/o">
+                                このエリアは単一の組織にスコープされています。
+                            </Link>
                         </p>
                     </section>
                     <section>
