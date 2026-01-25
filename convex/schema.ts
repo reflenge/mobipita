@@ -54,7 +54,7 @@ export default defineSchema({
     Tenants: defineTable({
         // Clerk の組織 ID。
         clerkOrgId: v.string(),
-        // 作成者の Clerk userId。
+        // 作成者の Clerk userId（既存データ互換のため任意）。
         createdByUserId: v.string(),
         // テナント名。
         tenantName: v.string(),

@@ -1,6 +1,6 @@
-import { mutation } from "./_generated/server";
-import { ConvexError, v } from "convex/values";
-import { getClerkIdentity } from "./lib/clerkAuth";
+import { mutation, query } from "./_generated/server";
+import { v } from "convex/values";
+import { requireClerkIdentity, requireClerkUserId } from "./lib/clerkAuth";
 
 const tenantType = v.union(v.literal("direct"), v.literal("tenant"));
 const tenantStatus = v.union(
@@ -9,6 +9,43 @@ const tenantStatus = v.union(
     v.literal("paused"),
     v.literal("closed"),
 );
+
+// 組織単位でテナント一覧を取得する。
+export const listByOrg = query({
+    args: {
+        clerkOrgId: v.string(),
+        limit: v.optional(v.number()),
+    },
+    handler: async (ctx, args) => {
+        // 認証必須。
+        await requireClerkIdentity(ctx);
+        const limit = typeof args.limit === "number" ? args.limit : 50;
+        return ctx.db
+            .query("Tenants")
+            .withIndex("by_clerkOrgId", (q) =>
+                q.eq("clerkOrgId", args.clerkOrgId),
+            )
+            .order("desc")
+            .take(limit);
+    },
+});
+
+// 組織スコープ内のテナントを取得する。
+export const getByIdInOrg = query({
+    args: {
+        clerkOrgId: v.string(),
+        tenantId: v.id("Tenants"),
+    },
+    handler: async (ctx, args) => {
+        // 認証必須。
+        await requireClerkIdentity(ctx);
+        const tenant = await ctx.db.get(args.tenantId);
+        if (!tenant || tenant.clerkOrgId !== args.clerkOrgId) {
+            return null;
+        }
+        return tenant;
+    },
+});
 
 export const create = mutation({
     args: {
@@ -21,13 +58,10 @@ export const create = mutation({
     },
     handler: async (ctx, args) => {
         // 作成者を認証情報から取得する。
-        const identity = await getClerkIdentity(ctx);
-        if (!identity) {
-            throw new ConvexError("認証が必要です。");
-        }
+        const createdByUserId = await requireClerkUserId(ctx);
         const tenantId = await ctx.db.insert("Tenants", {
             clerkOrgId: args.clerkOrgId,
-            createdByUserId: identity.subject,
+            createdByUserId: createdByUserId,
             tenantName: args.tenantName,
             tenantSlug: args.tenantSlug,
             tenantType: args.tenantType,

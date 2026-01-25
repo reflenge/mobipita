@@ -42,3 +42,84 @@ export const isClerkAuthenticated = async (ctx: ClerkAuthContext) => {
     const identity = await ctx.auth.getUserIdentity();
     return identity !== null;
 };
+
+/**
+ * 認証必須。未認証なら ConvexError を投げる。
+ */
+export const requireClerkIdentity = async (
+    ctx: ClerkAuthContext,
+    errorMessage: string = defaultAuthErrorMessage,
+) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (identity === null) {
+        throw new ConvexError(errorMessage);
+    }
+    return identity;
+};
+
+/**
+ * tokenIdentifier から Clerk userId を抽出する。
+ */
+export const getClerkUserIdFromIdentity = (
+    identity: UserIdentity,
+    errorMessage: string = defaultUserIdErrorMessage,
+) => {
+    const userId = identity.subject;
+    if (!userId) {
+        throw new ConvexError(errorMessage);
+    }
+    return userId;
+};
+
+/**
+ * Clerk の JWT から組織ロールを取り出す。
+ */
+export const getClerkOrgRoleFromIdentity = (identity: UserIdentity) => {
+    const orgRole =
+        identity.org_role ??
+        identity.orgRole ??
+        identity.organization_role ??
+        identity.organizationRole;
+    return typeof orgRole === "string" ? orgRole : null;
+};
+
+/**
+ * 認証必須で userId を取得する（未認証ならエラー）。
+ */
+export const requireClerkUserId = async (
+    ctx: ClerkAuthContext,
+    errorMessage: string = defaultAuthErrorMessage,
+) => {
+    const identity = await requireClerkIdentity(ctx, errorMessage);
+    return getClerkUserIdFromIdentity(identity);
+};
+
+/**
+ * org:admin 権限が必須。未認証または権限不足なら ConvexError を投げる。
+ */
+export const requireClerkOrgAdmin = async (
+    ctx: ClerkAuthContext,
+    errorMessage: string = defaultOrgAdminErrorMessage,
+) => {
+    const identity = await requireClerkIdentity(ctx, errorMessage);
+    const role = getClerkOrgRoleFromIdentity(identity);
+    if (role !== "org:admin") {
+        throw new ConvexError(errorMessage);
+    }
+    return identity;
+};
+
+/**
+ * org:admin または org:member 権限が必須。権限不足なら ConvexError を投げる。
+ */
+export const requireClerkOrgAdminOrMember = async (
+    ctx: ClerkAuthContext,
+    errorMessage: string = defaultOrgMemberErrorMessage,
+) => {
+    const identity = await requireClerkIdentity(ctx, errorMessage);
+    const role = getClerkOrgRoleFromIdentity(identity);
+    if (role !== "org:admin" && role !== "org:member") {
+        throw new ConvexError(errorMessage);
+    }
+    return identity;
+};

@@ -1,5 +1,8 @@
 import { clerkClient } from "@clerk/nextjs/server";
 import { Link } from "@/components/link";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
+import TenantList from "./_components/tenantList";
 
 type OrganizationPageProps = {
     params: Promise<{
@@ -19,26 +22,25 @@ export default async function OrganizationPage({
     const organizationName = organization?.name ?? "不明";
 
     return (
-        <div className="mx-auto container px-6 py-10">
-            {/* 現在の組織を表示（組織スコープの目印） */}
-            <h1 className="text-2xl font-semibold">組織: {organizationName}</h1>
-            <p className="text-sm text-muted-foreground">
-                Org Slug: {organization?.slug ?? "不明"}
-            </p>
-            <p className="text-sm text-muted-foreground">
-                Org ID: {organizationId}
-            </p>
-            {/* この配下が「組織単位」で固定されることを示すガイド文 */}
-            <p className="text-sm text-muted-foreground">
-                このエリアは単一の組織にスコープされています。
-            </p>
-
-            <Link href={`/o/${organizationId}/admin/tenant/create`}>
-                テナント作成ページへ移動
-            </Link>
-            <Link href={`/o/${organizationId}/admin/tenant/testid`}>
-                テナント詳細ページへ移動
-            </Link>
+        <div className="mx-auto container flex flex-col gap-8 px-6 py-10">
+            <div className="flex flex-wrap items-start justify-between gap-4">
+                <div className="space-y-2">
+                    <h1 className="text-3xl font-semibold">
+                        {organizationName} のテナント一覧
+                    </h1>
+                    <div className="text-sm text-muted-foreground">
+                        <p>Org Slug: {organization?.slug ?? "不明"}</p>
+                        <p>Org ID: {organizationId}</p>
+                    </div>
+                </div>
+                <Button asChild size="lg">
+                    <Link href={`/o/${organizationId}/admin/tenant/create`}>
+                        テナントを作成
+                    </Link>
+                </Button>
+            </div>
+            <Separator />
+            <TenantList orgId={organizationId} />
         </div>
     );
 }
