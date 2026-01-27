@@ -5,7 +5,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "@/styles/globals.css";
 import { cn } from "@/lib/utils";
 import ConvexClientProvider from "./ConvexClientProvider";
-import Messages from "@/components/samples/messages";
+// import Messages from "@/components/samples/messages";
 import { Toaster } from "@/components/ui/sonner";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 // import { Analytics } from "@vercel/analytics/next";
