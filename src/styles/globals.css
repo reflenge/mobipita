@@ -1,5 +1,7 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+@import "filepond/dist/filepond.min.css";
+@import "filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -121,5 +123,23 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+@keyframes indicator-bar {
+  0% {
+    width: 0;
+  }
+  50% {
+    width: 90%;
+  }
+  100% {
+    width: 100%;
+  }
+}
+
+@layer utilities {
+  .indicator {
+    animation: indicator-bar 1000ms ease-in-out forwards;
   }
 }
