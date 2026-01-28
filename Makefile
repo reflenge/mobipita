@@ -47,6 +47,12 @@ help:
 	@echo "  make decrypt-one FILE=.env.production.enc"
 	@echo "  make check          sops/age の導入状況と SOPS_AGE_KEY_FILE を確認"
 	@echo "  make clean-env      復号した .env* を削除（危険）"
+	@echo ""
+	@echo "注意:"
+	@echo " - SOPS_AGE_KEY_FILE で age 鍵ファイルを指定してください"
+	@echo " - 平文の .env* は gitignore 推奨です"
+	@echo " - updatekeys は復号できる人だけが実行できます（対応する秘密鍵が必要）"
+	@echo " - .env* / .env*.enc / Makefile は UTF-8 + LF で保存してください（CRLF だと SOPS が失敗します）"
 
 check:
 	@command -v $(SOPS) >/dev/null 2>&1 || { echo "ERROR: sops が見つかりません"; exit 1; }
@@ -87,7 +93,7 @@ updatekeys:
 	for f in $(ENC_FILES); do \
 		if [ -f "$$f" ]; then \
 			echo "[鍵更新] $$f"; \
-			$(SOPS) updatekeys "$$f"; \
+			$(SOPS) updatekeys --input-type dotenv -y "$$f"; \
 		else \
 			echo "[スキップ] $$f（見つかりません）"; \
 		fi; \
