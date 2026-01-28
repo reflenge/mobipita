@@ -35,6 +35,7 @@ import {
     PackagePlus,
     BookCopy,
     ChevronDown,
+    UserPen,
 } from "lucide-react";
 
 const AdminSidebar = ({ org }: { org: { id: string } }) => {
@@ -81,6 +82,18 @@ const AdminSidebar = ({ org }: { org: { id: string } }) => {
                                         >
                                             <BookCopy />
                                             <span>一覧</span>
+                                        </Link>
+                                    </SidebarMenuButton>
+                                </SidebarMenuSubItem>
+                            </SidebarMenuSub>
+                            <SidebarMenuSub>
+                                <SidebarMenuSubItem>
+                                    <SidebarMenuButton asChild>
+                                        <Link
+                                            href={`/o/${org.id}/admin/tenant/employee-assignments`}
+                                        >
+                                            <UserPen />
+                                            <span>従業員割当</span>
                                         </Link>
                                     </SidebarMenuButton>
                                 </SidebarMenuSubItem>
