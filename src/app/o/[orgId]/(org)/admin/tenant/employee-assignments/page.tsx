@@ -1,7 +1,7 @@
 import { clerkClient } from "@clerk/nextjs/server";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { StaffUpgrade } from "./_components/staff-upgrade";
-import { StaffAssignment } from "./_components/staff-assignment";
+// import { StaffAssignment } from "./_components/staff-assignment";
 
 type OrganizationPageProps = {
     params: Promise<{
@@ -35,7 +35,7 @@ export default async function OrganizationPage({
                     <StaffUpgrade />
                 </TabsContent>
                 <TabsContent value="assignment">
-                    <StaffAssignment />
+                    {/* <StaffAssignment orgId={organizationId} /> */}
                 </TabsContent>
             </Tabs>
         </div>
