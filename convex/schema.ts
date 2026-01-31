@@ -71,10 +71,26 @@ export default defineSchema({
         .index("by_org_slug", ["tenantSlug"])
         // 組織 ID で検索するためのインデックス。
         .index("by_clerkOrgId", ["clerkOrgId"])
+        // 組織内でスラッグの重複チェック用。
+        .index("by_clerkOrgId_tenantSlug", ["clerkOrgId", "tenantSlug"])
         // ステータスでの絞り込み用。
         .index("by_status", ["tenantStatus"])
         // 種別での絞り込み用。
         .index("by_type", ["tenantType"])
         // ステータス + 種別の複合検索用。
         .index("by_status_type", ["tenantStatus", "tenantType"]),
+    // テナントへの従業員（Member）割当。1 Member が複数テナントに割り当て可能。
+    TenantMemberAssignments: defineTable({
+        // Clerk の組織 ID（スコープ用）。
+        clerkOrgId: v.string(),
+        // 割当先テナント（Convex Tenants の ID）。
+        tenantId: v.id("Tenants"),
+        // 割当るメンバーの Clerk userId。
+        clerkUserId: v.string(),
+    })
+        .index("by_tenant", ["tenantId"])
+        .index("by_org_user", ["clerkOrgId", "clerkUserId"])
+        .index("by_org", ["clerkOrgId"])
+        // 同一テナント・同一ユーザーの重複を防ぐ。
+        .index("by_tenant_user", ["tenantId", "clerkUserId"]),
 });

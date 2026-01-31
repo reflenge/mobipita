@@ -12,7 +12,7 @@ import type { CreateTenantFormValues } from "./schema";
 
 const FORM_ID = "form-rhf-demo";
 
-/** テナントスラッグ入力フィールド（英数字・ハイフン、先頭末尾は英字） */
+/** テナントスラッグ（一時的に自動採番・入力不可。UUID v4 ベース） */
 export function TenantSlugField() {
     const { control } = useFormContext<CreateTenantFormValues>();
 
@@ -29,11 +29,13 @@ export function TenantSlugField() {
                         {...field}
                         id={`${FORM_ID}-tenant-slug`}
                         aria-invalid={fieldState.invalid}
-                        placeholder="cafe-kochi-ekimae"
+                        readOnly
+                        disabled
+                        className="bg-muted"
                         autoComplete="off"
                     />
                     <FieldDescription>
-                        英数字とハイフンのみ使用可能。先頭と末尾は英字にしてください。
+                        一時的に自動採番（UUID v4）です。リセットで新しい値に変わります。
                     </FieldDescription>
                     {fieldState.invalid && (
                         <FieldError errors={[fieldState.error]} />

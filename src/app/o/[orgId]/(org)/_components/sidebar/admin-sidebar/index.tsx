@@ -34,8 +34,8 @@ import {
     Store,
     PackagePlus,
     BookCopy,
-    ChevronDown,
-    UserPen,
+    UserPlus,
+    UsersRound,
 } from "lucide-react";
 
 const AdminSidebar = ({ org }: { org: { id: string } }) => {
@@ -90,10 +90,22 @@ const AdminSidebar = ({ org }: { org: { id: string } }) => {
                                 <SidebarMenuSubItem>
                                     <SidebarMenuButton asChild>
                                         <Link
-                                            href={`/o/${org.id}/admin/tenant/employee-assignments`}
+                                            href={`/o/${org.id}/admin/tenant/employee-assignments/upgrade`}
                                         >
-                                            <UserPen />
-                                            <span>従業員割当</span>
+                                            <UserPlus />
+                                            <span>従業員へ昇格</span>
+                                        </Link>
+                                    </SidebarMenuButton>
+                                </SidebarMenuSubItem>
+                            </SidebarMenuSub>
+                            <SidebarMenuSub>
+                                <SidebarMenuSubItem>
+                                    <SidebarMenuButton asChild>
+                                        <Link
+                                            href={`/o/${org.id}/admin/tenant/employee-assignments/assignment`}
+                                        >
+                                            <UsersRound />
+                                            <span>各テナントへ振り分け</span>
                                         </Link>
                                     </SidebarMenuButton>
                                 </SidebarMenuSubItem>

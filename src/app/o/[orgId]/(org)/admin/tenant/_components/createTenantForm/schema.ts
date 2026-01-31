@@ -64,3 +64,22 @@ export const formSchema = z.object({
 
 /** フォーム入力値の型（formSchema から推論） */
 export type CreateTenantFormValues = z.infer<typeof formSchema>;
+
+/**
+ * テナントスラッグ用に UUID v4 から 32 文字の英数字文字列を生成する。
+ * スキーマ（先頭・末尾が英字）を満たすよう必要なら先頭・末尾を 'a' に置き換える。
+ */
+export function generateTenantSlug(): string {
+    if (typeof crypto !== "undefined" && crypto.randomUUID) {
+        let s = crypto.randomUUID().replace(/-/g, "");
+        if (!/^[a-zA-Z]/.test(s)) s = "a" + s.slice(1);
+        if (!/[a-zA-Z]$/.test(s)) s = s.slice(0, -1) + "a";
+        return s;
+    }
+    const hex = "0123456789abcdef";
+    let s = "";
+    for (let i = 0; i < 32; i++) s += hex[Math.floor(Math.random() * 16)];
+    if (!/^[a-zA-Z]/.test(s)) s = "a" + s.slice(1);
+    if (!/[a-zA-Z]$/.test(s)) s = s.slice(0, -1) + "a";
+    return s;
+}

@@ -1,5 +1,6 @@
 import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
+import { ConvexError } from "convex/values";
 import { requireClerkIdentity, requireClerkUserId } from "./lib/clerkAuth";
 
 const tenantType = v.union(v.literal("direct"), v.literal("tenant"));
@@ -57,8 +58,25 @@ export const create = mutation({
         tenantStatus: tenantStatus,
     },
     handler: async (ctx, args) => {
-        // 作成者を認証情報から取得する。
         const createdByUserId = await requireClerkUserId(ctx);
+
+        // 同一組織内でスラッグの重複を禁止する。
+        const existing = await ctx.db
+            .query("Tenants")
+            .withIndex("by_clerkOrgId_tenantSlug", (q) =>
+                q
+                    .eq("clerkOrgId", args.clerkOrgId)
+                    .eq("tenantSlug", args.tenantSlug),
+            )
+            .first();
+        if (existing) {
+            throw new ConvexError({
+                id: "TENANT_SLUG_DUPLICATE",
+                message:
+                    "このスラッグは既に使用されています。「リセット」で新しいスラッグを採番してください。",
+            });
+        }
+
         const tenantId = await ctx.db.insert("Tenants", {
             clerkOrgId: args.clerkOrgId,
             createdByUserId: createdByUserId,
