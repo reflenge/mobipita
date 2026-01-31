@@ -1,32 +1,22 @@
 import { Link } from "@/components/link";
 import {
-    Sidebar,
-    SidebarContent,
-    SidebarFooter,
     SidebarGroup,
-    SidebarGroupAction,
     SidebarGroupContent,
     SidebarGroupLabel,
-    SidebarHeader,
-    SidebarInput,
-    SidebarInset,
     SidebarMenu,
-    SidebarMenuAction,
-    SidebarMenuBadge,
     SidebarMenuButton,
     SidebarMenuItem,
-    SidebarMenuSkeleton,
-    SidebarMenuSub,
-    SidebarMenuSubButton,
-    SidebarMenuSubItem,
-    SidebarProvider,
-    SidebarRail,
     SidebarSeparator,
-    useSidebar,
 } from "@/components/ui/sidebar";
 import { UserStar } from "lucide-react";
+import { MemberTenantList } from "./MemberTenantList";
 
-const MemberSidebar = ({ org }: { org: { id: string } }) => {
+type MemberSidebarProps = {
+    org: { id: string };
+    userId: string;
+};
+
+export default function MemberSidebar({ org, userId }: MemberSidebarProps) {
     return (
         <>
             <SidebarSeparator />
@@ -42,11 +32,10 @@ const MemberSidebar = ({ org }: { org: { id: string } }) => {
                                 </Link>
                             </SidebarMenuButton>
                         </SidebarMenuItem>
+                        <MemberTenantList orgId={org.id} userId={userId} />
                     </SidebarMenu>
                 </SidebarGroupContent>
             </SidebarGroup>
         </>
     );
-};
-
-export default MemberSidebar;
+}

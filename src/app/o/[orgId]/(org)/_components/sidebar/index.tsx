@@ -44,6 +44,7 @@ interface AppSidebarProps {
     };
     user: {
         role: string;
+        userId: string;
     };
 }
 
@@ -71,7 +72,7 @@ export function AppSidebar({ org, user }: AppSidebarProps) {
             <SidebarContent>
                 <CustomerSidebar org={org} />
                 {(user.role === "org:member" || user.role === "org:admin") && (
-                    <MemberSidebar org={org} />
+                    <MemberSidebar org={org} userId={user.userId} />
                 )}
 
                 {user.role === "org:admin" && <AdminSidebar org={org} />}

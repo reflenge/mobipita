@@ -1,6 +1,27 @@
-import { mutation } from "./_generated/server";
+import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
 // import { requireClerkIdentity } from "./lib/clerkAuth";
+
+/**
+ * 複数の Files レコード ID に対応するストレージ URL を返す。
+ * サイドバーなどでテナントロゴを表示するために使用する。
+ */
+export const getStorageUrls = query({
+    args: {
+        fileIds: v.array(v.id("Files")),
+    },
+    handler: async (ctx, args) => {
+        const result: Record<string, string> = {};
+        for (const id of args.fileIds) {
+            const file = await ctx.db.get(id);
+            if (file) {
+                const url = await ctx.storage.getUrl(file.storageId);
+                if (url) result[id] = url;
+            }
+        }
+        return result;
+    },
+});
 
 /**
  * ファイルアップロード用の一時 URL を発行する。

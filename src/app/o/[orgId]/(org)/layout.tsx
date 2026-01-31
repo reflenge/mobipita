@@ -16,9 +16,7 @@ export default async function OrganizationLayout({
     children,
     params,
 }: OrganizationLayoutProps) {
-    // clerkMiddleware の organizationSyncOptions により、
-    // URL の :id がアクティブ Org と同期される前提。
-    const { orgId: activeOrgId, orgRole } = await auth();
+    const { orgId: activeOrgId, orgRole, userId } = await auth();
     const { orgId } = await params;
 
     // URL とアクティブ Org が食い違う場合は不正アクセス扱いで 404。
@@ -45,7 +43,10 @@ export default async function OrganizationLayout({
     // スコープが一致している場合のみ配下コンテンツを描画する。
     return (
         <SidebarProvider>
-            <AppSidebar org={org} user={{ role: userRole }} />
+            <AppSidebar
+                org={org}
+                user={{ role: userRole, userId: userId ?? "" }}
+            />
             <section className="w-full flex flex-col min-h-dvh">
                 <h2 className="sr-only">Organization Content</h2>
                 <header className="bg-red-100 m-2 p-2">
