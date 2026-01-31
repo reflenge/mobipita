@@ -13,14 +13,14 @@ export const StaffUpgrade = () => {
             </h1>
             <ul className="list-decimal space-y-2 pl-4">
                 <li>
-                    <p className="flex flex-wrap items-center gap-1">
+                    <div className="flex flex-wrap items-center gap-1">
                         <span>このドロップダウン</span>
                         <OrganizationSwitcher hidePersonal={true} defaultOpen />
                         <span>を開く</span>
-                    </p>
+                    </div>
                 </li>
                 <li>
-                    <p className="flex flex-wrap items-center gap-1">
+                    <div className="flex flex-wrap items-center gap-1">
                         <span>目的の組織の左側にある</span>
                         <Button
                             variant="outline"
@@ -30,7 +30,7 @@ export const StaffUpgrade = () => {
                             組織の管理
                         </Button>
                         <span>を選択する</span>
-                    </p>
+                    </div>
                     <Image
                         src={OrganizationSwitcherImage}
                         alt="<OrganizationSwitcher /> component"
@@ -39,7 +39,7 @@ export const StaffUpgrade = () => {
                     />
                 </li>
                 <li>
-                    <p className="flex flex-wrap items-center gap-1">
+                    <div className="flex flex-wrap items-center gap-1">
                         <span>PC は左側のリストから、</span>
                         <span>SP は左上のハンバーガーメニュー</span>
                         <span className="inline-flex items-center gap-1">
@@ -47,7 +47,7 @@ export const StaffUpgrade = () => {
                             組織」
                         </span>
                         <span>から、「メンバー」を選択する</span>
-                    </p>
+                    </div>
                     <Image
                         src={OrganizationProfileImage}
                         alt="<OrganizationProfile /> component"
