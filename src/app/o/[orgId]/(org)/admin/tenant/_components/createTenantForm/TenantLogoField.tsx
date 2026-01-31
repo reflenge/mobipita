@@ -27,10 +27,8 @@ export function TenantLogoField() {
             name="tenantLogo"
             control={control}
             render={({ field, fieldState }) => {
-                // RHF の値（File | null）を FilePond の files 形式に変換
-                const files = field.value
-                    ? [{ source: field.value, options: { type: "local" } }]
-                    : [];
+                // RHF の値（File | null）を FilePond の files に渡す（Blob/File をそのまま配列で渡す）
+                const files = field.value ? [field.value] : [];
 
                 return (
                     <Field
