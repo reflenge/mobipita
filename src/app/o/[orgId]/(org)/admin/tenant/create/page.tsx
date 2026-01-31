@@ -15,9 +15,11 @@ export default async function OrganizationPage({
     const organization = await client.organizations
         .getOrganization({ organizationId: orgId })
         .catch(() => null);
+    const organizationId = organization?.id ?? orgId;
+    const organizationName = organization?.name ?? "不明";
     const org = {
-        id: organization?.id ?? orgId,
-        name: organization?.name ?? "不明",
+        id: organizationId,
+        name: organizationName,
     };
 
     return <CreateTenantForm org={org} />;
