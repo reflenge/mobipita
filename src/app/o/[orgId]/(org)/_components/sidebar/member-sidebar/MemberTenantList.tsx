@@ -74,8 +74,8 @@ export function MemberTenantList({ orgId, userId }: MemberTenantListProps) {
                                     ? logoUrls[tenant.tenantLogoFileId]
                                     : null;
                             return (
-                                <SidebarMenuSub>
-                                    <SidebarMenuItem key={tenant._id}>
+                                <SidebarMenuSub key={tenant._id}>
+                                    <SidebarMenuItem>
                                         <SidebarMenuButton asChild>
                                             <Link
                                                 href={`/o/${orgId}/member/tenant/${tenant._id}`}
