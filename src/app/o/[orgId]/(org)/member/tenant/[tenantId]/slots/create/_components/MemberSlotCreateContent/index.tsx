@@ -50,13 +50,20 @@ export function MemberSlotCreateContent({ orgId, tenantId }: Props) {
         lat: number;
         lng: number;
     } | null>(null);
+    const [startTime, setStartTime] = React.useState<string>("09:00");
+    const [endTime, setEndTime] = React.useState<string>("18:00");
+    const [slotLocationSource, setSlotLocationSource] = React.useState<
+        "manual" | "map"
+    >("manual");
 
     const tenant = useQuery(api.tenants.getByIdInOrg, {
         clerkOrgId: orgId,
         tenantId: tenantId as Id<"Tenants">,
     });
-    
+
     const isFixedStore = tenant?.storeType === "fixed";
+    const resolvedSlotLocation =
+        slotLocationSource === "manual" ? location : mapAddress;
 
     React.useEffect(() => {
         if (!isFixedStore) return;
@@ -233,12 +240,92 @@ export function MemberSlotCreateContent({ orgId, tenantId }: Props) {
                                 startOfDay(toZonedDate(date, JST_TZ)) < today
                             }
                         />
-                        <p className="mt-3 text-sm text-muted-foreground">
-                            選択中:{" "}
-                            {selectedDate
-                                ? formatYmdDowJst(selectedDate)
-                                : "日付を選択してください"}
-                        </p>
+                        <div className="mt-4 space-y-3">
+                            <div className="flex flex-wrap gap-4">
+                                <div className="space-y-1">
+                                    <p className="text-xs text-muted-foreground">
+                                        開始時間
+                                    </p>
+                                    <Input
+                                        type="time"
+                                        value={startTime}
+                                        onChange={(e) =>
+                                            setStartTime(e.target.value)
+                                        }
+                                        className="w-28"
+                                    />
+                                </div>
+                                <div className="space-y-1">
+                                    <p className="text-xs text-muted-foreground">
+                                        終了時間
+                                    </p>
+                                    <Input
+                                        type="time"
+                                        value={endTime}
+                                        onChange={(e) =>
+                                            setEndTime(e.target.value)
+                                        }
+                                        className="w-28"
+                                    />
+                                </div>
+                            </div>
+
+                            {isFixedStore && (
+                                <div className="space-y-1">
+                                    <p className="text-xs text-muted-foreground">
+                                        場所選択（この営業時間に紐づける場所）
+                                    </p>
+                                    <select
+                                        value={slotLocationSource}
+                                        onChange={(e) =>
+                                            setSlotLocationSource(
+                                                e.target.value === "map"
+                                                    ? "map"
+                                                    : "manual",
+                                            )
+                                        }
+                                        className="h-9 rounded-md border bg-background px-2 text-xs"
+                                    >
+                                        <option value="manual">
+                                            手入力の場所を使う
+                                        </option>
+                                        <option value="map">
+                                            地図から取得した住所を使う
+                                        </option>
+                                    </select>
+                                    <p className="text-xs text-muted-foreground">
+                                        使用される場所:
+                                        {resolvedSlotLocation
+                                            ? ` ${resolvedSlotLocation}`
+                                            : " 未選択"}
+                                    </p>
+                                </div>
+                            )}
+
+                            <Button
+                                type="button"
+                                size="sm"
+                                className="mt-1"
+                                disabled={
+                                    !selectedDate ||
+                                    !startTime ||
+                                    !endTime ||
+                                    (isFixedStore &&
+                                        !resolvedSlotLocation.trim())
+                                }
+                                onClick={() => {
+                                    // TODO: Convex に営業時間スロットを保存する
+                                    console.log("add opening hours slot", {
+                                        date: selectedDate,
+                                        startTime,
+                                        endTime,
+                                        location: resolvedSlotLocation,
+                                    });
+                                }}
+                            >
+                                この日に営業時間を追加する
+                            </Button>
+                        </div>
                     </CardContent>
                 </Card>
             </div>
