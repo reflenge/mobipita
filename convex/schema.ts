@@ -1,19 +1,12 @@
 import { defineSchema, defineTable } from "convex/server";
 import { v } from "convex/values";
-
-// メッセージの公開範囲（全体 / 組織）を定義する。
-const messageScope = v.union(v.literal("global"), v.literal("organization"));
-// ファイルの状態（仮置き / 本紐付け）を定義する。
-const fileStatus = v.union(v.literal("temporary"), v.literal("attached"));
-// テナントの種別（直営 / テナント）を定義する。
-const tenantType = v.union(v.literal("direct"), v.literal("tenant"));
-// テナントの運用状態を定義する。
-const tenantStatus = v.union(
-    v.literal("preparing"),
-    v.literal("open"),
-    v.literal("paused"),
-    v.literal("closed"),
-);
+import {
+    messageScope,
+    fileStatus,
+    tenantType,
+    tenantStatus,
+    storeType,
+} from "./values";
 
 export default defineSchema({
     // チャットメッセージの保存テーブル。
@@ -66,6 +59,8 @@ export default defineSchema({
         tenantLogoFileId: v.optional(v.id("Files")),
         // 運用状態。
         tenantStatus: tenantStatus,
+        // 店舗形態（移動店舗 / 固定店舗）。既存データ互換のため任意。
+        storeType: storeType,
     })
         // テナントスラッグで検索するためのインデックス。
         .index("by_org_slug", ["tenantSlug"])

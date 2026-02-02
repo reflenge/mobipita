@@ -17,12 +17,33 @@ export const tenantTypeOptions = [
     { value: "direct", label: "直営" },
 ] as const;
 
-/** テナント状態の選択肢（準備中 / 公開中 / 一時停止 / 終了） */
+/** 店舗形態の選択肢（移動店舗 / 固定店舗） */
+export const storeTypeOptions = [
+    { value: "mobile", label: "移動店舗" },
+    { value: "fixed", label: "固定店舗" },
+] as const;
+
+/**
+ * 店舗ステータス（長期の店舗ライフサイクル）の選択肢。
+ * 店舗そのものが「事業として存在し、顧客を受け入れる体制か」を表す。
+ */
 export const tenantStatusOptions = [
-    { value: "preparing", label: "準備中" },
-    { value: "open", label: "公開中" },
-    { value: "paused", label: "一時停止" },
-    { value: "closed", label: "終了" },
+    {
+        value: "preparing",
+        label: "準備中: 営業開始前（準備期間）",
+    },
+    {
+        value: "open",
+        label: "開店中: 通常営業中",
+    },
+    {
+        value: "paused",
+        label: "休業中: 一時営業停止（再開予定あり）",
+    },
+    {
+        value: "closed",
+        label: "閉業: 営業終了（再開予定なし）",
+    },
 ] as const;
 
 /** テナント作成フォームのバリデーションスキーマ（Zod） */
@@ -45,6 +66,8 @@ export const formSchema = z.object({
     tenantType: z.enum(["direct", "tenant"]),
     /** テナントの運用状態 */
     tenantStatus: z.enum(["preparing", "open", "paused", "closed"]),
+    /** 店舗形態（移動店舗 / 固定店舗） */
+    storeType: z.enum(["mobile", "fixed"]),
     /** テナントロゴ画像（任意。選択時は RHF + Zod でサイズ・形式を検証） */
     tenantLogo: z
         .instanceof(File)

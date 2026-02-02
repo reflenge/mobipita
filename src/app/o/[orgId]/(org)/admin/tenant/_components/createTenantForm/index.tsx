@@ -21,11 +21,12 @@ import { TenantNameField } from "./TenantNameField";
 import { TenantSlugField } from "./TenantSlugField";
 import { TenantTypeField } from "./TenantTypeField";
 import { TenantStatusField } from "./TenantStatusField";
+import { TenantStoreTypeField } from "./TenantStoreTypeField";
 import { TenantLogoField } from "./TenantLogoField";
 import { CreateTenantFormActions } from "./CreateTenantFormActions";
 
 /** フォーム要素の id に使う文字列（送信ボタンの form 属性と一致させる） */
-const FORM_ID = "form-rhf-demo";
+const FORM_ID = "form-admin-tenant-create";
 
 type CreateTenantFormProps = {
     org: {
@@ -54,6 +55,7 @@ export default function CreateTenantForm({ org }: CreateTenantFormProps) {
             tenantSlug: generateTenantSlug(),
             tenantType: "tenant",
             tenantStatus: "preparing",
+            storeType: "fixed",
             tenantLogo: null,
         },
         mode: "all", // 入力・blur などすべてのタイミングでバリデーション
@@ -65,6 +67,7 @@ export default function CreateTenantForm({ org }: CreateTenantFormProps) {
             tenantSlug: generateTenantSlug(),
             tenantType: "tenant",
             tenantStatus: "preparing",
+            storeType: "fixed",
             tenantLogo: null,
         });
     }, [form]);
@@ -126,6 +129,7 @@ export default function CreateTenantForm({ org }: CreateTenantFormProps) {
                     tenantSlug: data.tenantSlug,
                     tenantType: data.tenantType,
                     tenantStatus: data.tenantStatus,
+                    storeType: data.storeType,
                     tenantLogoFileId: uploadedFile?.fileId,
                 });
 
@@ -193,6 +197,7 @@ export default function CreateTenantForm({ org }: CreateTenantFormProps) {
                         <TenantSlugField />
                         <TenantTypeField />
                         <TenantStatusField />
+                        <TenantStoreTypeField />
                     </FieldGroup>
                     <FieldGroup>
                         {/* ロゴは RHF の tenantLogo（File | null）で管理し、Zod で検証 */}

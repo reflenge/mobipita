@@ -10,7 +10,7 @@ import {
 import { Input } from "@/components/ui/input";
 import type { CreateTenantFormValues } from "./schema";
 
-const FORM_ID = "form-rhf-demo";
+const FORM_ID = "form-admin-tenant-create";
 
 /** テナントスラッグ（一時的に自動採番・入力不可。UUID v4 ベース） */
 export function TenantSlugField() {

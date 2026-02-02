@@ -2,14 +2,7 @@ import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
 import { ConvexError } from "convex/values";
 import { requireClerkIdentity, requireClerkUserId } from "./lib/clerkAuth";
-
-const tenantType = v.union(v.literal("direct"), v.literal("tenant"));
-const tenantStatus = v.union(
-    v.literal("preparing"),
-    v.literal("open"),
-    v.literal("paused"),
-    v.literal("closed"),
-);
+import { tenantType, tenantStatus, storeType } from "./values";
 
 // 組織単位でテナント一覧を取得する。
 export const listByOrg = query({
@@ -56,6 +49,7 @@ export const create = mutation({
         tenantType: tenantType,
         tenantLogoFileId: v.optional(v.id("Files")),
         tenantStatus: tenantStatus,
+        storeType: storeType,
     },
     handler: async (ctx, args) => {
         const createdByUserId = await requireClerkUserId(ctx);
@@ -85,6 +79,7 @@ export const create = mutation({
             tenantType: args.tenantType,
             tenantLogoFileId: args.tenantLogoFileId,
             tenantStatus: args.tenantStatus,
+            storeType: args.storeType,
         });
 
         return tenantId;

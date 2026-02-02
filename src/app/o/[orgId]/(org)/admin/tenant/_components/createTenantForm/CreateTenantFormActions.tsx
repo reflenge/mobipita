@@ -6,7 +6,7 @@ import { Field } from "@/components/ui/field";
 import { Spinner } from "@/components/ui/spinner";
 import type { CreateTenantFormValues } from "./schema";
 
-const FORM_ID = "form-rhf-demo";
+const FORM_ID = "form-admin-tenant-create";
 
 type CreateTenantFormActionsProps = {
     /** 送信処理中かどうか（ボタン無効化・スピナー表示に使用） */

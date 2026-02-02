@@ -1,5 +1,6 @@
 import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
+import { fileStatus } from "./values";
 // import { requireClerkIdentity } from "./lib/clerkAuth";
 
 /**
@@ -89,7 +90,7 @@ export const saveFile = mutation({
 export const updateFileStatus = mutation({
     args: {
         fileId: v.id("Files"),
-        status: v.union(v.literal("temporary"), v.literal("attached")),
+        status: fileStatus,
     },
     handler: async (ctx, args) => {
         // TODO: 認可チェック

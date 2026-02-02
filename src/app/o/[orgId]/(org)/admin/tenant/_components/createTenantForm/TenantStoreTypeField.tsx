@@ -15,40 +15,39 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import type { CreateTenantFormValues } from "./schema";
-import { tenantStatusOptions } from "./schema";
+import { storeTypeOptions } from "./schema";
 
 const FORM_ID = "form-admin-tenant-create";
 
-/** 店舗ステータス選択フィールド（長期の店舗ライフサイクル） */
-export function TenantStatusField() {
+/** 店舗形態選択フィールド（移動店舗 / 固定店舗） */
+export function TenantStoreTypeField() {
     const { control } = useFormContext<CreateTenantFormValues>();
 
     return (
         <Controller
-            name="tenantStatus"
+            name="storeType"
             control={control}
             render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel htmlFor={`${FORM_ID}-tenant-status`}>
-                        店舗ステータス
+                    <FieldLabel htmlFor={`${FORM_ID}-store-type`}>
+                        店舗形態
                     </FieldLabel>
                     <Select
                         value={field.value}
                         onValueChange={field.onChange}
                     >
                         <SelectTrigger
-                            id={`${FORM_ID}-tenant-status`}
+                            id={`${FORM_ID}-store-type`}
                             aria-invalid={fieldState.invalid}
                             className="w-full"
                         >
-                            <SelectValue placeholder="店舗ステータスを選択" />
+                            <SelectValue placeholder="移動店舗 or 固定店舗を選択" />
                         </SelectTrigger>
                         <SelectContent>
-                            {tenantStatusOptions.map((option) => (
+                            {storeTypeOptions.map((option) => (
                                 <SelectItem
                                     key={option.value}
                                     value={option.value}
-                                    title={option.description}
                                 >
                                     {option.label}
                                 </SelectItem>
@@ -56,7 +55,7 @@ export function TenantStatusField() {
                         </SelectContent>
                     </Select>
                     <FieldDescription>
-                        長期の店舗ライフサイクル（恒常・中長期の状態）。店舗そのものが「事業として存在し、顧客を受け入れる体制か」を表します。
+                        移動店舗 or 固定店舗を選択してください。
                     </FieldDescription>
                     {fieldState.invalid && (
                         <FieldError errors={[fieldState.error]} />

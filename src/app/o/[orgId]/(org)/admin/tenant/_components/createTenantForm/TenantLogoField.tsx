@@ -35,7 +35,7 @@ export function TenantLogoField() {
                         className="pt-6"
                         data-invalid={fieldState.invalid}
                     >
-                        <FieldLabel>テナント画像</FieldLabel>
+                        <FieldLabel>テナントアイコン画像</FieldLabel>
                         <FilePond
                             key={field.value?.name ?? "empty"}
                             files={files}
@@ -49,7 +49,7 @@ export function TenantLogoField() {
                             labelIdle='<span class="filepond--label-action">ファイル選択</span> または ドラッグ&ドロップ'
                         />
                         <FieldDescription>
-                            png / jpg / webp / gif / avif（最大 5MB）
+                            png / jpg / webp / gif / avif（最大 5MB）1枚
                         </FieldDescription>
                         {fieldState.invalid && (
                             <FieldError errors={[fieldState.error]} />
