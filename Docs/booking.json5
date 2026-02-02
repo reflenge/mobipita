@@ -1,0 +1,274 @@
+{
+    // =========================
+    // 1) プラン（Service）
+    // =========================
+    // 「基本ずっと同じ」もの。頻繁に変えない前提の箱。
+    "services": [
+        {
+            "id": "svc_school_basic",
+            "tenantId": "tenant_001",
+            "title": "スクールレッスン",
+            "description": "初心者〜中級者向けの通常レッスンです。",
+            "isActive": true,
+        },
+    ],
+    // =========================
+    // 2) テンプレ（Slot Template / Policy）
+    // =========================
+    // 「よく使うルール」を使い回すための箱。
+    // 重要：予約枠を作るときに、このテンプレ内容を"スナップショット"として枠に固定する。
+    "slotTemplates": [
+        {
+            "id": "tpl_normal_60",
+            "tenantId": "tenant_001",
+            "serviceId": "svc_school_basic",
+            // 受付期間
+            "acceptanceWindow": {
+                "openBeforeMinutes": 86400, // 60日前から受付
+                "closeBeforeMinutes": 180, // 3時間前で締切
+            },
+            // バッファ（枠間の準備時間）
+            "bufferMinutes": 30,
+            // 「1日あたりの予約枠上限」
+            // ※ここでは "成立した予約(Booking)数" を数える想定（slot数ではない）
+            "dailyBookingLimit": 4,
+            // フォーム（お客に聞く質問セット）
+            "form": {
+                "questions": [
+                    {
+                        "id": "q_name",
+                        "label": "お名前",
+                        "type": "text",
+                        "required": true
+                    },
+                    {
+                        "id": "q_phone",
+                        "label": "電話番号",
+                        "type": "tel",
+                        "required": true
+                    },
+                    {
+                        "id": "q_note",
+                        "label": "備考",
+                        "type": "textarea",
+                        "required": false
+                    },
+                ],
+            },
+            // リマインダー
+            "reminders": {
+                "email": {
+                    "timing": "beforeStart",
+                    "amountMinutes": 1440,
+                }, // 1日前
+                "calendarInvite": {
+                    // Googleカレンダーに限らず「ICS」等の形式で配布する想定
+                    "mode": "icsOrAddUrl",
+                    "enabled": true,
+                },
+            },
+            // キャンセル・変更ポリシー
+            "cancellationPolicy": {
+                "cancelDeadlineMinutes": 60, // 開始の1時間前までキャンセル可
+                "allowCustomerCancel": true, // 顧客キャンセル可否
+                "allowRescheduling": true, // 顧客の日時変更可否
+                "rescheduleDeadlineMinutes": 120, // 変更期限（2時間前まで）
+                // （必要なら）feePolicy（キャンセル時の手数料や返金ルール）、penalty（違反時のペナルティ）、refundPolicy（返金の細かい条件や方法）などもこの中に追加可能です。
+                // 例:
+                // "feePolicy": { "type": "fixed", "amount": 1000 } // 固定手数料
+                // "penalty": { "lateCancel": 2000 } // 直前キャンセル時の追加料金
+                // "refundPolicy": { "fullRefundBeforeMinutes": 1440, "partialRefundBeforeMinutes": 120 } // 開始前何分なら全額返金、部分返金等
+                // サービスや運用に応じて必要な属性を拡張して利用できます。
+            },
+        },
+    ],
+    // =========================
+    // 3) 場所（Location）
+    // =========================
+    // 住所＋座標＋詳細。固定店舗も移動先も同じ"場所"として扱う。
+    "locations": [
+        {
+            "id": "loc_fixed_shop",
+            "tenantId": "tenant_001",
+            "type": "fixed", // fixed | mobile
+            "name": "固定店舗（本店）",
+            "address": "高知県〇〇市〇〇町1-2-3",
+            "geo": {
+                "lat": 33.5597,
+                "lng": 133.5311
+            },
+            "details": "入口は北側。駐車場2台分あり。看板が目印。",
+            "mapUrl": "https://maps.example.com/?q=33.5597,133.5311",
+        },
+    ],
+    // =========================
+    // 4) 予約枠（Slot）
+    // =========================
+    // 日々追加する"実体"。管理者が枠ごとに「長さ」「場所」「capacity」を決める。
+    // 重要：templateの内容は slot にスナップショットとして固定する（後からテンプレを変えても枠は変わらない）。
+    "slots": [
+        // ---- 2026-02-03（09:00-17:00 / 60分 / バッファ30分の例）----
+        // ※09:00開始なら 5枠になる
+        {
+            "id": "slot_20260203_0900",
+            "tenantId": "tenant_001",
+            "serviceId": "svc_school_basic",
+            "startAt": "2026-02-03T09:00:00+09:00",
+            "endAt": "2026-02-03T10:00:00+09:00",
+            "durationMinutes": 60,
+            "bufferMinutes": 30, // 次の開始までの準備時間（枠に固定）
+            "capacity": 2, // 同時並行2件まで
+            "templateId": "tpl_normal_60",
+            "locationId": "loc_fixed_shop",
+            // ライフサイクル管理
+            "slotStatus": "open", // "open" | "closed"（手動で受付停止。予約データは消さない）
+            "visibility": "public", // "public" | "unlisted" | "private"
+            // public: 一覧/検索に出る
+            // unlisted: 一覧には出ないが、URL直打ちなど "知ってる人は入れる"
+            // private: 管理画面以外からは予約不可（スタッフ調整用など）
+            // 満員は "状態" ではなく "結果" として計算（capacity と confirmed数から算出）
+            // どうしても一覧を速くしたいなら、availabilitySnapshot（残数）を非正規化で持ってもOK
+            // Resource競合管理（レベル1：Slot作成時に競合を防ぐ）
+            "resources": [
+                {
+                    "resourceId": "staffA",
+                    "units": 1
+                },
+                // 例：コート1、車1なども追加可能
+                // { "resourceId": "court1", "units": 1 },
+                // { "resourceId": "car1", "units": 1 }
+            ],
+            // スナップショット（枠作成時点の"効くルール"を固定）
+            "policySnapshot": {
+                "acceptanceWindow": {
+                    "openBeforeMinutes": 86400,
+                    "closeBeforeMinutes": 180
+                },
+                "dailyBookingLimit": 4,
+                "form": {
+                    "questions": [
+                        {
+                            "id": "q_note",
+                            "label": "備考",
+                            "type": "textarea",
+                            "required": false
+                        },
+                    ],
+                },
+                "reminders": {
+                    "email": {
+                        "timing": "beforeStart",
+                        "amountMinutes": 1440,
+                    },
+                    "calendarInvite": {
+                        "mode": "icsOrAddUrl",
+                        "enabled": true
+                    },
+                },
+                // キャンセル・変更ポリシー（スナップショット）
+                "cancellationPolicy": {
+                    "cancelDeadlineMinutes": 1440,
+                    "allowCustomerCancel": true,
+                    "allowRescheduling": true,
+                    "rescheduleDeadlineMinutes": 2880,
+                },
+            },
+            // 場所も「マスタが後で編集されても、枠の集合案内が変わらない」よう固定したい場合はここも持つ
+            "locationSnapshot": {
+                "type": "fixed", // fixed | mobile
+                "name": "固定店舗（本店）",
+                "address": "高知県〇〇市〇〇町1-2-3",
+                "geo": {
+                    "lat": 33.5597,
+                    "lng": 133.5311
+                },
+                "details": "入口は北側。駐車場2台分あり。看板が目印。",
+                "mapUrl": "https://maps.example.com/?q=33.5597,133.5311",
+            },
+        },
+    ],
+    // =========================
+    // 5) 予約（Booking）
+    // =========================
+    // お客の申込データ。slotIdに紐づき、capacityの範囲内で成立する。
+    "bookings": [
+        {
+            "id": "bk_0001",
+            "tenantId": "tenant_001",
+            "slotId": "slot_20260203_0900",
+            "status": "confirmed", // pending仮確定 | confirmed確定 | canceledキャンセル | no_show未出席
+            "clerkUserId": "user_1234567890",
+            // フォーム回答（slot.policySnapshot.form.questions と対応）
+            "answers": {
+                "q_note": "遅れる場合は連絡します。",
+            },
+            "createdAt": "2026-01-20T10:15:00+09:00",
+            // キャンセル・変更ポリシー（スナップショット：予約作成時に固定）
+            "policySnapshot": {
+                "cancellationPolicy": {
+                    "cancelDeadlineMinutes": 60,
+                    "allowCustomerCancel": true,
+                    "allowRescheduling": true,
+                    "rescheduleDeadlineMinutes": 120,
+                },
+            },
+        },
+    ],
+    // =========================
+    // 6) 通知ログ（Notification Logs）
+    // =========================
+    // トラブル対応と二重送信防止（冪等性）のために必須。
+    // 送った/送ってない、失敗した、再送の管理。
+    "notificationLogs": [
+        {
+            "id": "notif_0001",
+            "tenantId": "tenant_001",
+            "bookingId": "bk_0001",
+            "type": "reminder_1day", // "reminder_1day" | "reminder_immediate" | "calendar_invite" ...
+            "channel": "email", // "email" | "sms" | "push"
+            "scheduledFor": "2026-02-02T09:00:00+09:00", // 送るべき時刻
+            "sentAt": "2026-02-02T09:00:15+09:00", // 実際に送信した時刻
+            "status": "sent", // "scheduled" | "sent" | "failed" | "skipped"
+            "providerMessageId": "msg_abc123", // 外部送信の識別子（冪等性確保）
+            "error": null, // 失敗時のエラー情報
+            // 冪等キー：(bookingId, type, scheduledFor) を unique にする
+            // → ジョブが二重実行されても二重送信しない
+        },
+    ],
+    // =========================
+    // 参考：実装上の注意
+    // =========================
+    // - 予約枠生成（営業時間×長さ×バッファ）を行う場合、
+    //   「startAt + duration <= endOfBusiness」を満たす枠だけ作る。
+    //
+    // - capacity超過の判定は、
+    //   bookings のうち status=confirmed を数えて slot.capacity と比較する。
+    //
+    // - dailyBookingLimit の判定は、
+    //   「同じ日付」「同じserviceId（または運用単位）」で confirmed を数える。
+    //
+    // - "予約が入った枠"は、時間/場所/長さ/capacity/必須フォーム をロックし、
+    //   変えたい場合は「枠を締切→新枠作成（改訂）」にするのが事故りにくい。
+    //
+    // =========================
+    // 追加機能の実装上の注意
+    // =========================
+    //
+    // 【Slotのライフサイクル管理】
+    // - 予約できる = slotStatus=open かつ remaining > 0 かつ 受付期限内 かつ visibility条件を満たす
+    // - slotStatus=closed でも既存Bookingは維持（キャンセルしない）
+    // - isFull は capacity と confirmed数から算出（enumに full を入れるより、open/closed + 残数=0 が一貫）
+    //
+    // 【Bookingのキャンセル・変更ポリシー】
+    // - 顧客キャンセル可 = now <= slot.startAt - cancelDeadline
+    // - 顧客変更可 = allowRescheduling && now <= slot.startAt - rescheduleDeadline
+    // - 管理者は原則 override 可能（運用で必要）
+    //
+    // 【Resource競合（レベル1：Slot作成時に競合を防ぐ）】
+    // - Slot作成/編集時に「同じresourceIdが同時間帯に使われるSlotが存在したらNG」
+    // - これだけで「スタッフAが2つの枠に同時に入る」問題が消える
+    //
+    // 【通知ログ】
+    // - 送信前に status=scheduled を作成 → 成功で sent、失敗で failed（リトライ可能）
+    // - 冪等キー：(bookingId, type, scheduledFor) を unique にする
+}
