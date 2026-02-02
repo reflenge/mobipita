@@ -5,6 +5,9 @@ import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "./_components/sidebar";
 import { Link } from "@/components/link";
 
+import AutoBreadcrumb from "./_components/breadcrumb";
+import { cn } from "@/lib/utils";
+
 type OrganizationLayoutProps = {
     children: React.ReactNode;
     params: Promise<{
@@ -40,6 +43,9 @@ export default async function OrganizationLayout({
         imageUrl: organization?.imageUrl ?? "",
     };
 
+    const outView = true;
+    // const outView = false;
+
     // スコープが一致している場合のみ配下コンテンツを描画する。
     return (
         <SidebarProvider>
@@ -49,11 +55,12 @@ export default async function OrganizationLayout({
             />
             <section className="w-full flex flex-col min-h-dvh">
                 <h2 className="sr-only">Organization Content</h2>
-                <header className="bg-red-100 m-2 p-2">
+                <header className={cn(outView && "outline-1 outline-red-300", "m-2 p-2")}>
                     <SidebarTrigger />
                 </header>
-                <main className="bg-green-100 grow m-2 p-2">{children}</main>
-                <footer className="bg-blue-100 m-2 p-2">
+                <main className={cn(outView && "outline-1 outline-green-300", "grow m-2 p-2")}>
+                    <AutoBreadcrumb />{children}</main>
+                <footer className={cn(outView && "outline-1 outline-blue-300", "m-2 p-2")}>
                     <section>
                         <p className="text-sm text-muted-foreground">
                             <Link href="/o">

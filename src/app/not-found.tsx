@@ -80,7 +80,7 @@ export default function NotFound() {
                     </div>
                 </section>
 
-                <SignedIn>
+                {/* <SignedIn>
                     <section className="rounded-3xl border border-foreground/10 bg-white/80 p-6 shadow-sm backdrop-blur-sm">
                         <div className="flex flex-col gap-2">
                             <h2 className="text-xl font-semibold">
@@ -92,7 +92,7 @@ export default function NotFound() {
                         </div>
                         <OrganizationMembershipList />
                     </section>
-                </SignedIn>
+                </SignedIn> */}
             </main>
         </div>
     );

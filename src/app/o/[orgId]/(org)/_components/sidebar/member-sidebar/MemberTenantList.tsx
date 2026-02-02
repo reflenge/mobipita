@@ -11,9 +11,11 @@ import {
     SidebarMenuItem,
     SidebarMenuSub,
     SidebarMenuSubItem,
+    SidebarMenuBadge
 } from "@/components/ui/sidebar";
-import { Store } from "lucide-react";
+import { CalendarPlus, Home, Store } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Badge } from "@/components/ui/badge";
 
 type MemberTenantListProps = {
     orgId: string;
@@ -55,45 +57,72 @@ export function MemberTenantList({ orgId, userId }: MemberTenantListProps) {
     );
 
     return (
-        <SidebarMenuItem>
-            <SidebarMenuButton asChild>
-                <Link href={`/o/${orgId}/member`}>
-                    <Store />
-                    <span>Tenant</span>
-                </Link>
-            </SidebarMenuButton>
-            {myTenants.length > 0 && (
-                <SidebarMenuSub>
-                    {myTenants.map((tenant) => {
-                        const logoUrl =
-                            tenant.tenantLogoFileId && logoUrls
-                                ? logoUrls[tenant.tenantLogoFileId]
-                                : null;
-                        return (
-                            <SidebarMenuSubItem key={tenant._id}>
-                                <SidebarMenuButton asChild>
-                                    <Link
-                                        href={`/o/${orgId}/member/tenant/${tenant._id}`}
-                                    >
-                                        {logoUrl ? (
-                                            <img
-                                                src={logoUrl}
-                                                alt=""
-                                                className={cn(
-                                                    "size-5 shrink-0 rounded object-cover",
+        <>
+            <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                    <Link href={`/o/${orgId}/member`}>
+                        <Store />
+                        <span>Tenant</span>
+                    </Link>
+                </SidebarMenuButton>
+
+                {
+                    myTenants.length > 0 && (
+                        myTenants.map((tenant) => {
+                            const logoUrl =
+                                tenant.tenantLogoFileId && logoUrls
+                                    ? logoUrls[tenant.tenantLogoFileId]
+                                    : null;
+                            return (
+                                <SidebarMenuSub>
+                                    <SidebarMenuItem key={tenant._id}>
+                                        <SidebarMenuButton asChild>
+                                            <Link
+                                                href={`/o/${orgId}/member/tenant/${tenant._id}`}
+                                            >
+                                                {logoUrl ? (
+                                                    <img
+                                                        src={logoUrl}
+                                                        alt=""
+                                                        className={cn(
+                                                            "size-5 shrink-0 rounded object-cover",
+                                                        )}
+                                                    />
+                                                ) : (
+                                                    <Store className="size-5 shrink-0" />
                                                 )}
-                                            />
-                                        ) : (
-                                            <Store className="size-5 shrink-0" />
-                                        )}
-                                        <span>{tenant.tenantName}</span>
-                                    </Link>
-                                </SidebarMenuButton>
-                            </SidebarMenuSubItem>
-                        );
-                    })}
-                </SidebarMenuSub>
-            )}
-        </SidebarMenuItem>
+                                                <span>{tenant.tenantName}</span>
+                                            </Link>
+                                        </SidebarMenuButton>
+                                        <SidebarMenuSub>
+                                            <SidebarMenuSubItem>
+                                                <SidebarMenuButton asChild>
+                                                    <Link
+                                                        href={`/o/${orgId}/member/tenant/${tenant._id}`}
+                                                    >
+                                                        <Home className="size-4" />
+                                                        <span>店舗トップ</span>
+                                                    </Link>
+                                                </SidebarMenuButton>
+                                            </SidebarMenuSubItem>
+                                            <SidebarMenuSubItem>
+                                                <SidebarMenuButton asChild>
+                                                    <Link
+                                                        href={`/o/${orgId}/member/tenant/${tenant._id}/slots/create`}
+                                                    >
+                                                        <CalendarPlus className="size-4" />
+                                                        <span>予約枠作成</span>
+                                                    </Link>
+                                                </SidebarMenuButton>
+                                            </SidebarMenuSubItem>
+                                        </SidebarMenuSub>
+                                    </SidebarMenuItem>
+                                </SidebarMenuSub>
+                            );
+                        })
+                    )
+                }
+            </SidebarMenuItem>
+        </>
     );
 }
