@@ -31,18 +31,22 @@ export const tenantStatusOptions = [
     {
         value: "preparing",
         label: "準備中: 営業開始前（準備期間）",
+        description: "開店準備中。予約や受付の公開前。",
     },
     {
         value: "open",
         label: "開店中: 通常営業中",
+        description: "通常営業。予約受付・来店対応が可能。",
     },
     {
         value: "paused",
         label: "休業中: 一時営業停止（再開予定あり）",
+        description: "一時停止。再開予定あり。",
     },
     {
         value: "closed",
         label: "閉業: 営業終了（再開予定なし）",
+        description: "営業終了。再開予定なし。",
     },
 ] as const;
 
