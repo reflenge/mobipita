@@ -47,11 +47,12 @@ export default defineSchema({
     Tenants: defineTable({
         // Clerk の組織 ID。
         clerkOrgId: v.string(),
-        // 作成者の Clerk userId（既存データ互換のため任意）。
+        // 作成者の Clerk userId。
         createdByUserId: v.string(),
         // テナント名。
         tenantName: v.string(),
         // URL に使うスラッグ。
+        // NOTE: 今のところ使っていない 使う予定もあまりない
         tenantSlug: v.string(),
         // テナント種別。
         tenantType: tenantType,
@@ -59,7 +60,7 @@ export default defineSchema({
         tenantLogoFileId: v.optional(v.id("Files")),
         // 運用状態。
         tenantStatus: tenantStatus,
-        // 店舗形態（移動店舗 / 固定店舗）。既存データ互換のため任意。
+        // 店舗形態（移動店舗 / 固定店舗）。
         storeType: storeType,
     })
         // テナントスラッグで検索するためのインデックス。
