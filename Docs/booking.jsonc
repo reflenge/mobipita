@@ -17,11 +17,21 @@
     // =========================
     // 「よく使うルール」を使い回すための箱。
     // 重要：予約枠を作るときに、このテンプレ内容を"スナップショット"として枠に固定する。
+    // ルール：slotTemplates にあるもの（枠に効くルール・デフォルト値）はすべて slot.policySnapshot にコピーする。
+    //        枠作成時点のテンプレを固定し、後からテンプレを変更しても既存枠には影響しない。
     "slotTemplates": [
         {
             "id": "tpl_normal_60",
             "tenantId": "tenant_001",
             "serviceId": "svc_school_basic",
+            // ----- 枠生成時のデフォルト（Slot にコピーし、必要なら枠ごとに上書き） -----
+            "durationMinutes": 60, // 枠の長さ。テンプレ名 tpl_normal_60 と一致
+            "defaultCapacity": 2, // 同時並行予約数。枠ごとに変えるなら slot で上書き
+            "defaultVisibility": "public", // "public" | "unlisted" | "private"
+            // オプション：主に使う場所・リソース（枠生成UIの初期値に使う）
+            // "defaultLocationId": "loc_fixed_shop",
+            // "defaultResources": [ { "resourceId": "staffA", "units": 1 } ],
+            // ----- 受付・制限・ポリシー -----
             // 受付期間
             "acceptanceWindow": {
                 "openBeforeMinutes": 86400, // 60日前から受付
@@ -104,30 +114,21 @@
     // =========================
     // 4) 予約枠（Slot）
     // =========================
-    // 日々追加する"実体"。管理者が枠ごとに「長さ」「場所」「capacity」を決める。
+    // 日々追加する"実体"。長さ・バッファ・収容数・表示設定は policySnapshot にのみ持つ（重複しない）。
     // 重要：templateの内容は slot にスナップショットとして固定する（後からテンプレを変えても枠は変わらない）。
     "slots": [
         // ---- 2026-02-03（09:00-17:00 / 60分 / バッファ30分の例）----
-        // ※09:00開始なら 5枠になる
+        // ※durationMinutes, bufferMinutes, defaultCapacity, defaultVisibility は policySnapshot を参照
         {
             "id": "slot_20260203_0900",
             "tenantId": "tenant_001",
             "serviceId": "svc_school_basic",
             "startAt": "2026-02-03T09:00:00+09:00",
             "endAt": "2026-02-03T10:00:00+09:00",
-            "durationMinutes": 60,
-            "bufferMinutes": 30, // 次の開始までの準備時間（枠に固定）
-            "capacity": 2, // 同時並行2件まで
             "templateId": "tpl_normal_60",
             "locationId": "loc_fixed_shop",
-            // ライフサイクル管理
             "slotStatus": "open", // "open" | "closed"（手動で受付停止。予約データは消さない）
-            "visibility": "public", // "public" | "unlisted" | "private"
-            // public: 一覧/検索に出る
-            // unlisted: 一覧には出ないが、URL直打ちなど "知ってる人は入れる"
-            // private: 管理画面以外からは予約不可（スタッフ調整用など）
-            // 満員は "状態" ではなく "結果" として計算（capacity と confirmed数から算出）
-            // どうしても一覧を速くしたいなら、availabilitySnapshot（残数）を非正規化で持ってもOK
+            // 満員は policySnapshot.defaultCapacity と confirmed数から算出。一覧を速くしたいなら availabilitySnapshot を非正規化で持ってもOK
             // Resource競合管理（レベル1：Slot作成時に競合を防ぐ）
             "resources": [
                 {
@@ -138,8 +139,12 @@
                 // { "resourceId": "court1", "units": 1 },
                 // { "resourceId": "car1", "units": 1 }
             ],
-            // スナップショット（枠作成時点の"効くルール"を固定）
+            // スナップショット（枠作成時点のテンプレ全項目を固定。slotTemplates にあるものはここにすべて入れる）
             "policySnapshot": {
+                "durationMinutes": 60,
+                "bufferMinutes": 30,
+                "defaultCapacity": 2,
+                "defaultVisibility": "public",
                 "acceptanceWindow": {
                     "openBeforeMinutes": 86400,
                     "closeBeforeMinutes": 180
@@ -147,6 +152,18 @@
                 "dailyBookingLimit": 4,
                 "form": {
                     "questions": [
+                        {
+                            "id": "q_name",
+                            "label": "お名前",
+                            "type": "text",
+                            "required": true
+                        },
+                        {
+                            "id": "q_phone",
+                            "label": "電話番号",
+                            "type": "tel",
+                            "required": true
+                        },
                         {
                             "id": "q_note",
                             "label": "備考",
@@ -165,12 +182,11 @@
                         "enabled": true
                     },
                 },
-                // キャンセル・変更ポリシー（スナップショット）
                 "cancellationPolicy": {
-                    "cancelDeadlineMinutes": 1440,
+                    "cancelDeadlineMinutes": 60,
                     "allowCustomerCancel": true,
                     "allowRescheduling": true,
-                    "rescheduleDeadlineMinutes": 2880,
+                    "rescheduleDeadlineMinutes": 120,
                 },
             },
             // 場所も「マスタが後で編集されても、枠の集合案内が変わらない」よう固定したい場合はここも持つ
@@ -238,16 +254,23 @@
     // =========================
     // 参考：実装上の注意
     // =========================
+    //
+    // 【policySnapshot に含めるもの】
+    // - slot: 枠作成時に slotTemplates の全項目をコピー（durationMinutes, bufferMinutes, defaultCapacity,
+    //   defaultVisibility, acceptanceWindow, dailyBookingLimit, form, reminders, cancellationPolicy。
+    //   追加するテンプレ項目があれば同様に snapshot に入れる）。
+    // - booking: 予約作成時に slot.policySnapshot のうち予約に効く部分（主に cancellationPolicy）をコピー。
+    //
     // - 予約枠生成（営業時間×長さ×バッファ）を行う場合、
     //   「startAt + duration <= endOfBusiness」を満たす枠だけ作る。
     //
     // - capacity超過の判定は、
-    //   bookings のうち status=confirmed を数えて slot.capacity と比較する。
+    //   bookings のうち status=confirmed を数えて slot.policySnapshot.defaultCapacity と比較する。
     //
     // - dailyBookingLimit の判定は、
     //   「同じ日付」「同じserviceId（または運用単位）」で confirmed を数える。
     //
-    // - "予約が入った枠"は、時間/場所/長さ/capacity/必須フォーム をロックし、
+    // - "予約が入った枠"は、時間/場所/長さ/policySnapshot.defaultCapacity/必須フォーム をロックし、
     //   変えたい場合は「枠を締切→新枠作成（改訂）」にするのが事故りにくい。
     //
     // =========================
@@ -255,9 +278,9 @@
     // =========================
     //
     // 【Slotのライフサイクル管理】
-    // - 予約できる = slotStatus=open かつ remaining > 0 かつ 受付期限内 かつ visibility条件を満たす
+    // - 予約できる = slotStatus=open かつ remaining > 0 かつ 受付期限内 かつ policySnapshot.defaultVisibility 条件を満たす
     // - slotStatus=closed でも既存Bookingは維持（キャンセルしない）
-    // - isFull は capacity と confirmed数から算出（enumに full を入れるより、open/closed + 残数=0 が一貫）
+    // - isFull は policySnapshot.defaultCapacity と confirmed数から算出（enumに full を入れるより、open/closed + 残数=0 が一貫）
     //
     // 【Bookingのキャンセル・変更ポリシー】
     // - 顧客キャンセル可 = now <= slot.startAt - cancelDeadline
@@ -271,4 +294,25 @@
     // 【通知ログ】
     // - 送信前に status=scheduled を作成 → 成功で sent、失敗で failed（リトライ可能）
     // - 冪等キー：(bookingId, type, scheduledFor) を unique にする
+    //
+    // =========================
+    // 他に検討できる項目（slotTemplates / Slot / Booking）
+    // =========================
+    //
+    // 【slotTemplates】※追加した項目も slot.policySnapshot にコピーする。
+    // - confirmMode: 即時確定 vs 承認制（pending → スタッフ承認 → confirmed）
+    // - maxAttendeesPerBooking: 1予約あたりの人数上限（グループ枠で「1件＝最大4名」など）
+    // - defaultSlotStatus: 枠作成時の open/closed
+    // - price, paymentType: 料金・支払い方法（free / pay_at_venue / pay_online）
+    // - internalNote: スタッフ用メモ（顧客非表示）
+    // - displayOrder, color: 一覧・カレンダー表示用
+    //
+    // 【Slot】
+    // - priceOverride: 枠ごとに料金を変える場合（テンプレの price を上書き）
+    //
+    // 【Booking】
+    // - attendeeCount: 予約人数（maxAttendeesPerBooking と組み合わせて超過チェック）
+    // - internalNote: スタッフ用メモ（例：クレーム対応済みなど）
+    // - confirmedAt: 承認制の場合の確定日時
+    // - source: "web" | "admin" | "api" など（集計・分析用）
 }
