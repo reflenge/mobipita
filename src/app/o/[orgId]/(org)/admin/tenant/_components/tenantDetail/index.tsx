@@ -133,6 +133,12 @@ const TenantDetail = ({ orgId, tenantId }: TenantDetailProps) => {
                     </span>
                 </div>
                 <div className="flex items-center justify-between">
+                    <span>連絡先（電話）</span>
+                    <span className="text-foreground">
+                         {tenant.phoneNumber ?? "未設定"}
+                    </span>
+                </div>  
+                <div className="flex items-center justify-between">
                     <span>作成日時</span>
                     <span className="text-foreground">{createdAt}</span>
                 </div>
@@ -143,6 +149,7 @@ const TenantDetail = ({ orgId, tenantId }: TenantDetailProps) => {
                             {tenant.tenantLogoFileId}
                         </span>
                     </div>
+     
                 )}
             </CardContent>
         </Card>

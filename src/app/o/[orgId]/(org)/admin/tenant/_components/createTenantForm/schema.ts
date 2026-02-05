@@ -66,6 +66,15 @@ export const formSchema = z.object({
             /^[a-zA-Z][a-zA-Z0-9-]*[a-zA-Z]$/,
             "テナントスラッグは英数字とハイフンのみで、先頭と末尾は英字にしてください。",
         ),
+    /** 連絡先電話番号（任意） */
+    phoneNumber: z
+        .string()
+        .max(20, "電話番号は20文字以内で入力してください")
+        .regex(
+            /^[0-9-]+$/, 
+            "電話番号は数字とハイフンのみで入力してください")
+        .optional()
+        .or(z.literal("")),
     /** テナント種別（直営 / テナント） */
     tenantType: z.enum(["direct", "tenant"]),
     /** テナントの運用状態 */

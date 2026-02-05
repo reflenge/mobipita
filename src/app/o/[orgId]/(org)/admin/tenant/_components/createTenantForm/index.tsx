@@ -19,6 +19,7 @@ import {
 } from "./schema";
 import { TenantNameField } from "./TenantNameField";
 import { TenantSlugField } from "./TenantSlugField";
+import { TenantPhoneField } from "./TenantPhoneField";
 import { TenantTypeField } from "./TenantTypeField";
 import { TenantStatusField } from "./TenantStatusField";
 import { TenantStoreTypeField } from "./TenantStoreTypeField";
@@ -53,6 +54,7 @@ export default function CreateTenantForm({ org }: CreateTenantFormProps) {
         defaultValues: {
             tenantName: "",
             tenantSlug: generateTenantSlug(),
+            phoneNumber: "",
             tenantType: "tenant",
             tenantStatus: "preparing",
             storeType: "fixed",
@@ -127,6 +129,7 @@ export default function CreateTenantForm({ org }: CreateTenantFormProps) {
                     clerkOrgId: org.id,
                     tenantName: data.tenantName,
                     tenantSlug: data.tenantSlug,
+                    phoneNumber: data.phoneNumber,
                     tenantType: data.tenantType,
                     tenantStatus: data.tenantStatus,
                     storeType: data.storeType,
@@ -195,6 +198,7 @@ export default function CreateTenantForm({ org }: CreateTenantFormProps) {
                     <FieldGroup>
                         <TenantNameField />
                         <TenantSlugField />
+                        <TenantPhoneField />
                         <TenantTypeField />
                         <TenantStatusField />
                         <TenantStoreTypeField />
