@@ -87,3 +87,38 @@ export const create = mutation({
         return tenantId;
     },
 });
+
+export const update = mutation({
+    args: {
+        id: v.id("Tenants"),
+        clerkOrgId: v.string(),
+        tenantName: v.string(),
+        tenantSlug: v.string(),
+        phoneNumber: v.optional(v.string()), // 追加
+        tenantType: tenantType,
+        tenantStatus: tenantStatus,
+        storeType: storeType,
+        tenantLogoFileId: v.optional(v.id("Files")),
+    },
+    handler: async (ctx, args) => {
+        await requireClerkIdentity(ctx);
+        
+        const tenant = await ctx.db.get(args.id);
+        if (!tenant || tenant.clerkOrgId !== args.clerkOrgId) {
+            throw new Error("権限がないか、テナントが存在しません");
+        }
+
+        // 指定した ID のデータを更新
+        await ctx.db.patch(args.id, {
+            tenantName: args.tenantName,
+            tenantSlug: args.tenantSlug,
+            phoneNumber: args.phoneNumber,
+            tenantType: args.tenantType,
+            tenantStatus: args.tenantStatus,
+            storeType: args.storeType,
+            tenantLogoFileId: args.tenantLogoFileId,
+        });
+        
+        return args.id;
+    },
+});

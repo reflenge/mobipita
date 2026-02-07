@@ -102,20 +102,30 @@ const TenantDetail = ({ orgId, tenantId }: TenantDetailProps) => {
                     <CardTitle className="text-xl">
                         {tenant.tenantName}
                     </CardTitle>
-                    <Badge
-                        variant={
-                            statusVariant[tenant.tenantStatus] ?? "outline"
-                        }
-                    >
-                        {status}
-                    </Badge>
-                </div>
+                    {/* ここに編集ボタンを追加 */}
+                    <div className="flex items-center gap-2">
+                        <Button asChild variant="outline" size="sm">
+                            {/* 編集ページへのリンク（パスはプロジェクトに合わせて調整してください） */}
+                            <Link href={`/o/${orgId}/admin/tenant/${tenantId}/edit`}>
+                                編集する
+                            </Link>
+                        </Button>
+                        <Badge
+                            variant={
+                                statusVariant[tenant.tenantStatus] ?? "outline"
+                            }
+                        >
+                            {status}
+                        </Badge>
+                    </div>
                 <CardDescription className="flex flex-wrap items-center gap-2">
                     <Badge variant="secondary">{type}</Badge>
                     <span className="text-xs text-muted-foreground">
                         /{tenant.tenantSlug}
                     </span>
                 </CardDescription>
+               
+                </div>
             </CardHeader>
             <CardContent className="space-y-4 text-sm text-muted-foreground">
                 <div className="flex items-center justify-between">
