@@ -77,9 +77,19 @@ export function AppSidebar({ org, user }: AppSidebarProps) {
 
                 {user.role === "org:admin" && <AdminSidebar org={org} />}
             </SidebarContent>
-            <SidebarFooter>
-                <UserButton />
+
+            {/* ここを修正 */}
+            <SidebarFooter className="flex items-center justify-start p-4">
+                <ClerkLoading>
+                    {/* ロード中に表示されるスケルトン（ボタンの代わりに丸を表示） */}
+                    <div className="h-7 w-7 animate-pulse rounded-full bg-muted" />
+                </ClerkLoading>
+                <ClerkLoaded>
+                    {/* ロード完了後に表示される */}
+                    <UserButton afterSignOutUrl="/" />
+                </ClerkLoaded>
             </SidebarFooter>
+
             <SidebarRail />
         </Sidebar>
     );
