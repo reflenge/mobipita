@@ -62,8 +62,6 @@ export default defineSchema({
         tenantStatus: tenantStatus,
         // 店舗形態（移動店舗 / 固定店舗）。
         storeType: storeType,
-        // 連絡先
-        phoneNumber: v.optional(v.string()),
 
     })
         // テナントスラッグで検索するためのインデックス。
@@ -94,4 +92,9 @@ export default defineSchema({
         .index("by_org", ["clerkOrgId"])
         // 同一テナント・同一ユーザーの重複を防ぐ。
         .index("by_tenant_user", ["tenantId", "clerkUserId"]),
+    TenantDetails: defineTable({
+    tenantId: v.id("Tenants"), // 親テーブルへの参照
+    phoneNumber: v.optional(v.string()),
+    // 今後、住所やSNSリンク、メモなどが増えてもここに追加すればOK
+  }).index("by_tenantId", ["tenantId"]),
 });

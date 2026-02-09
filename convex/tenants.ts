@@ -14,13 +14,26 @@ export const listByOrg = query({
         // 認証必須。
         await requireClerkIdentity(ctx);
         const limit = typeof args.limit === "number" ? args.limit : 50;
-        return ctx.db
+        const tenants = await ctx.db
             .query("Tenants")
             .withIndex("by_clerkOrgId", (q) =>
                 q.eq("clerkOrgId", args.clerkOrgId),
             )
             .order("desc")
             .take(limit);
+
+        return Promise.all(
+            tenants.map(async (tenant) => {
+                const detail = await ctx.db
+                    .query("TenantDetails")
+                    .withIndex("by_tenantId", (q) => q.eq("tenantId", tenant._id))
+                    .unique();
+                return {
+                    ...tenant,
+                    phoneNumber: detail?.phoneNumber ?? "",
+                };
+            })
+        );
     },
 });
 
@@ -37,7 +50,15 @@ export const getByIdInOrg = query({
         if (!tenant || tenant.clerkOrgId !== args.clerkOrgId) {
             return null;
         }
-        return tenant;
+        const detail = await ctx.db
+            .query("TenantDetails")
+            .withIndex("by_tenantId", (q) => q.eq("tenantId", args.tenantId))
+            .unique();
+
+        return {
+            ...tenant,
+            phoneNumber: detail?.phoneNumber ?? "",
+        };
     },
 });
 
@@ -77,13 +98,15 @@ export const create = mutation({
             createdByUserId: createdByUserId,
             tenantName: args.tenantName,
             tenantSlug: args.tenantSlug,
-            phoneNumber: args.phoneNumber,
             tenantType: args.tenantType,
             tenantLogoFileId: args.tenantLogoFileId,
             tenantStatus: args.tenantStatus,
             storeType: args.storeType,
         });
-
+        await ctx.db.insert("TenantDetails", {
+            tenantId: tenantId,
+            phoneNumber: args.phoneNumber,
+        });
         return tenantId;
     },
 });
@@ -112,13 +135,54 @@ export const update = mutation({
         await ctx.db.patch(args.id, {
             tenantName: args.tenantName,
             tenantSlug: args.tenantSlug,
-            phoneNumber: args.phoneNumber,
             tenantType: args.tenantType,
             tenantStatus: args.tenantStatus,
             storeType: args.storeType,
             tenantLogoFileId: args.tenantLogoFileId,
         });
-        
+        // 詳細テーブルの更新
+        const detail = await ctx.db
+            .query("TenantDetails")
+            .withIndex("by_tenantId", (q) => q.eq("tenantId", args.id))
+            .unique();
+
+        if (detail) {
+            await ctx.db.patch(detail._id, { phoneNumber: args.phoneNumber });
+        } else {
+            await ctx.db.insert("TenantDetails", {
+                tenantId: args.id,
+                phoneNumber: args.phoneNumber,
+            });
+        }
+
         return args.id;
+    },
+});
+// --- 既存データ移行用（一度だけ実行したら消してOK） ---
+export const migrateDetails = mutation({
+    args: {},
+    handler: async (ctx) => {
+        // 全てのテナントを取得
+        const allTenants = await ctx.db.query("Tenants").collect();
+        
+        let count = 0;
+        for (const tenant of allTenants) {
+            // すでに詳細テーブルがあるか確認
+            const existing = await ctx.db
+                .query("TenantDetails")
+                .withIndex("by_tenantId", (q) => q.eq("tenantId", tenant._id))
+                .unique();
+            
+            if (!existing) {
+                // 詳細テーブルが存在しない場合のみ作成
+                // ※ (tenant as any).phoneNumber は、スキーマから消した古いデータにアクセスするための書き方です
+                await ctx.db.insert("TenantDetails", {
+                    tenantId: tenant._id,
+                    phoneNumber: (tenant as any).phoneNumber ?? "",
+                });
+                count++;
+            }
+        }
+        return `完了！ ${count} 件のデータを移行しました。`;
     },
 });
