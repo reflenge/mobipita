@@ -54,7 +54,6 @@ export default defineSchema({
         // URL に使うスラッグ。
         // NOTE: 今のところ使っていない 使う予定もあまりない
         tenantSlug: v.string(),
-        phoneNumber: v.optional(v.any()),
         // テナント種別。
         tenantType: tenantType,
         // ロゴ画像の Files レコード ID（任意）。

@@ -186,17 +186,3 @@ export const migrateDetails = mutation({
         return `完了！ ${count} 件のデータを移行しました。`;
     },
 });
-// --- 古いフィールドの掃除用（一度だけ実行） ---
-export const clearOldFields = mutation({
-  args: {},
-  handler: async (ctx) => {
-    const allTenants = await ctx.db.query("Tenants").collect();
-    for (const tenant of allTenants) {
-      // 修正：phoneNumber フィールドを undefined に設定して patch することで削除する
-      await ctx.db.patch(tenant._id, {
-        ["phoneNumber" as any]: undefined,
-      });
-    }
-    return "Tenants テーブルから古い phoneNumber フィールドを全て削除しました。";
-  },
-});
