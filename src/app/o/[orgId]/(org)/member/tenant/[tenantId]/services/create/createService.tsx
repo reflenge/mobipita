@@ -1,12 +1,5 @@
 "use client";
 
-import React, { useEffect } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
-import {
-    MapCoordinatePicker,
-    MapCoordinatePickerProvider,
-} from "@/components/map/pic";
 import { Switch } from "@/components/ui/switch"
 import { useQuery } from "convex/react";
 import { api } from "@/../convex/_generated/api";
@@ -28,10 +21,10 @@ import { Input } from "@/components/ui/input"
 import {
     InputGroup,
     InputGroupAddon,
-    InputGroupText,
-    InputGroupTextarea,
+    InputGroupText
 } from "@/components/ui/input-group"
 import Tiptap from "@/components/Tiptap";
+import CreateServiceSkeleton from "./createServiceSkeleton";
 
 const formSchema = z.object({
     service: z.object({
@@ -54,18 +47,12 @@ type Props = {
 };
 
 
-export function MemberSlotCreateContent({ orgId, tenantId }: Props) {
+export function CreateService({ orgId, tenantId }: Props) {
     // テナント情報を取得
     const tenant = useQuery(api.tenants.getByIdInOrg, {
         clerkOrgId: orgId,
         tenantId: tenantId as Id<"Tenants">,
     });
-
-    // 地図から逆ジオコーディングで取得した住所（ユーザー編集不可）
-    const [coordinates, setCoordinates] = React.useState<{
-        lat: number;
-        lng: number;
-    } | null>(null);
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -88,28 +75,17 @@ export function MemberSlotCreateContent({ orgId, tenantId }: Props) {
             </pre>)
     }
 
-
-
     // tenant が取得できていない（undefined / null）の場合はローディング表示
     if (!tenant) {
-        return (
-            <div className="mx-auto container px-6 py-10">
-                <Card>
-                    <CardHeader className="gap-3">
-                        <Skeleton className="h-8 w-48" />
-                        <Skeleton className="h-4 w-64" />
-                    </CardHeader>
-                </Card>
-            </div>
-        );
+        return <CreateServiceSkeleton />;
     }
 
     return (
         <div className="mx-auto container px-6 py-10 space-y-4">
             <div>
-                <div className="text-xl">予約枠作成</div>
+                <div className="text-xl">サービス作成</div>
                 <p className="text-sm text-muted-foreground">
-                    {tenant.tenantName} {tenant._id} の予約枠を新規作成します
+                    {tenant.tenantName} {tenant._id} のサービスを新規作成します
                 </p>
             </div>
             <form id="form-slot-create" onSubmit={form.handleSubmit(onSubmit)}>

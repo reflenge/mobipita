@@ -108,10 +108,20 @@ export function MemberTenantList({ orgId, userId }: MemberTenantListProps) {
                                             <SidebarMenuSubItem>
                                                 <SidebarMenuButton asChild>
                                                     <Link
-                                                        href={`/o/${orgId}/member/tenant/${tenant._id}/slots/create`}
+                                                        href={`/o/${orgId}/member/tenant/${tenant._id}/services`}
                                                     >
                                                         <CalendarPlus className="size-4" />
-                                                        <span>予約枠作成</span>
+                                                        <span>サービス管理</span>
+                                                    </Link>
+                                                </SidebarMenuButton>
+                                            </SidebarMenuSubItem>
+                                            <SidebarMenuSubItem>
+                                                <SidebarMenuButton asChild>
+                                                    <Link
+                                                        href={`/o/${orgId}/member/tenant/${tenant._id}/slots`}
+                                                    >
+                                                        <CalendarPlus className="size-4" />
+                                                        <span>予約枠管理</span>
                                                     </Link>
                                                 </SidebarMenuButton>
                                             </SidebarMenuSubItem>
