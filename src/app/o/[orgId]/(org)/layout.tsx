@@ -4,14 +4,9 @@ import { notFound } from "next/navigation";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "./_components/sidebar";
 import { Link } from "@/components/link";
-
-import dynamic from "next/dynamic";
 import { cn } from "@/lib/utils";
 
-const AutoBreadcrumb = dynamic(() => import("./_components/breadcrumb"), { 
-    ssr: false,
-    loading: () => <div className="h-6 w-32 animate-pulse rounded bg-muted" /> 
-});
+import AutoBreadcrumb from "./_components/breadcrumb/client-wrapper";
 
 type OrganizationLayoutProps = {
     children: React.ReactNode;
@@ -64,7 +59,9 @@ export default async function OrganizationLayout({
                     <SidebarTrigger />
                 </header>
                 <main className={cn(outView && "outline-1 outline-green-300", "grow m-2 p-2")}>
-                    <AutoBreadcrumb />{children}</main>
+                    <AutoBreadcrumb />
+                    {children}
+                </main>
                 <footer className={cn(outView && "outline-1 outline-blue-300", "m-2 p-2")}>
                     <section>
                         <p className="text-sm text-muted-foreground">
