@@ -5,8 +5,13 @@ import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "./_components/sidebar";
 import { Link } from "@/components/link";
 
-import AutoBreadcrumb from "./_components/breadcrumb";
+import dynamic from "next/dynamic";
 import { cn } from "@/lib/utils";
+
+const AutoBreadcrumb = dynamic(() => import("./_components/breadcrumb"), { 
+    ssr: false,
+    loading: () => <div className="h-6 w-32 animate-pulse rounded bg-muted" /> 
+});
 
 type OrganizationLayoutProps = {
     children: React.ReactNode;

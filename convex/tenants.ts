@@ -28,7 +28,6 @@ export const listByOrg = query({
                     .query("TenantDetails")
                     .withIndex("by_tenantId", (q) => q.eq("tenantId", tenant._id))
                     .unique();
-
                 // ロゴ画像のURL（Convex Storage）の取得
                 let logoUrl = null;
                 if (tenant.tenantLogoFileId) {
@@ -67,9 +66,17 @@ export const getByIdInOrg = query({
             .withIndex("by_tenantId", (q) => q.eq("tenantId", args.tenantId))
             .unique();
 
+        let logoUrl = null;
+        if (tenant.tenantLogoFileId) {
+            const fileDoc = await ctx.db.get(tenant.tenantLogoFileId);
+            if (fileDoc) {
+                logoUrl = await ctx.storage.getUrl(fileDoc.storageId);
+            }
+        }
         return {
             ...tenant,
             phoneNumber: detail?.phoneNumber ?? "",
+            logoUrl,
         };
     },
 });
