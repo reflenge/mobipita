@@ -1,3 +1,5 @@
+"use client";
+
 import { ShieldUser, Home, UserStar } from "lucide-react";
 import Image from "next/image";
 import {
@@ -59,7 +61,7 @@ export function AppSidebar({ org, user }: AppSidebarProps) {
     const firstTenant = tenants?.[0];
     const displayImage = firstTenant?.logoUrl ?? org.imageUrl;
     const displayName = firstTenant?.tenantName ?? org.name;
-    
+
     return (
         <Sidebar variant="floating" collapsible="icon">
             <SidebarHeader>
