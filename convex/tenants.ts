@@ -28,9 +28,21 @@ export const listByOrg = query({
                     .query("TenantDetails")
                     .withIndex("by_tenantId", (q) => q.eq("tenantId", tenant._id))
                     .unique();
+
+                // ロゴ画像のURL（Convex Storage）の取得
+                let logoUrl = null;
+                if (tenant.tenantLogoFileId) {
+                    const fileDoc = await ctx.db.get(tenant.tenantLogoFileId);
+                    if (fileDoc) {
+                        // storageId から一時的な公開URLを生成
+                        logoUrl = await ctx.storage.getUrl(fileDoc.storageId);
+                    }
+                }
+
                 return {
                     ...tenant,
                     phoneNumber: detail?.phoneNumber ?? "",
+                    logoUrl,
                 };
             })
         );
@@ -185,4 +197,15 @@ export const migrateDetails = mutation({
         }
         return `完了！ ${count} 件のデータを移行しました。`;
     },
+});
+
+export const generateUploadUrl = mutation({
+  args: {},
+  handler: async (ctx) => {
+    // 脆弱性対策：ログイン済みユーザーのみURLを発行できるようにする
+    await requireClerkIdentity(ctx);
+    
+    // Convex Storage のアップロードURLを生成して返す
+    return await ctx.storage.generateUploadUrl();
+  },
 });
