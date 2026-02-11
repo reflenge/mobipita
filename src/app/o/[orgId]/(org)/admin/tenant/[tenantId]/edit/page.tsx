@@ -14,7 +14,7 @@ import { FieldGroup } from "@/components/ui/field";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 
-// 共通パーツのインポート
+// インポートパスを edit フォルダの階層（一段深い）に合わせて修正
 import { formSchema, type CreateTenantFormValues } from "../../_components/createTenantForm/schema";
 import { TenantNameField } from "../../_components/createTenantForm/TenantNameField";
 import { TenantSlugField } from "../../_components/createTenantForm/TenantSlugField";
@@ -23,7 +23,6 @@ import { TenantTypeField } from "../../_components/createTenantForm/TenantTypeFi
 import { TenantStatusField } from "../../_components/createTenantForm/TenantStatusField";
 import { TenantStoreTypeField } from "../../_components/createTenantForm/TenantStoreTypeField";
 import { TenantLogoField } from "../../_components/createTenantForm/TenantLogoField";
-
 type PageProps = {
     params: Promise<{ orgId: string; tenantId: string }>;
 };
@@ -38,9 +37,12 @@ export default function TenantEditPage({ params: paramsPromise }: PageProps) {
         tenantId: tenantId as Id<"Tenants">,
     });
 
+    const generateUploadUrl = useMutation(api.files.generateUploadUrl);
+    const saveFile = useMutation(api.files.saveFile);
+    const updateFileStatus = useMutation(api.files.updateFileStatus);
     const updateTenant = useMutation(api.tenants.update);
 
-    const initialValues = React.useMemo((): CreateTenantFormValues | undefined => {
+    const initialValues = React.useMemo(() => {
         if (!tenant) return undefined;
         return {
             tenantName: tenant.tenantName,
@@ -59,24 +61,49 @@ export default function TenantEditPage({ params: paramsPromise }: PageProps) {
         resetOptions: { keepDirtyValues: true },
     });
 
+    // 画像アップロードの共通ロジック
+    const handleImageUpload = async (file: File | null | undefined) => {
+        if (!(file instanceof File)) return tenant?.tenantLogoFileId;
+
+        const uploadUrl = await generateUploadUrl();
+        const res = await fetch(uploadUrl, {
+            method: "POST",
+            headers: { "Content-Type": file.type },
+            body: file,
+        });
+
+        if (!res.ok) throw new Error("画像のアップロードに失敗しました");
+
+        const { storageId } = (await res.json()) as { storageId: Id<"_storage"> };
+        
+        const fileId = await saveFile({
+            storageId,
+            fileName: file.name,
+            contentType: file.type,
+            size: file.size,
+        });
+
+        await updateFileStatus({ fileId, status: "attached" });
+        return fileId;
+    };
+
     const onSubmit = async (values: CreateTenantFormValues) => {
         startTransition(async () => {
             try {
-                // 修正：バックエンドの args に存在しない tenantLogo を除外する
-                // また、現在の実装では logo のアップロード ID は既存のものを維持するか、
-                // 別途アップロード処理が必要です。
-                const { tenantLogo, ...updateData } = values;
+                const logoFileId = await handleImageUpload(values.tenantLogo);
+
+                const { tenantLogo, ...payload } = values;
 
                 await updateTenant({
                     id: tenantId as Id<"Tenants">,
                     clerkOrgId: orgId,
-                    ...updateData,
-                    // tenantLogoFileId: 変更がある場合はここに新しい ID を渡す
+                    ...payload,
+                    tenantLogoFileId: logoFileId,
                 });
                 
                 toast.success("情報を更新しました");
+                router.refresh(); 
                 router.push(`/o/${orgId}/admin/tenant/${tenantId}`);
-                router.refresh();
             } catch (error) {
                 console.error("[UPDATE_ERROR]:", error);
                 toast.error("更新に失敗しました。");
@@ -97,26 +124,18 @@ export default function TenantEditPage({ params: paramsPromise }: PageProps) {
                     <FormProvider {...form}>
                         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                             <FieldGroup className="space-y-6">
-                                
-                                {/* 1. 基本情報 */}
                                 <div className="space-y-4">
                                     <TenantNameField />
                                     <TenantSlugField />
                                     <TenantPhoneField />
                                 </div>
-
-                                {/* 2. タイプとステータス */}
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t">
                                     <TenantTypeField />
                                     <TenantStatusField />
                                 </div>
-
-                                {/* 3. 店舗種別 */}
                                 <div className="pt-2">
                                     <TenantStoreTypeField />
                                 </div>
-
-                                {/* 4. ロゴ（一番下に配置） */}
                                 <div className="pt-6 border-t space-y-3">
                                     <h3 className="text-sm font-medium">テナントアイコン</h3>
                                     <div className="flex flex-col items-center justify-center p-6 border-2 border-dashed rounded-lg bg-muted/20">
@@ -128,7 +147,6 @@ export default function TenantEditPage({ params: paramsPromise }: PageProps) {
                                         )}
                                     </div>
                                 </div>
-
                             </FieldGroup>
                             
                             <div className="flex justify-end gap-3 pt-6 border-t">
@@ -155,7 +173,7 @@ export default function TenantEditPage({ params: paramsPromise }: PageProps) {
     );
 }
 
-// 補助コンポーネント（省略せず記載）
+// 補助コンポーネントをファイル内に含めることでインポートエラーを回避
 function EditPageSkeleton() {
     return (
         <div className="container mx-auto p-6 max-w-2xl space-y-6">

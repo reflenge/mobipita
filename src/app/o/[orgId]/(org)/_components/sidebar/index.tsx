@@ -56,6 +56,8 @@ export function AppSidebar({ org, user }: AppSidebarProps) {
     // 1. この組織に紐づくテナント一覧を取得
     const tenants = useQuery(api.tenants.listByOrg, { clerkOrgId: org.id });
 
+    console.log("Tenants Data:", tenants);
+
     // 2. 表示するデータの決定（テナントがあればその1つ目、なければClerkの組織情報）
     // ※ バックエンドの listByOrg で logoUrl を返すようにしている前提です
     const firstTenant = tenants?.[0];
