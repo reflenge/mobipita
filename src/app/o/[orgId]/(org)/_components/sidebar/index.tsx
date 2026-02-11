@@ -70,13 +70,13 @@ export function AppSidebar({ org, user }: AppSidebarProps) {
                         <SidebarMenuButton asChild>
                             <Link href={`/o/${org.id}`}>
                                 <Image
-                                    src={org.imageUrl}
+                                    src={displayImage}
                                     alt={`${org.name} logo`}
                                     width={32}
                                     height={32}
                                     className="rounded-sm"
                                 />
-                                <span>{org.name}</span>
+                                <span>{displayName}</span>
                             </Link>
                         </SidebarMenuButton>
                     </SidebarMenuItem>
