@@ -35,6 +35,8 @@ import {
 import AdminSidebar from "./admin-sidebar";
 import CustomerSidebar from "./customer-sidebar";
 import MemberSidebar from "./member-sidebar";
+import { useQuery } from "convex/react";
+import { api } from "@/../convex/_generated/api";
 
 interface AppSidebarProps {
     org: {
@@ -49,6 +51,15 @@ interface AppSidebarProps {
 }
 
 export function AppSidebar({ org, user }: AppSidebarProps) {
+    // 1. この組織に紐づくテナント一覧を取得
+    const tenants = useQuery(api.tenants.listByOrg, { clerkOrgId: org.id });
+
+    // 2. 表示するデータの決定（テナントがあればその1つ目、なければClerkの組織情報）
+    // ※ バックエンドの listByOrg で logoUrl を返すようにしている前提です
+    const firstTenant = tenants?.[0];
+    const displayImage = firstTenant?.logoUrl ?? org.imageUrl;
+    const displayName = firstTenant?.tenantName ?? org.name;
+    
     return (
         <Sidebar variant="floating" collapsible="icon">
             <SidebarHeader>
