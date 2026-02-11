@@ -9,8 +9,17 @@ const nextConfig: NextConfig = {
     devIndicators: false,
     // 外部画像の設定
     images: {
-        // Clerk の画像を許可するリモートパターン
-        remotePatterns: [new URL("https://img.clerk.com/**")],
+        remotePatterns: [
+            {
+                protocol: "https",
+                hostname: "img.clerk.com",
+            },
+            {
+                protocol: "https",
+                hostname: "charming-buffalo-538.convex.cloud", // 👈 これを追加！
+                pathname: "/api/storage/**",
+            },
+        ],
     },
 };
 

@@ -14,7 +14,7 @@ import { FieldGroup } from "@/components/ui/field";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 
-// インポートパスを edit フォルダの階層（一段深い）に合わせて修正
+// インポートパスの確認：editフォルダから見て _components は2階層上
 import { formSchema, type CreateTenantFormValues } from "../../_components/createTenantForm/schema";
 import { TenantNameField } from "../../_components/createTenantForm/TenantNameField";
 import { TenantSlugField } from "../../_components/createTenantForm/TenantSlugField";
@@ -23,6 +23,7 @@ import { TenantTypeField } from "../../_components/createTenantForm/TenantTypeFi
 import { TenantStatusField } from "../../_components/createTenantForm/TenantStatusField";
 import { TenantStoreTypeField } from "../../_components/createTenantForm/TenantStoreTypeField";
 import { TenantLogoField } from "../../_components/createTenantForm/TenantLogoField";
+
 type PageProps = {
     params: Promise<{ orgId: string; tenantId: string }>;
 };
@@ -42,15 +43,16 @@ export default function TenantEditPage({ params: paramsPromise }: PageProps) {
     const updateFileStatus = useMutation(api.files.updateFileStatus);
     const updateTenant = useMutation(api.tenants.update);
 
+    // リファクタリング：初期値に ?? "" を追加して "uncontrolled to controlled" エラーを防止
     const initialValues = React.useMemo(() => {
         if (!tenant) return undefined;
         return {
-            tenantName: tenant.tenantName,
-            tenantSlug: tenant.tenantSlug,
+            tenantName: tenant.tenantName ?? "",
+            tenantSlug: tenant.tenantSlug ?? "",
             phoneNumber: tenant.phoneNumber ?? "",
-            tenantType: tenant.tenantType,
-            tenantStatus: tenant.tenantStatus,
-            storeType: tenant.storeType,
+            tenantType: tenant.tenantType ?? "tenant",
+            tenantStatus: tenant.tenantStatus ?? "preparing",
+            storeType: tenant.storeType ?? "fixed",
             tenantLogo: null, 
         };
     }, [tenant]);
@@ -61,7 +63,6 @@ export default function TenantEditPage({ params: paramsPromise }: PageProps) {
         resetOptions: { keepDirtyValues: true },
     });
 
-    // 画像アップロードの共通ロジック
     const handleImageUpload = async (file: File | null | undefined) => {
         if (!(file instanceof File)) return tenant?.tenantLogoFileId;
 
@@ -92,6 +93,7 @@ export default function TenantEditPage({ params: paramsPromise }: PageProps) {
             try {
                 const logoFileId = await handleImageUpload(values.tenantLogo);
 
+                // 不要な tenantLogo フィールドを除外してペイロードを作成
                 const { tenantLogo, ...payload } = values;
 
                 await updateTenant({
@@ -140,6 +142,7 @@ export default function TenantEditPage({ params: paramsPromise }: PageProps) {
                                     <h3 className="text-sm font-medium">テナントアイコン</h3>
                                     <div className="flex flex-col items-center justify-center p-6 border-2 border-dashed rounded-lg bg-muted/20">
                                         <TenantLogoField />
+                                        {/* 既存のロゴがある場合のプレビュー用表示 */}
                                         {tenant.tenantLogoFileId && !form.watch("tenantLogo") && (
                                             <p className="mt-2 text-[10px] text-muted-foreground font-mono">
                                                 現在のロゴID: {tenant.tenantLogoFileId}
@@ -173,7 +176,6 @@ export default function TenantEditPage({ params: paramsPromise }: PageProps) {
     );
 }
 
-// 補助コンポーネントをファイル内に含めることでインポートエラーを回避
 function EditPageSkeleton() {
     return (
         <div className="container mx-auto p-6 max-w-2xl space-y-6">
