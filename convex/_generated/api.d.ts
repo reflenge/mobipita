@@ -10,6 +10,7 @@
 
 import type * as files from "../files.js";
 import type * as lib_clerkAuth from "../lib/clerkAuth.js";
+import type * as locations from "../locations.js";
 import type * as tenantMemberAssignments from "../tenantMemberAssignments.js";
 import type * as tenants from "../tenants.js";
 import type * as values from "../values.js";
@@ -23,6 +24,7 @@ import type {
 declare const fullApi: ApiFromModules<{
   files: typeof files;
   "lib/clerkAuth": typeof lib_clerkAuth;
+  locations: typeof locations;
   tenantMemberAssignments: typeof tenantMemberAssignments;
   tenants: typeof tenants;
   values: typeof values;

@@ -89,4 +89,22 @@ export default defineSchema({
         .index("by_org", ["clerkOrgId"])
         // 同一テナント・同一ユーザーの重複を防ぐ。
         .index("by_tenant_user", ["tenantId", "clerkUserId"]),
+    // テナントの場所（店舗・拠点）。
+    Locations: defineTable({
+        // 所属テナント。
+        tenantId: v.id("Tenants"),
+        // 種別（固定店舗 / 移動店舗）。
+        type: storeType,
+        // 場所名。
+        name: v.string(),
+        // 住所。
+        address: v.string(),
+        // 緯度。
+        lat: v.number(),
+        // 経度。
+        lng: v.number(),
+        // 詳細・備考。
+        details: v.string(),
+    })
+        .index("by_tenant", ["tenantId"]),
 });
