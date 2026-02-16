@@ -265,7 +265,7 @@ export function LeafletMap({ value, onChange }: Props) {
             {/* クリックイベントを拾い、座標変更をコールバック経由で通知 */}
             <ClickHandler onChange={onChange} />
             {/* value の変更に応じて地図の中心位置を更新する */}
-            <CenterUpdater value={value} />
+            {/* <CenterUpdater value={value} /> */}
             <CurrentLocationButton position="bottomleft" onChange={onChange} />
             <MapCenterDisplay position="topright" />
             {value && (

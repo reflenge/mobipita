@@ -13,7 +13,7 @@ import {
     SidebarMenuSubItem,
     SidebarMenuBadge
 } from "@/components/ui/sidebar";
-import { CalendarPlus, Home, Store } from "lucide-react";
+import { CalendarPlus, Home, MapPin, Store } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 
@@ -112,6 +112,16 @@ export function MemberTenantList({ orgId, userId }: MemberTenantListProps) {
                                                     >
                                                         <CalendarPlus className="size-4" />
                                                         <span>サービス管理</span>
+                                                    </Link>
+                                                </SidebarMenuButton>
+                                            </SidebarMenuSubItem>
+                                            <SidebarMenuSubItem>
+                                                <SidebarMenuButton asChild>
+                                                    <Link
+                                                        href={`/o/${orgId}/member/tenant/${tenant._id}/locations`}
+                                                    >
+                                                        <MapPin className="size-4" />
+                                                        <span>場所管理</span>
                                                     </Link>
                                                 </SidebarMenuButton>
                                             </SidebarMenuSubItem>
