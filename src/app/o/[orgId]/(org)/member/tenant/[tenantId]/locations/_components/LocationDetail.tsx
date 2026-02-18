@@ -30,12 +30,12 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Link } from "@/components/link";
-import { LocationMapSingle } from "@/components/map/pic/LocationMapSingle";
 import {
-    MapCoordinatePicker,
-    MapCoordinatePickerProvider,
-} from "@/components/map/pic";
-import { reverseGeocodeFromLatLng } from "@/components/map/pic/reverseGeocode";
+    MapSinglePin,
+    MapPinLocateSelect,
+    MapPinLocateSelectProvider,
+} from "@/components/map";
+import { reverseGeocodeFromLatLng } from "@/components/map/reverseGeocode";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
 import { useTransition } from "react";
@@ -125,7 +125,7 @@ export function LocationDetail({
                         shouldValidate: true,
                     });
                 })
-                .catch(() => {});
+                .catch(() => { });
         },
         [form],
     );
@@ -222,6 +222,7 @@ export function LocationDetail({
                                         <FieldLabel>種別</FieldLabel>
                                         <Select
                                             value={field.value}
+                                            defaultValue={field.value}
                                             onValueChange={field.onChange}
                                         >
                                             <SelectTrigger
@@ -292,12 +293,12 @@ export function LocationDetail({
                                 <p className="text-sm text-muted-foreground mb-2">
                                     地図をクリックすると座標が設定され、住所が自動で入ります。
                                 </p>
-                                <MapCoordinatePickerProvider
+                                <MapPinLocateSelectProvider
                                     defaultValue={geoValue}
                                     onChange={handleMapChange}
                                 >
-                                    <MapCoordinatePicker />
-                                </MapCoordinatePickerProvider>
+                                    <MapPinLocateSelect />
+                                </MapPinLocateSelectProvider>
                             </Field>
                             <Controller
                                 name="locations.details"
@@ -369,7 +370,7 @@ export function LocationDetail({
                     <h3 className="text-sm font-medium text-muted-foreground mb-2">
                         地図
                     </h3>
-                    <LocationMapSingle
+                    <MapSinglePin
                         lat={location.lat}
                         lng={location.lng}
                         type={location.type}

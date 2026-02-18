@@ -4,7 +4,7 @@ import { useEffect, useMemo } from "react";
 import { MapContainer, Marker, Popup, TileLayer, useMap } from "react-leaflet";
 import L, { type LatLngBoundsExpression, type LatLngExpression } from "leaflet";
 import "leaflet/dist/leaflet.css";
-import type { MarkerItem, StoreType } from "./MapMarkersView";
+import type { MarkerItem, StoreType } from "../types";
 
 type Props = {
     markers: MarkerItem[];
@@ -15,10 +15,7 @@ type Props = {
     className: string;
 };
 
-function createDivIcon(
-    color: string,
-    _label: string,
-): L.DivIcon {
+function createDivIcon(color: string, _label: string): L.DivIcon {
     return L.divIcon({
         className: "custom-pin",
         html: `<div style="
@@ -53,7 +50,7 @@ function BoundsFitter({ markers }: { markers: MarkerItem[] }) {
     return null;
 }
 
-export function MapMarkersViewInternal({
+export function MapMultiPinInternal({
     markers,
     center,
     zoom,
@@ -62,7 +59,10 @@ export function MapMarkersViewInternal({
     className,
 }: Props) {
     const defaultCenter: LatLngExpression =
-        center ?? (markers[0] ? [markers[0].lat, markers[0].lng] : [35.681236, 139.767125]);
+        center ??
+        (markers[0]
+            ? [markers[0].lat, markers[0].lng]
+            : [35.681236, 139.767125]);
     const iconCache = useMemo(() => {
         const cache: Record<StoreType, L.DivIcon> = {} as Record<
             StoreType,
@@ -96,7 +96,9 @@ export function MapMarkersViewInternal({
                 attribution='<a href="https://maps.gsi.go.jp/development/ichiran.html" target="_blank" rel="noopener noreferrer">地理院タイル</a>'
                 url="https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png"
             />
-            {!center && markers.length > 0 && <BoundsFitter markers={markers} />}
+            {!center && markers.length > 0 && (
+                <BoundsFitter markers={markers} />
+            )}
             {markers.map((m, i) => (
                 <Marker
                     key={i}

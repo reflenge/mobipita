@@ -3,8 +3,8 @@
 import { useQuery } from "convex/react";
 import { api } from "@/../convex/_generated/api";
 import { Id } from "@/../convex/_generated/dataModel";
-import { MapMarkersView } from "@/components/map/pic/MapMarkersView";
-import type { MarkerItem } from "@/components/map/pic/MapMarkersView";
+import { MapMultiPin } from "@/components/map";
+import type { MarkerItem } from "@/components/map";
 
 type LocationsMapProps = {
     tenantId: string;
@@ -33,7 +33,7 @@ export function LocationsMap({ tenantId }: LocationsMapProps) {
             <p className="text-sm text-muted-foreground">
                 青＝固定店舗、オレンジ＝移動店舗
             </p>
-            <MapMarkersView markers={markers} />
+            <MapMultiPin markers={markers} />
         </section>
     );
 }

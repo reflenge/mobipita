@@ -1,16 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import type { LatLngExpression } from "leaflet";
-
-export type StoreType = "fixed" | "mobile";
-
-export type MarkerItem = {
-    lat: number;
-    lng: number;
-    type: StoreType;
-    name?: string;
-};
+import type { MarkerItem, StoreType } from "../types";
 
 const PIN_COLORS: Record<StoreType, string> = {
     fixed: "#2563eb", // blue-600
@@ -22,9 +13,9 @@ const PIN_LABELS: Record<StoreType, string> = {
     mobile: "移動店舗",
 };
 
-const MapMarkersViewInternal = dynamic(
+const MapMultiPinInternal = dynamic(
     () =>
-        import("./MapMarkersViewInternal").then((mod) => mod.MapMarkersViewInternal),
+        import("./MapMultiPinInternal").then((mod) => mod.MapMultiPinInternal),
     {
         ssr: false,
         loading: () => (
@@ -35,7 +26,8 @@ const MapMarkersViewInternal = dynamic(
     },
 );
 
-type Props = {
+/** 複数ピン表示用の props */
+export type MapMultiPinProps = {
     markers: MarkerItem[];
     /** 初期表示の中心・ズーム。未指定時は全マーカーが入る範囲にフィット */
     center?: { lat: number; lng: number };
@@ -43,14 +35,18 @@ type Props = {
     className?: string;
 };
 
-export function MapMarkersView({
+/**
+ * 地図上に複数のピンを表示するコンポーネント。
+ * 固定店舗＝青、移動店舗＝オレンジで色分けする。
+ */
+export function MapMultiPin({
     markers,
     center,
     zoom = 13,
     className = "",
-}: Props) {
+}: MapMultiPinProps) {
     return (
-        <MapMarkersViewInternal
+        <MapMultiPinInternal
             markers={markers}
             center={center}
             zoom={zoom}

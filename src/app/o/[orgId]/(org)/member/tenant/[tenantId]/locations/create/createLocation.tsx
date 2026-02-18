@@ -26,10 +26,10 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import {
-    MapCoordinatePicker,
-    MapCoordinatePickerProvider,
-} from "@/components/map/pic";
-import { reverseGeocodeFromLatLng } from "@/components/map/pic/reverseGeocode";
+    MapPinLocateSelect,
+    MapPinLocateSelectProvider,
+} from "@/components/map";
+import { reverseGeocodeFromLatLng } from "@/components/map/reverseGeocode";
 import CreateLocationSkeleton from "./createLocationSkeleton";
 
 const formSchema = z.object({
@@ -231,12 +231,12 @@ export function CreateLocation({ orgId, tenantId }: Props) {
                         <p className="text-sm text-muted-foreground mb-2">
                             地図をクリックすると座標が設定され、住所が自動で入ります。
                         </p>
-                        <MapCoordinatePickerProvider
+                        <MapPinLocateSelectProvider
                             defaultValue={geoValue}
                             onChange={handleMapChange}
                         >
-                            <MapCoordinatePicker />
-                        </MapCoordinatePickerProvider>
+                            <MapPinLocateSelect />
+                        </MapPinLocateSelectProvider>
                     </Field>
 
                     {/* 詳細 */}
