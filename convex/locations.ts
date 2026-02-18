@@ -19,6 +19,26 @@ export const listByTenant = query({
     },
 });
 
+/**
+ * 組織スコープ内で場所を1件取得する（詳細表示用）。
+ */
+export const getByIdInOrg = query({
+    args: {
+        clerkOrgId: v.string(),
+        locationId: v.id("Locations"),
+    },
+    handler: async (ctx, args) => {
+        await requireClerkIdentity(ctx);
+        const location = await ctx.db.get(args.locationId);
+        if (!location) return null;
+        const tenant = await ctx.db.get(location.tenantId);
+        if (!tenant || tenant.clerkOrgId !== args.clerkOrgId) {
+            return null;
+        }
+        return location;
+    },
+});
+
 export const create = mutation({
     args: {
         tenantId: v.id("Tenants"),

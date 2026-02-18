@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
+import { Link } from "@/components/link";
 
 const typeLabels: Record<string, string> = {
     fixed: "固定店舗",
@@ -23,7 +24,7 @@ type LocationListProps = {
     tenantId: string;
 };
 
-export function LocationList({ tenantId }: LocationListProps) {
+export function LocationList({ orgId, tenantId }: LocationListProps) {
     const locations = useQuery(api.locations.listByTenant, {
         tenantId: tenantId as Id<"Tenants">,
         limit: 50,
@@ -67,46 +68,52 @@ export function LocationList({ tenantId }: LocationListProps) {
                 const type = typeLabels[location.type] ?? "不明";
                 const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${location.lat},${location.lng}`;
                 return (
-                    <Card key={location._id} className="transition">
-                        <CardHeader className="gap-3">
-                            <div className="flex items-center justify-between gap-3">
-                                <CardTitle className="text-lg">
-                                    {location.name}
-                                </CardTitle>
-                                <Badge variant="secondary">{type}</Badge>
-                            </div>
-                            <CardDescription>
-                                {location.address}
-                            </CardDescription>
-                        </CardHeader>
-                        <CardContent className="space-y-2 text-sm text-muted-foreground">
-                            <div className="flex items-center justify-between">
-                                <span>緯度</span>
-                                <span className="font-mono text-foreground">
-                                    {location.lat}
-                                </span>
-                            </div>
-                            <div className="flex items-center justify-between">
-                                <span>経度</span>
-                                <span className="font-mono text-foreground">
-                                    {location.lng}
-                                </span>
-                            </div>
-                            <a
-                                href={mapsUrl}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="block pt-2 text-primary underline hover:no-underline"
-                            >
-                                {mapsUrl}
-                            </a>
-                            {location.details && (
-                                <p className="pt-2 text-muted-foreground">
-                                    {location.details}
-                                </p>
-                            )}
-                        </CardContent>
-                    </Card>
+                    <Link
+                        key={location._id}
+                        href={`/o/${orgId}/member/tenant/${tenantId}/locations/${location._id}`}
+                    >
+                        <Card className="transition hover:border-primary/50 hover:shadow-md">
+                            <CardHeader className="gap-3">
+                                <div className="flex items-center justify-between gap-3">
+                                    <CardTitle className="text-lg">
+                                        {location.name}
+                                    </CardTitle>
+                                    <Badge variant="secondary">{type}</Badge>
+                                </div>
+                                <CardDescription>
+                                    {location.address}
+                                </CardDescription>
+                            </CardHeader>
+                            <CardContent className="space-y-2 text-sm text-muted-foreground">
+                                <div className="flex items-center justify-between">
+                                    <span>緯度</span>
+                                    <span className="font-mono text-foreground">
+                                        {location.lat}
+                                    </span>
+                                </div>
+                                <div className="flex items-center justify-between">
+                                    <span>経度</span>
+                                    <span className="font-mono text-foreground">
+                                        {location.lng}
+                                    </span>
+                                </div>
+                                <a
+                                    href={mapsUrl}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    onClick={(e) => e.stopPropagation()}
+                                    className="block pt-2 text-primary underline hover:no-underline"
+                                >
+                                    Google Mapsで開く
+                                </a>
+                                {location.details && (
+                                    <p className="pt-2 text-muted-foreground line-clamp-2">
+                                        {location.details}
+                                    </p>
+                                )}
+                            </CardContent>
+                        </Card>
+                    </Link>
                 );
             })}
         </div>
