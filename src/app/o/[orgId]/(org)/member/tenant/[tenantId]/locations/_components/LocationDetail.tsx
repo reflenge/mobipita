@@ -30,6 +30,7 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Link } from "@/components/link";
+import { useRouter } from "next/navigation";
 import {
     MapSinglePin,
     MapPinLocateSelect,
@@ -83,7 +84,10 @@ export function LocationDetail({
         locationId: locationId as Id<"Locations">,
     });
     const updateLocation = useMutation(api.locations.update);
+    const removeLocation = useMutation(api.locations.remove);
+    const router = useRouter();
     const [isPending, startTransition] = useTransition();
+    const [isDeleting, setIsDeleting] = useState(false);
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -174,6 +178,32 @@ export function LocationDetail({
                 );
             }
         });
+    }
+
+    async function handleDelete() {
+        if (
+            !window.confirm(
+                `「${location?.name}」を削除しますか？この操作は取り消せません。`,
+            )
+        ) {
+            return;
+        }
+        setIsDeleting(true);
+        try {
+            await removeLocation({
+                clerkOrgId: orgId,
+                locationId: locationId as Id<"Locations">,
+            });
+            toast.success("場所を削除しました");
+            router.push(`/o/${orgId}/member/tenant/${tenantId}/locations`);
+        } catch (error) {
+            toast.error(
+                error instanceof Error
+                    ? error.message
+                    : "場所の削除に失敗しました",
+            );
+            setIsDeleting(false);
+        }
     }
 
     if (location === undefined) {
@@ -374,14 +404,26 @@ export function LocationDetail({
                         </CardTitle>
                         <Badge variant="secondary">{type}</Badge>
                     </div>
-                    <Button
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        onClick={startEditing}
-                    >
-                        編集
-                    </Button>
+                    <div className="flex items-center gap-2">
+                        <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={startEditing}
+                        >
+                            編集
+                        </Button>
+                        <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={handleDelete}
+                            disabled={isDeleting}
+                            className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                        >
+                            {isDeleting ? "削除中..." : "削除"}
+                        </Button>
+                    </div>
                 </div>
                 <CardDescription>{location.address}</CardDescription>
             </CardHeader>

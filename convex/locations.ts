@@ -107,3 +107,28 @@ export const update = mutation({
         return args.locationId;
     },
 });
+
+/**
+ * 組織スコープ内の場所を1件削除する。
+ */
+export const remove = mutation({
+    args: {
+        clerkOrgId: v.string(),
+        locationId: v.id("Locations"),
+    },
+    handler: async (ctx, args) => {
+        await requireClerkIdentity(ctx);
+
+        const location = await ctx.db.get(args.locationId);
+        if (!location) {
+            throw new Error("場所が見つかりません");
+        }
+        const tenant = await ctx.db.get(location.tenantId);
+        if (!tenant || tenant.clerkOrgId !== args.clerkOrgId) {
+            throw new Error("この組織の場所ではありません");
+        }
+
+        await ctx.db.delete(args.locationId);
+        return args.locationId;
+    },
+});
