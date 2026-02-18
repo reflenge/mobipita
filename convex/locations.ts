@@ -68,3 +68,42 @@ export const create = mutation({
         });
     },
 });
+
+/**
+ * 組織スコープ内の場所を1件更新する。
+ */
+export const update = mutation({
+    args: {
+        clerkOrgId: v.string(),
+        locationId: v.id("Locations"),
+        type: storeType,
+        name: v.string(),
+        address: v.string(),
+        lat: v.number(),
+        lng: v.number(),
+        details: v.string(),
+    },
+    handler: async (ctx, args) => {
+        await requireClerkIdentity(ctx);
+
+        const location = await ctx.db.get(args.locationId);
+        if (!location) {
+            throw new Error("場所が見つかりません");
+        }
+        const tenant = await ctx.db.get(location.tenantId);
+        if (!tenant || tenant.clerkOrgId !== args.clerkOrgId) {
+            throw new Error("この組織の場所ではありません");
+        }
+
+        await ctx.db.patch(args.locationId, {
+            type: args.type,
+            name: args.name,
+            address: args.address,
+            lat: args.lat,
+            lng: args.lng,
+            details: args.details,
+        });
+
+        return args.locationId;
+    },
+});
