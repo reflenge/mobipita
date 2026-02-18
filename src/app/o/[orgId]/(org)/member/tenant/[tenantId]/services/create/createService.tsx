@@ -1,7 +1,8 @@
 "use client";
 
+import { useTransition } from "react";
 import { Switch } from "@/components/ui/switch"
-import { useQuery } from "convex/react";
+import { useMutation, useQuery } from "convex/react";
 import { api } from "@/../convex/_generated/api";
 import { Id } from "@/../convex/_generated/dataModel";
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -53,6 +54,8 @@ export function CreateService({ orgId, tenantId }: Props) {
         clerkOrgId: orgId,
         tenantId: tenantId as Id<"Tenants">,
     });
+    const createService = useMutation(api.services.create);
+    const [isPending, startTransition] = useTransition();
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -68,11 +71,22 @@ export function CreateService({ orgId, tenantId }: Props) {
     })
 
     function onSubmit(data: z.infer<typeof formSchema>) {
-        console.log("🚀 => onSubmit => data:", data)
-        toast(
-            <pre className="bg-code text-code-foreground w-[520px] overflow-x-auto">
-                <code>{JSON.stringify(data, null, 2)}</code>
-            </pre>)
+        startTransition(async () => {
+            try {
+                await createService({
+                    clerkOrgId: orgId,
+                    tenantId: data.service.tenantId as Id<"Tenants">,
+                    title: data.service.title,
+                    description: data.service.description,
+                    isActive: data.service.isActive,
+                });
+                toast.success("サービスを作成しました");
+                startTransition(() => form.reset());
+            } catch (err) {
+                const message = err instanceof Error ? err.message : "サービスの作成に失敗しました";
+                toast.error(message);
+            }
+        });
     }
 
     // tenant が取得できていない（undefined / null）の場合はローディング表示
@@ -204,8 +218,8 @@ export function CreateService({ orgId, tenantId }: Props) {
                 <Button type="button" variant="outline" onClick={() => form.reset()}>
                     Reset
                 </Button>
-                <Button type="submit" form="form-slot-create">
-                    Submit
+                <Button type="submit" form="form-slot-create" disabled={isPending}>
+                    {isPending ? "保存中..." : "Submit"}
                 </Button>
             </Field>
         </div>

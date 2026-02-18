@@ -107,4 +107,19 @@ export default defineSchema({
         details: v.string(),
     })
         .index("by_tenant", ["tenantId"]),
+    // テナントが提供するサービス。
+    Services: defineTable({
+        // 所属テナント。
+        tenantId: v.id("Tenants"),
+        // 作成者の Clerk userId。
+        createdByUserId: v.string(),
+        // サービス名。
+        title: v.string(),
+        // 説明（HTML 可）。
+        description: v.string(),
+        // 有効/無効。
+        isActive: v.boolean(),
+    })
+        .index("by_tenant", ["tenantId"])
+        .index("by_tenant_active", ["tenantId", "isActive"]),
 });
