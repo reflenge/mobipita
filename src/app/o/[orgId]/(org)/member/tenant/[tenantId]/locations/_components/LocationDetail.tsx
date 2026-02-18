@@ -101,11 +101,32 @@ export function LocationDetail({
 
     const geoValue = form.watch("locations.geo");
 
+    const startEditing = useCallback(() => {
+        if (location) {
+            form.reset({
+                locations: {
+                    type:
+                        location.type === "mobile" || location.type === "fixed"
+                            ? location.type
+                            : "fixed",
+                    name: location.name,
+                    address: location.address,
+                    geo: { lat: location.lat, lng: location.lng },
+                    details: location.details ?? "",
+                },
+            });
+        }
+        setIsEditing(true);
+    }, [location, form]);
+
     useEffect(() => {
         if (location && isEditing) {
             form.reset({
                 locations: {
-                    type: location.type,
+                    type:
+                        location.type === "mobile" || location.type === "fixed"
+                            ? location.type
+                            : "fixed",
                     name: location.name,
                     address: location.address,
                     geo: { lat: location.lat, lng: location.lng },
@@ -222,7 +243,6 @@ export function LocationDetail({
                                         <FieldLabel>種別</FieldLabel>
                                         <Select
                                             value={field.value}
-                                            defaultValue={field.value}
                                             onValueChange={field.onChange}
                                         >
                                             <SelectTrigger
@@ -358,7 +378,7 @@ export function LocationDetail({
                         type="button"
                         variant="outline"
                         size="sm"
-                        onClick={() => setIsEditing(true)}
+                        onClick={startEditing}
                     >
                         編集
                     </Button>
