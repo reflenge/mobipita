@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback } from "react";
+import { useCallback, useTransition } from "react";
 import { useQuery, useMutation } from "convex/react";
 import { useRouter } from "next/navigation";
 import { api } from "@/../convex/_generated/api";
@@ -60,6 +60,7 @@ export function CreateLocation({ orgId, tenantId }: Props) {
         tenantId: tenantId as Id<"Tenants">,
     });
     const createLocation = useMutation(api.locations.create);
+    const [isPending, startTransition] = useTransition();
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -95,24 +96,26 @@ export function CreateLocation({ orgId, tenantId }: Props) {
         [form]
     );
 
-    async function onSubmit(data: z.infer<typeof formSchema>) {
-        try {
-            await createLocation({
-                tenantId: data.locations.tenantId as Id<"Tenants">,
-                type: data.locations.type,
-                name: data.locations.name,
-                address: data.locations.address,
-                lat: data.locations.geo.lat,
-                lng: data.locations.geo.lng,
-                details: data.locations.details,
-            });
-            toast.success("場所を作成しました");
-            router.push(`/o/${orgId}/member/tenant/${tenantId}/locations`);
-        } catch (error) {
-            toast.error(
-                error instanceof Error ? error.message : "場所の作成に失敗しました"
-            );
-        }
+    function onSubmit(data: z.infer<typeof formSchema>) {
+        startTransition(async () => {
+            try {
+                await createLocation({
+                    tenantId: data.locations.tenantId as Id<"Tenants">,
+                    type: data.locations.type,
+                    name: data.locations.name,
+                    address: data.locations.address,
+                    lat: data.locations.geo.lat,
+                    lng: data.locations.geo.lng,
+                    details: data.locations.details,
+                });
+                toast.success("場所を作成しました");
+                router.push(`/o/${orgId}/member/tenant/${tenantId}/locations`);
+            } catch (error) {
+                toast.error(
+                    error instanceof Error ? error.message : "場所の作成に失敗しました"
+                );
+            }
+        });
     }
 
     if (!tenant) {
@@ -272,9 +275,9 @@ export function CreateLocation({ orgId, tenantId }: Props) {
                     <Button
                         type="submit"
                         form="form-location-create"
-                        disabled={form.formState.isSubmitting}
+                        disabled={isPending}
                     >
-                        {form.formState.isSubmitting ? "作成中..." : "作成する"}
+                        {isPending ? "作成中..." : "作成する"}
                     </Button>
                 </Field>
             </form>
