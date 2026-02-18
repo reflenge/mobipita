@@ -72,3 +72,36 @@ export const create = mutation({
         return serviceId;
     },
 });
+
+/**
+ * 組織スコープ内のサービスを1件更新する。
+ */
+export const update = mutation({
+    args: {
+        clerkOrgId: v.string(),
+        serviceId: v.id("Services"),
+        title: v.string(),
+        description: v.string(),
+        isActive: v.boolean(),
+    },
+    handler: async (ctx, args) => {
+        await requireClerkIdentity(ctx);
+
+        const service = await ctx.db.get(args.serviceId);
+        if (!service) {
+            throw new Error("サービスが見つかりません");
+        }
+        const tenant = await ctx.db.get(service.tenantId);
+        if (!tenant || tenant.clerkOrgId !== args.clerkOrgId) {
+            throw new Error("この組織のサービスではありません");
+        }
+
+        await ctx.db.patch(args.serviceId, {
+            title: args.title,
+            description: args.description,
+            isActive: args.isActive,
+        });
+
+        return args.serviceId;
+    },
+});
