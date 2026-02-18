@@ -105,3 +105,28 @@ export const update = mutation({
         return args.serviceId;
     },
 });
+
+/**
+ * 組織スコープ内のサービスを1件削除する。
+ */
+export const remove = mutation({
+    args: {
+        clerkOrgId: v.string(),
+        serviceId: v.id("Services"),
+    },
+    handler: async (ctx, args) => {
+        await requireClerkIdentity(ctx);
+
+        const service = await ctx.db.get(args.serviceId);
+        if (!service) {
+            throw new Error("サービスが見つかりません");
+        }
+        const tenant = await ctx.db.get(service.tenantId);
+        if (!tenant || tenant.clerkOrgId !== args.clerkOrgId) {
+            throw new Error("この組織のサービスではありません");
+        }
+
+        await ctx.db.delete(args.serviceId);
+        return args.serviceId;
+    },
+});

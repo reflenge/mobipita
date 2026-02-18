@@ -30,6 +30,7 @@ import {
 } from "@/components/ui/input-group";
 import { Switch } from "@/components/ui/switch";
 import { Link } from "@/components/link";
+import { useRouter } from "next/navigation";
 import Tiptap from "@/components/Tiptap";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
@@ -68,7 +69,10 @@ export function ServiceDetail({
         serviceId: serviceId as Id<"Services">,
     });
     const updateService = useMutation(api.services.update);
+    const removeService = useMutation(api.services.remove);
+    const router = useRouter();
     const [isPending, startTransition] = useTransition();
+    const [isDeleting, setIsDeleting] = useState(false);
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -110,6 +114,32 @@ export function ServiceDetail({
                 toast.error(message);
             }
         });
+    }
+
+    async function handleDelete() {
+        if (
+            !window.confirm(
+                `「${service?.title}」を削除しますか？この操作は取り消せません。`,
+            )
+        ) {
+            return;
+        }
+        setIsDeleting(true);
+        try {
+            await removeService({
+                clerkOrgId: orgId,
+                serviceId: serviceId as Id<"Services">,
+            });
+            toast.success("サービスを削除しました");
+            router.push(`/o/${orgId}/member/tenant/${tenantId}/services`);
+        } catch (err) {
+            const message =
+                err instanceof Error
+                    ? err.message
+                    : "サービスの削除に失敗しました";
+            toast.error(message);
+            setIsDeleting(false);
+        }
     }
 
     if (service === undefined) {
@@ -292,14 +322,26 @@ export function ServiceDetail({
                             {service.isActive ? "有効" : "無効"}
                         </Badge>
                     </div>
-                    <Button
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        onClick={() => setIsEditing(true)}
-                    >
-                        編集
-                    </Button>
+                    <div className="flex items-center gap-2">
+                        <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setIsEditing(true)}
+                        >
+                            編集
+                        </Button>
+                        <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={handleDelete}
+                            disabled={isDeleting}
+                            className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                        >
+                            {isDeleting ? "削除中..." : "削除"}
+                        </Button>
+                    </div>
                 </div>
             </CardHeader>
             <CardContent className="space-y-4">
