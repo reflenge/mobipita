@@ -62,8 +62,8 @@ export function CreateService({ orgId, tenantId }: Props) {
         defaultValues: {
             service: {
                 tenantId: tenantId,
-                title: "testtesttest",
-                description: "<p>testtesttesttest</p>",
+                title: "",
+                description: "<p></p>",
                 isActive: true,
             },
         },
