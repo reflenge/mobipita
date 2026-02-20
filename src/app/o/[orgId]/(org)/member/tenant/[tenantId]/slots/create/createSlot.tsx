@@ -88,7 +88,7 @@ const DEFAULT_SLOT_TEMPLATE: z.infer<typeof formSchema>["slotTemplate"] = {
     durationMinutes: 60,
     defaultCapacity: 2,
     defaultVisibility: "public",
-    defaultLocationId: "",
+    // defaultLocationId: "",
     acceptanceWindow: {
         openBeforeMinutes: 86400,
         closeBeforeMinutes: 180,
