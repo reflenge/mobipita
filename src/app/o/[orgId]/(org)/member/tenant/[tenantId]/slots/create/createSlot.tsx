@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { Switch } from "@/components/ui/switch";
 import { useQuery } from "convex/react";
 import { api } from "@/../convex/_generated/api";
@@ -119,54 +119,27 @@ export function CreateSlot({ orgId, tenantId }: Props) {
         tenantId: tenantId as Id<"Tenants">,
     });
 
-    // サービス一覧（TODO: Convex でテナント別サービス取得に差し替え）
-    // const services: { _id: string; tenantId: string; title: string }[] = [
-    //     ...Array(5),
-    // ].map((_, i) => ({
-    //     _id: `svc_${String(i + 1).padStart(3, "0")}`,
-    //     tenantId,
-    //     title: `サンプルサービス${i + 1}`,
-    // }));
+    const services = useQuery(api.services.listByTenant, {
+        tenantId: tenantId as Id<"Tenants">,
+    });
+    const activeServices = useMemo(
+        () => services?.filter((service) => service.isActive) ?? [],
+        [services]
+    );
 
-    // サービスデータを取得
-    // TODO: isActive は false の場合は表示しない
-    const services: { _id: string; _creationTime: number; tenantId: string; title: string; description: string; isActive: boolean }[] | null | undefined = [...Array(5)].map((_, index) => (
-        {
-            _id: `dataid_${(index + 3).toString().padStart(3, "0")}`,
-            _creationTime: new Date().getTime() + index * 1000,
-            tenantId: `tenant_${(index + 3).toString().padStart(3, "0")}`,
-            title: `サンプルサービス${(index + 3).toString().padStart(3, "0")}`,
-            description: `<p>サンプルサービス${(index + 3).toString().padStart(3, "0")}の説明</p>`,
-            isActive: true,
-        }));
-    console.log("🚀 => CreateSlot => services:", services)
-
-    const locations: { _id: string; _creationTime: number; tenantId: string; type: "fixed" | "mobile"; name: string; address: string; geo: { lat: number; lng: number }; details: string }[] | null | undefined = [...Array(5)].map((_, index) => (
-        {
-            _id: `dataid_${(index + 3).toString().padStart(3, "0")}`,
-            _creationTime: new Date().getTime() + index * 1000,
-            tenantId: `tenant_${(index + 3).toString().padStart(3, "0")}`,
-            type: Math.random() < 0.5 ? "fixed" : "mobile",
-            name: `固定店舗（サンプル${(index + 3).toString().padStart(3, "0")})`,
-            address: `高知県〇〇市〇〇町${index + 3}-2-3`,
-            geo: {
-                lat: 33.5597 + Math.random() * 0.01,
-                lng: 133.5311 + Math.random() * 0.01
-            },
-            details: "入口は北側。駐車場2台分あり。看板が目印。",
-        }));
-    console.log("🚀 => CreateSlot => locations:", locations)
+    const locations = useQuery(api.locations.listByTenant, {
+        tenantId: tenantId as Id<"Tenants">,
+    });
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
             slotTemplate: {
                 tenantId,
-                serviceId: services[0]?._id ?? "",
+                serviceId: activeServices[0]?._id ?? "",
                 durationMinutes: 60,
                 defaultCapacity: 2,
                 defaultVisibility: "public",
-                defaultLocationId: "loc_fixed_shop",
                 acceptanceWindow: {
                     openBeforeMinutes: 86400, // 60日前
                     closeBeforeMinutes: 180, // 3時間前
@@ -198,11 +171,15 @@ export function CreateSlot({ orgId, tenantId }: Props) {
     });
 
     useEffect(() => {
-        if (tenant && !form.getValues("slotTemplate.serviceId") && services[0]) {
+        if (
+            tenant &&
+            !form.getValues("slotTemplate.serviceId") &&
+            activeServices[0]
+        ) {
             form.setValue("slotTemplate.tenantId", tenantId);
-            form.setValue("slotTemplate.serviceId", services[0]._id);
+            form.setValue("slotTemplate.serviceId", activeServices[0]._id);
         }
-    }, [tenant, tenantId, form, services]);
+    }, [tenant, tenantId, form, activeServices]);
 
     function onSubmit(data: z.infer<typeof formSchema>) {
         console.log("🚀 => onSubmit => data:", data);
@@ -213,7 +190,7 @@ export function CreateSlot({ orgId, tenantId }: Props) {
         );
     }
 
-    if (!tenant) {
+    if (!tenant || services === undefined || locations === undefined) {
         return <CreateSlotSkeleton />;
     }
 
@@ -258,7 +235,7 @@ export function CreateSlot({ orgId, tenantId }: Props) {
                                         <SelectValue placeholder="サービスを選択" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        {services.map((s) => (
+                                        {activeServices.map((s) => (
                                             <SelectItem
                                                 key={s._id}
                                                 value={s._id}
@@ -876,7 +853,7 @@ export function CreateSlot({ orgId, tenantId }: Props) {
                                     tenantId,
                                     serviceId:
                                         form.getValues("slotTemplate.serviceId") ||
-                                        services[0]?._id ||
+                                        activeServices[0]?._id ||
                                         "",
                                 },
                             })
