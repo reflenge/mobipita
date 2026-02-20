@@ -20,6 +20,60 @@ export const listByTenant = query({
 });
 
 /**
+ * 組織に所属する全 locations を取得する（テナント経由）。
+ * 店舗検索で「近い順」に並べるためにクライアントで距離計算する想定。
+ */
+export const listLocationsByOrg = query({
+    args: {
+        clerkOrgId: v.string(),
+        limit: v.optional(v.number()),
+    },
+    handler: async (ctx, args) => {
+        await requireClerkIdentity(ctx);
+        const limit = typeof args.limit === "number" ? args.limit : 500;
+        const tenants = await ctx.db
+            .query("Tenants")
+            .withIndex("by_clerkOrgId", (q) =>
+                q.eq("clerkOrgId", args.clerkOrgId),
+            )
+            .order("desc")
+            .take(limit);
+        const results: Array<{
+            _id: import("./_generated/dataModel").Id<"Locations">;
+            tenantId: import("./_generated/dataModel").Id<"Tenants">;
+            tenantName: string;
+            type: "fixed" | "mobile";
+            name: string;
+            address: string;
+            lat: number;
+            lng: number;
+            details: string;
+        }> = [];
+        for (const tenant of tenants) {
+            const locations = await ctx.db
+                .query("Locations")
+                .withIndex("by_tenant", (q) => q.eq("tenantId", tenant._id))
+                .order("desc")
+                .take(200);
+            for (const loc of locations) {
+                results.push({
+                    _id: loc._id,
+                    tenantId: loc.tenantId,
+                    tenantName: tenant.tenantName,
+                    type: loc.type,
+                    name: loc.name,
+                    address: loc.address,
+                    lat: loc.lat,
+                    lng: loc.lng,
+                    details: loc.details,
+                });
+            }
+        }
+        return results;
+    },
+});
+
+/**
  * 組織スコープ内で場所を1件取得する（詳細表示用）。
  */
 export const getByIdInOrg = query({
