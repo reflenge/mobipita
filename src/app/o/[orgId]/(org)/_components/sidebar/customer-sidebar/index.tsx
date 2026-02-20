@@ -1,30 +1,13 @@
 import { Link } from "@/components/link";
 import {
-    Sidebar,
-    SidebarContent,
-    SidebarFooter,
     SidebarGroup,
-    SidebarGroupAction,
     SidebarGroupContent,
     SidebarGroupLabel,
-    SidebarHeader,
-    SidebarInput,
-    SidebarInset,
     SidebarMenu,
-    SidebarMenuAction,
-    SidebarMenuBadge,
     SidebarMenuButton,
     SidebarMenuItem,
-    SidebarMenuSkeleton,
-    SidebarMenuSub,
-    SidebarMenuSubButton,
-    SidebarMenuSubItem,
-    SidebarProvider,
-    SidebarRail,
-    SidebarSeparator,
-    useSidebar,
 } from "@/components/ui/sidebar";
-import { Home } from "lucide-react";
+import { Home, Search } from "lucide-react";
 
 const CustomerSidebar = ({ org }: { org: { id: string } }) => {
     return (
@@ -37,6 +20,14 @@ const CustomerSidebar = ({ org }: { org: { id: string } }) => {
                             <Link href={`/o/${org.id}`}>
                                 <Home />
                                 <span>Customer</span>
+                            </Link>
+                        </SidebarMenuButton>
+                    </SidebarMenuItem>
+                    <SidebarMenuItem>
+                        <SidebarMenuButton asChild>
+                            <Link href={`/o/${org.id}/search`}>
+                                <Search />
+                                <span>店舗検索</span>
                             </Link>
                         </SidebarMenuButton>
                     </SidebarMenuItem>

@@ -2,6 +2,7 @@ const labelMap: Record<string, string> = {
     admin: "Admin",
     member: "Member",
     customer: "Customer",
+    search: "店舗検索",
     tenant: "店舗",
     create: "作成",
     list: "一覧",
@@ -52,6 +53,8 @@ export function isExistingOrgRoute(orgScopedPath: string): boolean {
 
         // customer
         /^\/\(\s*CUSTOMER\s*\)$/, // 念のため（通常はURLに出ない）
+        // 店舗検索
+        /^\/search$/,
     ];
 
     return patterns.some((re) => re.test(p));
