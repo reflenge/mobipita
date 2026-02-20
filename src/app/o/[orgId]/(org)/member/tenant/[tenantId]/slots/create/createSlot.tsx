@@ -33,6 +33,7 @@ import {
 } from "@/components/ui/select";
 import Tiptap from "@/components/Tiptap";
 import CreateSlotSkeleton from "./createSlotSkeleton";
+import SlotCalender from "./slot-calender";
 
 const questionTypeEnum = z.enum([
     "text",
@@ -202,7 +203,7 @@ export function CreateSlot({ orgId, tenantId }: Props) {
                     {tenant.tenantName} {tenant._id} の予約枠を新規作成します
                 </p>
             </div>
-
+        <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
             <form
                 id="form-slot-create"
                 onSubmit={form.handleSubmit(onSubmit)}
@@ -866,6 +867,10 @@ export function CreateSlot({ orgId, tenantId }: Props) {
                     </Button>
                 </Field>
             </form>
+            <div>
+                <SlotCalender />
+            </div>
+        </div>
         </div>
     );
 }
