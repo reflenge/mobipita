@@ -5,7 +5,7 @@ import { useQuery } from "convex/react";
 import { api } from "@/../convex/_generated/api";
 import { Id } from "@/../convex/_generated/dataModel";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useFieldArray, useForm } from "react-hook-form";
+import { useFieldArray, useForm, useWatch } from "react-hook-form";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Field, FieldGroup } from "@/components/ui/field";
@@ -15,7 +15,9 @@ import { getTodayYYYYMMDD } from "./dateUtils";
 import {
     formSchema,
     type FormValues,
+    type CrossFieldError,
     DEFAULT_SLOT_TEMPLATE,
+    validateDateTimeSlots,
 } from "./schema";
 import {
     ServiceSelectField,
@@ -97,12 +99,19 @@ export function CreateSlot({ orgId, tenantId }: Props) {
         mode: "all",
     });
 
-    useEffect(() => {
-        const subscription = form.watch((data) => {
-            console.log("form data:", data);
-        });
-        return () => subscription.unsubscribe();
-    }, [form]);
+    const watchedDateTimeSlots = useWatch({
+        control: form.control,
+        name: "dateTimeSlots",
+    });
+    const watchedDuration = useWatch({
+        control: form.control,
+        name: "slotTemplate.durationMinutes",
+    });
+
+    const crossFieldErrors = useMemo(
+        () => validateDateTimeSlots(watchedDateTimeSlots ?? [], Number(watchedDuration)),
+        [watchedDateTimeSlots, watchedDuration],
+    );
 
     useEffect(() => {
         if (tenant) {
@@ -123,6 +132,15 @@ export function CreateSlot({ orgId, tenantId }: Props) {
     }, [tenant, tenantId, form, activeServices, locations]);
 
     function onSubmit(data: FormValues) {
+        if (crossFieldErrors.length > 0) {
+            for (const err of crossFieldErrors) {
+                form.setError(err.path as keyof FormValues, {
+                    type: "custom",
+                    message: err.message,
+                });
+            }
+            return;
+        }
         console.log("🚀 => onSubmit => data:", data);
         toast(
             <pre className="bg-code text-code-foreground w-[520px] overflow-x-auto">
@@ -165,7 +183,10 @@ export function CreateSlot({ orgId, tenantId }: Props) {
                         />
                         <VisibilitySelectField control={form.control} />
 
-                        <DateTimeSlotsSection control={form.control} />
+                        <DateTimeSlotsSection
+                            control={form.control}
+                            crossFieldErrors={crossFieldErrors}
+                        />
 
                         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                             <DurationInputField control={form.control} />

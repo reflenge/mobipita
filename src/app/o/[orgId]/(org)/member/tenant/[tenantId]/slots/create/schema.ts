@@ -1,4 +1,8 @@
 import * as z from "zod";
+import {
+    getTodayLocalYYYYMMDD,
+    parseTimeToMinutes,
+} from "./dateUtils";
 
 export const questionTypeEnum = z.enum([
     "text",
@@ -10,16 +14,139 @@ export const questionTypeEnum = z.enum([
     "time",
 ]);
 
+/** HH:mm または HH:mm:ss 形式の時刻パターン（HTML5 time input の仕様に合わせる） */
+const TIME_PATTERN = /^([01]?[0-9]|2[0-3]):[0-5][0-9](:[0-5][0-9])?$/;
+
+/** yyyy-MM-dd 形式の日付パターン */
+const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
+
+function isTimeBefore(a: string, b: string): boolean {
+    const aMin = parseTimeToMinutes(a);
+    const bMin = parseTimeToMinutes(b);
+    if (Number.isNaN(aMin) || Number.isNaN(bMin)) return false;
+    return aMin < bMin;
+}
+
+function timeRangesOverlap(
+    a: { start: string; end: string },
+    b: { start: string; end: string }
+): boolean {
+    const aStart = parseTimeToMinutes(a.start);
+    const aEnd = parseTimeToMinutes(a.end);
+    const bStart = parseTimeToMinutes(b.start);
+    const bEnd = parseTimeToMinutes(b.end);
+    if (
+        Number.isNaN(aStart) ||
+        Number.isNaN(aEnd) ||
+        Number.isNaN(bStart) ||
+        Number.isNaN(bEnd)
+    ) {
+        return false;
+    }
+    return aStart < bEnd && bStart < aEnd;
+}
+
+export type CrossFieldError = { path: string; message: string };
+
+/**
+ * dateTimeSlots のクロスフィールドバリデーション。
+ * superRefine（submit時）と useMemo（リアルタイム表示）の両方から呼ばれる。
+ */
+export function validateDateTimeSlots(
+    dateTimeSlots: Array<{ date: string; timeRanges: Array<{ start: string; end: string }> }>,
+    durationMinutes: number,
+): CrossFieldError[] {
+    const errors: CrossFieldError[] = [];
+    const today = getTodayLocalYYYYMMDD();
+
+    dateTimeSlots.forEach((slot, slotIndex) => {
+        const timeRanges = slot?.timeRanges ?? [];
+        if (!Array.isArray(timeRanges) || timeRanges.length === 0) return;
+
+        // 1. 過去チェック
+        const dateStr = slot?.date;
+        if (dateStr && dateStr < today) {
+            errors.push({
+                path: `dateTimeSlots.${slotIndex}.date`,
+                message: "過去の日付は指定できません",
+            });
+        }
+
+        // 2. 終了時刻チェック（終了 > 開始）
+        timeRanges.forEach((range, rangeIndex) => {
+            if (!range?.start || !range?.end) return;
+            if (!isTimeBefore(range.start, range.end)) {
+                errors.push({
+                    path: `dateTimeSlots.${slotIndex}.timeRanges.${rangeIndex}.end`,
+                    message: "終了時刻は開始時刻より後にしてください",
+                });
+            }
+        });
+
+        // 3. 長さチェック（時間帯の長さ >= 枠の長さ）
+        timeRanges.forEach((range, rangeIndex) => {
+            if (!range?.start || !range?.end) return;
+            const startMin = parseTimeToMinutes(range.start);
+            const endMin = parseTimeToMinutes(range.end);
+            if (Number.isNaN(startMin) || Number.isNaN(endMin)) return;
+
+            const rangeMinutes = endMin - startMin;
+            if (rangeMinutes < durationMinutes) {
+                errors.push({
+                    path: `dateTimeSlots.${slotIndex}.timeRanges.${rangeIndex}.end`,
+                    message: `時間帯の長さは枠の長さ（${durationMinutes}分）以上にしてください`,
+                });
+            }
+        });
+
+        // 4. 重複チェック
+        for (let i = 0; i < timeRanges.length; i++) {
+            for (let j = i + 1; j < timeRanges.length; j++) {
+                const r1 = timeRanges[i];
+                const r2 = timeRanges[j];
+                if (!r1 || !r2) continue;
+                if (timeRangesOverlap(r1, r2)) {
+                    errors.push({
+                        path: `dateTimeSlots.${slotIndex}.timeRanges.${i}.end`,
+                        message: "時間帯が重複しています",
+                    });
+                    errors.push({
+                        path: `dateTimeSlots.${slotIndex}.timeRanges.${j}.end`,
+                        message: "時間帯が重複しています",
+                    });
+                }
+            }
+        }
+    });
+
+    return errors;
+}
+
+/** 時刻のフォーマットのみ検証（終了時刻チェックは superRefine で順序制御） */
 export const timeRangeSchema = z.object({
-    start: z.string().min(1, "開始時刻を入力"),
-    end: z.string().min(1, "終了時刻を入力"),
+    start: z
+        .string()
+        .min(1, "開始時刻を入力")
+        .regex(TIME_PATTERN, "時刻は HH:mm 形式で入力してください"),
+    end: z
+        .string()
+        .min(1, "終了時刻を入力")
+        .regex(TIME_PATTERN, "時刻は HH:mm 形式で入力してください"),
 });
 
 export const dateTimeSlotSchema = z.object({
-    date: z.string().min(1, "日付を入力"),
+    date: z
+        .string()
+        .min(1, "日付を選択してください")
+        .regex(DATE_PATTERN, "有効な日付を入力してください"),
     timeRanges: z.array(timeRangeSchema).min(1, "時間帯を1つ以上追加"),
 });
 
+/**
+ * zodResolver 用のベーススキーマ（superRefine なし）。
+ * クロスフィールドバリデーションは useMemo + validateDateTimeSlots で処理するため、
+ * zodResolver に superRefine を含めると mode:"all" で古いエラーが残る問題が発生する。
+ */
 export const formSchema = z.object({
     slotTemplate: z.object({
         tenantId: z.string(),
@@ -56,7 +183,9 @@ export const formSchema = z.object({
             rescheduleDeadlineMinutes: z.number().min(0),
         }),
     }),
-    dateTimeSlots: z.array(dateTimeSlotSchema),
+    dateTimeSlots: z
+        .array(dateTimeSlotSchema)
+        .min(1, "日付と時間帯を1つ以上追加してください"),
 });
 
 export type FormValues = z.infer<typeof formSchema>;

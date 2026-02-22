@@ -1,23 +1,26 @@
 "use client";
 
 import { useCallback } from "react";
-import { useFieldArray, useWatch } from "react-hook-form";
+import { useFieldArray, useFormState, useWatch } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import {
     FieldDescription,
+    FieldError,
     FieldLabel,
 } from "@/components/ui/field";
 import { DateSlotTimeRanges } from "../DateSlotTimeRanges";
 import { addDaysToYYYYMMDD, getTodayYYYYMMDD } from "../dateUtils";
-import type { FormValues } from "../schema";
+import type { FormValues, CrossFieldError } from "../schema";
 import type { Control } from "react-hook-form";
 
 type Props = {
     control: Control<FormValues>;
+    crossFieldErrors: CrossFieldError[];
 };
 
-export function DateTimeSlotsSection({ control }: Props) {
+export function DateTimeSlotsSection({ control, crossFieldErrors }: Props) {
     const dateTimeSlots = useWatch({ control, name: "dateTimeSlots" });
+    const { errors } = useFormState({ control });
     const {
         fields: dateSlotFields,
         append: appendDateSlot,
@@ -68,6 +71,7 @@ export function DateTimeSlotsSection({ control }: Props) {
                         <DateSlotTimeRanges
                             dateIndex={dateIndex}
                             control={control}
+                            crossFieldErrors={crossFieldErrors}
                         />
                         {dateSlotFields.length >= 2 ? (
                             <Button
@@ -83,6 +87,11 @@ export function DateTimeSlotsSection({ control }: Props) {
                     </div>
                 ))}
             </div>
+            {typeof errors.dateTimeSlots?.message === "string" && (
+                <FieldError
+                    errors={[{ message: errors.dateTimeSlots.message }]}
+                />
+            )}
         </div>
     );
 }
