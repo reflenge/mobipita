@@ -22,6 +22,7 @@ const SlotCalender = () => {
     // 日付クリック時のハンドラー（空き枠をクリックした時）
     const handleDateClick = (arg: DateClickArg) => {
         toast.info(arg.dateStr);
+        console.log(arg);
     };
 
     // イベント（予約枠）が描画された時のハンドラー
@@ -41,8 +42,8 @@ const SlotCalender = () => {
 
     // イベント（予約枠）クリック時のハンドラー
     const handleEventClick = (info: EventClickArg) => {
+        toast.info(JSON.stringify(info.event, null, 2));
         console.log(info);
-        console.log(JSON.stringify(info, null, 2));
     };
 
     // 現在時刻
@@ -52,12 +53,12 @@ const SlotCalender = () => {
     const events: EventSourceInput = [
         {
             title: "JST 14時 15:26:32.567",
-            start: "2026-02-20T14:30:00+09:00",
-            end: "2026-02-20T15:26:32.567+09:00",
+            start: "2026-02-23T14:30:00+09:00",
+            end: "2026-02-23T15:26:32.567+09:00",
         },
         {
             title: "JST 7時 start のみ",
-            start: "2026-02-20T07:00:00+09:00",
+            start: "2026-02-23T07:00:00+09:00",
             backgroundColor: "green",
             borderColor: "green",
         },
@@ -77,14 +78,14 @@ const SlotCalender = () => {
             headerToolbar={{
                 left: "prev,next today", // 前へ・次へ・今日
                 center: "title", // タイトル（年月日）
-                right: "timeGridDay,timeGridFourDay,dayGridWeek,dayGridMonth,listWeek", // ビュー切り替えボタン
+                right: "timeGridDay,timeGridFourDay,timeGridWeek,dayGridMonth,listWeek", // ビュー切り替えボタン
             }}
             views={{
                 // カスタムビュー: 4日間の時間グリッド
                 timeGridFourDay: {
                     type: "timeGrid",
                     duration: { days: 4 },
-                    buttonText: "4 day",
+                    buttonText: "4日",
                 },
             }}
             eventDidMount={handleEventDidMount} // イベント描画時の処理
