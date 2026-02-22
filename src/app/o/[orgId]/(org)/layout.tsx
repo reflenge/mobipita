@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "./_components/sidebar";
 import { Link } from "@/components/link";
+
 import AutoBreadcrumb from "./_components/breadcrumb";
 import { cn } from "@/lib/utils";
 
