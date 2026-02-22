@@ -188,7 +188,7 @@ export const formSchema = z.object({
     slotTemplate: z.object({
         tenantId: z.string(),
         serviceId: z.string().min(1, "サービスを選択してください"),
-        defaultLocationId: z.string(),
+        defaultLocationId: z.string().min(1, "場所を選択してください"),
         durationMinutes: z.number().min(1, "1分以上"),
         defaultCapacity: z.number().min(1, "1以上"),
         defaultVisibility: z.enum(["public", "unlisted", "private"]),

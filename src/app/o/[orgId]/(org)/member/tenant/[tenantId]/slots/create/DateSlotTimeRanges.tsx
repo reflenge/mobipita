@@ -43,6 +43,10 @@ type DateSlotTimeRangesProps = {
     crossFieldErrors: CrossFieldError[];
     /** テナントに紐づく場所一覧（時間帯ごとの場所選択に使用） */
     locations: Location[];
+    /** この日付スロットを削除するコールバック */
+    onRemoveDate?: () => void;
+    /** 日付を削除できるかどうか（2つ以上ある場合に true） */
+    canRemoveDate?: boolean;
 };
 
 /**
@@ -58,6 +62,8 @@ export function DateSlotTimeRanges({
     control,
     crossFieldErrors,
     locations,
+    onRemoveDate,
+    canRemoveDate,
 }: DateSlotTimeRangesProps) {
     const [datePickerOpen, setDatePickerOpen] = useState(false);
     const { fields, append, remove } = useFieldArray({
@@ -71,92 +77,92 @@ export function DateSlotTimeRanges({
 
     return (
         <div className="space-y-2">
+            {/* ヘッダー行: 日付ピッカー + 時間帯追加 + 日付削除 */}
+            <div className="flex flex-wrap items-start gap-2">
+                <Controller
+                    name={`dateTimeSlots.${dateIndex}.date`}
+                    control={control}
+                    render={({ field: dateField, fieldState: dateFieldState }) => {
+                        const dateObj = parseDateYYYYMMDD(dateField.value);
+                        const dateCrossError = crossFieldErrors.find(
+                            (e) => e.path === `dateTimeSlots.${dateIndex}.date`
+                        );
+                        return (
+                            <div className="flex flex-col gap-0.5">
+                                <Popover
+                                    open={datePickerOpen}
+                                    onOpenChange={setDatePickerOpen}
+                                >
+                                    <PopoverTrigger asChild>
+                                        <Button
+                                            variant="outline"
+                                            className={cn(
+                                                "w-40 justify-between font-normal",
+                                                !dateField.value && "text-muted-foreground"
+                                            )}
+                                            aria-label="日付を選択"
+                                        >
+                                            {dateField.value && dateObj ? (
+                                                formatDateJST(dateObj)
+                                            ) : (
+                                                <span>日付を選択</span>
+                                            )}
+                                            <ChevronDownIcon className="size-4 shrink-0 opacity-50" />
+                                        </Button>
+                                    </PopoverTrigger>
+                                    <PopoverContent className="w-auto p-0" align="start">
+                                        <Calendar
+                                            mode="single"
+                                            selected={dateObj}
+                                            onSelect={(date) => {
+                                                if (date) {
+                                                    dateField.onChange(
+                                                        format(date, "yyyy-MM-dd", { locale: JST_LOCALE })
+                                                    );
+                                                    setDatePickerOpen(false);
+                                                }
+                                            }}
+                                            defaultMonth={dateObj}
+                                            locale={jaDayPicker}
+                                        />
+                                    </PopoverContent>
+                                </Popover>
+                                {dateFieldState.invalid && (
+                                    <FieldError errors={[dateFieldState.error]} />
+                                )}
+                                {!dateFieldState.invalid && dateCrossError && (
+                                    <FieldError errors={[{ message: dateCrossError.message }]} />
+                                )}
+                            </div>
+                        );
+                    }}
+                />
+                <Button
+                    type="button"
+                    variant="default"
+                    size="sm"
+                    onClick={addTimeRange}
+                >
+                    時間帯を追加
+                </Button>
+                {canRemoveDate && onRemoveDate && (
+                    <Button
+                        type="button"
+                        variant="destructive"
+                        size="sm"
+                        onClick={onRemoveDate}
+                    >
+                        この日付を削除
+                    </Button>
+                )}
+            </div>
+
+            {/* 時間帯行: [開始]-[終了] [場所] [削除] */}
             {fields.map((field, timeIndex) => (
                 <div
                     key={field.id}
-                    className="flex flex-wrap items-center gap-2"
+                    className="flex flex-wrap items-center gap-2 pl-2"
                 >
-                    {/* 日付ピッカー: 最初の時間帯行にのみ表示 */}
-                    {timeIndex === 0 ? (
-                        <Controller
-                            name={`dateTimeSlots.${dateIndex}.date`}
-                            control={control}
-                            render={({ field: dateField, fieldState: dateFieldState }) => {
-                                const dateObj = parseDateYYYYMMDD(
-                                    dateField.value
-                                );
-                                const dateCrossError = crossFieldErrors.find(
-                                    (e) => e.path === `dateTimeSlots.${dateIndex}.date`
-                                );
-                                return (
-                                    <div className="flex flex-col gap-0.5">
-                                        <Popover
-                                            open={datePickerOpen}
-                                            onOpenChange={setDatePickerOpen}
-                                        >
-                                            <PopoverTrigger asChild>
-                                                <Button
-                                                    variant="outline"
-                                                    className={cn(
-                                                        "w-40 justify-between font-normal",
-                                                        !dateField.value &&
-                                                        "text-muted-foreground"
-                                                    )}
-                                                    aria-label="日付を選択"
-                                                >
-                                                    {dateField.value && dateObj ? (
-                                                        formatDateJST(dateObj)
-                                                    ) : (
-                                                        <span>日付を選択</span>
-                                                    )}
-                                                    <ChevronDownIcon className="size-4 shrink-0 opacity-50" />
-                                                </Button>
-                                            </PopoverTrigger>
-                                            <PopoverContent
-                                                className="w-auto p-0"
-                                                align="start"
-                                            >
-                                                <Calendar
-                                                    mode="single"
-                                                    selected={dateObj}
-                                                    onSelect={(date) => {
-                                                        if (date) {
-                                                            dateField.onChange(
-                                                                format(
-                                                                    date,
-                                                                    "yyyy-MM-dd",
-                                                                    {
-                                                                        locale:
-                                                                            JST_LOCALE,
-                                                                    }
-                                                                )
-                                                            );
-                                                            setDatePickerOpen(
-                                                                false
-                                                            );
-                                                        }
-                                                    }}
-                                                    defaultMonth={dateObj}
-                                                    locale={jaDayPicker}
-                                                />
-                                            </PopoverContent>
-                                        </Popover>
-                                        {/* フィールドレベルエラー優先、なければクロスフィールドエラー */}
-                                        {dateFieldState.invalid && (
-                                            <FieldError errors={[dateFieldState.error]} />
-                                        )}
-                                        {!dateFieldState.invalid && dateCrossError && (
-                                            <FieldError errors={[{ message: dateCrossError.message }]} />
-                                        )}
-                                    </div>
-                                );
-                            }}
-                        />
-                    ) : (
-                        <span className="w-40" aria-hidden />
-                    )}
-
-                    {/* 開始時刻 */}
                     <Controller
                         name={`dateTimeSlots.${dateIndex}.timeRanges.${timeIndex}.start`}
                         control={control}
@@ -178,7 +184,6 @@ export function DateSlotTimeRanges({
 
                     <span className="text-muted-foreground">-</span>
 
-                    {/* 終了時刻 + クロスフィールドエラー（終了>開始・長さ・重複） */}
                     <Controller
                         name={`dateTimeSlots.${dateIndex}.timeRanges.${timeIndex}.end`}
                         control={control}
@@ -195,11 +200,9 @@ export function DateSlotTimeRanges({
                                         aria-label="終了時刻"
                                         aria-invalid={fieldState.invalid || endCrossErrors.length > 0}
                                     />
-                                    {/* フィールドレベルエラー優先 */}
                                     {fieldState.invalid && (
                                         <FieldError errors={[fieldState.error]} />
                                     )}
-                                    {/* フィールドレベルエラーがなければクロスフィールドエラーを表示 */}
                                     {!fieldState.invalid && endCrossErrors.length > 0 && (
                                         <FieldError errors={endCrossErrors.map((e) => ({ message: e.message }))} />
                                     )}
@@ -208,7 +211,6 @@ export function DateSlotTimeRanges({
                         }}
                     />
 
-                    {/* 時間帯ごとの場所選択（空 = デフォルトの場所を使用） */}
                     <Controller
                         name={`dateTimeSlots.${dateIndex}.timeRanges.${timeIndex}.locationId`}
                         control={control}
@@ -248,29 +250,16 @@ export function DateSlotTimeRanges({
                         }}
                     />
 
-                    {/* 時間帯追加ボタン: 最初の行にのみ表示 */}
-                    {timeIndex === 0 ? (
+                    {fields.length >= 2 && (
                         <Button
                             type="button"
-                            variant="outline"
-                            size="sm"
-                            onClick={addTimeRange}
-                        >
-                            この日にちに別の時間帯を追加
-                        </Button>
-                    ) : null}
-
-                    {/* 時間帯削除ボタン: 2行以上ある場合のみ表示 */}
-                    {fields.length >= 2 ? (
-                        <Button
-                            type="button"
-                            variant="ghost"
+                            variant="destructive"
                             size="sm"
                             onClick={() => remove(timeIndex)}
                         >
-                            この時間帯を削除
+                            削除
                         </Button>
-                    ) : null}
+                    )}
                 </div>
             ))}
         </div>

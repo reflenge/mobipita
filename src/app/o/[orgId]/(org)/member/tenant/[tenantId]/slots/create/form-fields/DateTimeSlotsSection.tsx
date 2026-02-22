@@ -60,7 +60,7 @@ export function DateTimeSlotsSection({ control, crossFieldErrors, locations }: P
                 </div>
                 <Button
                     type="button"
-                    variant="outline"
+                    variant="default"
                     size="sm"
                     onClick={() =>
                         appendDateSlot({
@@ -83,18 +83,9 @@ export function DateTimeSlotsSection({ control, crossFieldErrors, locations }: P
                             control={control}
                             crossFieldErrors={crossFieldErrors}
                             locations={locations}
+                            canRemoveDate={dateSlotFields.length >= 2}
+                            onRemoveDate={() => removeDateSlot(dateIndex)}
                         />
-                        {dateSlotFields.length >= 2 ? (
-                            <Button
-                                type="button"
-                                variant="ghost"
-                                size="sm"
-                                className="mt-2"
-                                onClick={() => removeDateSlot(dateIndex)}
-                            >
-                                この日付を削除
-                            </Button>
-                        ) : null}
                     </div>
                 ))}
             </div>
