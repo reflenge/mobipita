@@ -62,7 +62,6 @@ export default defineSchema({
         tenantStatus: tenantStatus,
         // 店舗形態（移動店舗 / 固定店舗）。
         storeType: storeType,
-
     })
         // テナントスラッグで検索するためのインデックス。
         .index("by_org_slug", ["tenantSlug"])
@@ -78,8 +77,6 @@ export default defineSchema({
         .index("by_status_type", ["tenantStatus", "tenantType"]),
     // テナントへの従業員（Member）割当。1 Member が複数テナントに割り当て可能。
     TenantMemberAssignments: defineTable({
-        // 連絡先
-        phoneNumber: v.optional(v.string()),
         // Clerk の組織 ID（スコープ用）。
         clerkOrgId: v.string(),
         // 割当先テナント（Convex Tenants の ID）。
@@ -93,8 +90,8 @@ export default defineSchema({
         // 同一テナント・同一ユーザーの重複を防ぐ。
         .index("by_tenant_user", ["tenantId", "clerkUserId"]),
     TenantDetails: defineTable({
-    tenantId: v.id("Tenants"), // 親テーブルへの参照
-    phoneNumber: v.optional(v.string()),
-    // 今後、住所やSNSリンク、メモなどが増えてもここに追加すればOK
-  }).index("by_tenantId", ["tenantId"]),
+        tenantId: v.id("Tenants"), // 親テーブルへの参照
+        phoneNumber: v.optional(v.string()),
+        // 今後、住所やSNSリンク、メモなどが増えてもここに追加すればOK
+    }).index("by_tenantId", ["tenantId"]),
 });

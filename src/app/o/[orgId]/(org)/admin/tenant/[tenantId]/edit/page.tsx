@@ -94,12 +94,13 @@ export default function TenantEditPage({ params: paramsPromise }: PageProps) {
                 const logoFileId = await handleImageUpload(values.tenantLogo);
 
                 // 不要な tenantLogo フィールドを除外してペイロードを作成
-                const { tenantLogo, ...payload } = values;
+                const { tenantLogo, phoneNumber, ...payload } = values;
 
                 await updateTenant({
                     id: tenantId as Id<"Tenants">,
                     clerkOrgId: orgId,
                     ...payload,
+                    phoneNumber: phoneNumber === "" ? undefined : phoneNumber,
                     tenantLogoFileId: logoFileId,
                 });
                 

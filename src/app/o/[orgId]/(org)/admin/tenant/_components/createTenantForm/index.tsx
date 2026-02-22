@@ -54,7 +54,7 @@ export default function CreateTenantForm({ org }: CreateTenantFormProps) {
         defaultValues: {
             tenantName: "",
             tenantSlug: generateTenantSlug(),
-            phoneNumber: "",
+            phoneNumber: undefined,
             tenantType: "tenant",
             tenantStatus: "preparing",
             storeType: "fixed",

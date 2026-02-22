@@ -69,12 +69,10 @@ export const formSchema = z.object({
     /** 連絡先電話番号（任意） */
     phoneNumber: z
         .string()
-        .max(20, "電話番号は20文字以内で入力してください")
-        .regex(
-            /^[0-9-]+$/, 
-            "電話番号は数字とハイフンのみで入力してください")
-        .optional()
-        .or(z.literal("")),
+        .regex(/^[0-9-]*$/, "電話番号は数字とハイフンのみで入力してください")
+        .max(20, "20文字以内で入力してください")
+        .transform((val) => (val === "" ? undefined : val))
+        .optional(), // これを入れる場合は CreateTenantFormValues の定義が正しく推論されているか確認
     /** テナント種別（直営 / テナント） */
     tenantType: z.enum(["direct", "tenant"]),
     /** テナントの運用状態 */
