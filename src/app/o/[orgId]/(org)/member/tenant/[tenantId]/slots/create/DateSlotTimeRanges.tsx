@@ -23,11 +23,25 @@ import {
 import type { FormValues, CrossFieldError } from "./schema";
 
 type DateSlotTimeRangesProps = {
+    /** この日付スロットの配列インデックス（dateTimeSlots[dateIndex]） */
     dateIndex: number;
     control: React.ComponentProps<typeof Controller<FormValues>>["control"];
+    /**
+     * useMemo で計算されたクロスフィールドエラーの配列。
+     * 各エラーの path から該当フィールドのものを抽出して表示する。
+     * zodResolver の fieldState とは別系統（古いエラーが残らない）。
+     */
     crossFieldErrors: CrossFieldError[];
 };
 
+/**
+ * 1つの日付スロット（日付ピッカー + 複数の時間帯入力）を描画するコンポーネント。
+ *
+ * エラー表示の仕組み:
+ *   - fieldState.invalid: zodResolver によるフィールドレベルエラー（フォーマット・必須）
+ *   - crossFieldErrors: 過去日付・終了>開始・長さ・重複のクロスフィールドエラー
+ *   フィールドレベルエラーが優先表示され、なければクロスフィールドエラーを表示。
+ */
 export function DateSlotTimeRanges({
     dateIndex,
     control,
@@ -50,6 +64,7 @@ export function DateSlotTimeRanges({
                     key={field.id}
                     className="flex flex-wrap items-center gap-2"
                 >
+                    {/* 日付ピッカー: 最初の時間帯行にのみ表示 */}
                     {timeIndex === 0 ? (
                         <Controller
                             name={`dateTimeSlots.${dateIndex}.date`}
@@ -114,6 +129,7 @@ export function DateSlotTimeRanges({
                                                 />
                                             </PopoverContent>
                                         </Popover>
+                                        {/* フィールドレベルエラー優先、なければクロスフィールドエラー */}
                                         {dateFieldState.invalid && (
                                             <FieldError errors={[dateFieldState.error]} />
                                         )}
@@ -127,6 +143,8 @@ export function DateSlotTimeRanges({
                     ) : (
                         <span className="w-40" aria-hidden />
                     )}
+
+                    {/* 開始時刻 */}
                     <Controller
                         name={`dateTimeSlots.${dateIndex}.timeRanges.${timeIndex}.start`}
                         control={control}
@@ -145,7 +163,10 @@ export function DateSlotTimeRanges({
                             </div>
                         )}
                     />
+
                     <span className="text-muted-foreground">-</span>
+
+                    {/* 終了時刻 + クロスフィールドエラー（終了>開始・長さ・重複） */}
                     <Controller
                         name={`dateTimeSlots.${dateIndex}.timeRanges.${timeIndex}.end`}
                         control={control}
@@ -162,9 +183,11 @@ export function DateSlotTimeRanges({
                                         aria-label="終了時刻"
                                         aria-invalid={fieldState.invalid || endCrossErrors.length > 0}
                                     />
+                                    {/* フィールドレベルエラー優先 */}
                                     {fieldState.invalid && (
                                         <FieldError errors={[fieldState.error]} />
                                     )}
+                                    {/* フィールドレベルエラーがなければクロスフィールドエラーを表示 */}
                                     {!fieldState.invalid && endCrossErrors.length > 0 && (
                                         <FieldError errors={endCrossErrors.map((e) => ({ message: e.message }))} />
                                     )}
@@ -172,6 +195,8 @@ export function DateSlotTimeRanges({
                             );
                         }}
                     />
+
+                    {/* 時間帯追加ボタン: 最初の行にのみ表示 */}
                     {timeIndex === 0 ? (
                         <Button
                             type="button"
@@ -182,6 +207,8 @@ export function DateSlotTimeRanges({
                             この日にちに別の時間帯を追加
                         </Button>
                     ) : null}
+
+                    {/* 時間帯削除ボタン: 2行以上ある場合のみ表示 */}
                     {fields.length >= 2 ? (
                         <Button
                             type="button"

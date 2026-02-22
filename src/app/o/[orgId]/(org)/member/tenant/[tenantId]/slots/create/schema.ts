@@ -4,6 +4,7 @@ import {
     parseTimeToMinutes,
 } from "./dateUtils";
 
+// ─── 質問タイプ ────────────────────────────────────────────
 export const questionTypeEnum = z.enum([
     "text",
     "textarea",
@@ -14,12 +15,15 @@ export const questionTypeEnum = z.enum([
     "time",
 ]);
 
-/** HH:mm または HH:mm:ss 形式の時刻パターン（HTML5 time input の仕様に合わせる） */
+// ─── パターン定数 ──────────────────────────────────────────
+/** HTML5 time input の出力形式に合わせた時刻パターン */
 const TIME_PATTERN = /^([01]?[0-9]|2[0-3]):[0-5][0-9](:[0-5][0-9])?$/;
 
-/** yyyy-MM-dd 形式の日付パターン */
 const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
 
+// ─── バリデーションヘルパー ────────────────────────────────
+
+/** 開始 < 終了 を分単位で比較 */
 function isTimeBefore(a: string, b: string): boolean {
     const aMin = parseTimeToMinutes(a);
     const bMin = parseTimeToMinutes(b);
@@ -27,6 +31,7 @@ function isTimeBefore(a: string, b: string): boolean {
     return aMin < bMin;
 }
 
+/** 2つの時間帯が重なるか判定（境界一致は重複としない） */
 function timeRangesOverlap(
     a: { start: string; end: string },
     b: { start: string; end: string }
@@ -46,11 +51,23 @@ function timeRangesOverlap(
     return aStart < bEnd && bStart < aEnd;
 }
 
+// ─── クロスフィールドバリデーション ────────────────────────
+
 export type CrossFieldError = { path: string; message: string };
 
 /**
  * dateTimeSlots のクロスフィールドバリデーション。
- * superRefine（submit時）と useMemo（リアルタイム表示）の両方から呼ばれる。
+ *
+ * zodResolver の superRefine ではなく、コンポーネント側の useMemo から呼ばれる。
+ * react-hook-form の mode:"all" は変更フィールドのエラーしか更新しないため、
+ * superRefine でクロスフィールドエラーを設定すると未変更フィールドに古いエラーが残る。
+ * そのため zodResolver とは独立に、同期的にエラーを計算してコンポーネントに渡す方式を採用。
+ *
+ * チェック順序:
+ *   1. 過去日付チェック
+ *   2. 終了時刻 > 開始時刻
+ *   3. 時間帯の長さ >= 枠の長さ（durationMinutes）
+ *   4. 同一日付内の時間帯重複
  */
 export function validateDateTimeSlots(
     dateTimeSlots: Array<{ date: string; timeRanges: Array<{ start: string; end: string }> }>,
@@ -99,7 +116,7 @@ export function validateDateTimeSlots(
             }
         });
 
-        // 4. 重複チェック
+        // 4. 重複チェック（同一日付内のペアを全探索）
         for (let i = 0; i < timeRanges.length; i++) {
             for (let j = i + 1; j < timeRanges.length; j++) {
                 const r1 = timeRanges[i];
@@ -122,7 +139,11 @@ export function validateDateTimeSlots(
     return errors;
 }
 
-/** 時刻のフォーマットのみ検証（終了時刻チェックは superRefine で順序制御） */
+// ─── Zod スキーマ ──────────────────────────────────────────
+// フィールドレベルのバリデーション（フォーマット・必須・最小値）のみ定義。
+// クロスフィールドバリデーションは validateDateTimeSlots() で別途処理する。
+
+/** 時刻の開始・終了ペア（フォーマットのみ検証） */
 export const timeRangeSchema = z.object({
     start: z
         .string()
@@ -134,6 +155,7 @@ export const timeRangeSchema = z.object({
         .regex(TIME_PATTERN, "時刻は HH:mm 形式で入力してください"),
 });
 
+/** 日付 + 時間帯の配列 */
 export const dateTimeSlotSchema = z.object({
     date: z
         .string()
@@ -143,9 +165,8 @@ export const dateTimeSlotSchema = z.object({
 });
 
 /**
- * zodResolver 用のベーススキーマ（superRefine なし）。
- * クロスフィールドバリデーションは useMemo + validateDateTimeSlots で処理するため、
- * zodResolver に superRefine を含めると mode:"all" で古いエラーが残る問題が発生する。
+ * zodResolver に渡すフォーム全体のスキーマ。
+ * superRefine は含めない（理由は validateDateTimeSlots の JSDoc 参照）。
  */
 export const formSchema = z.object({
     slotTemplate: z.object({
@@ -190,6 +211,8 @@ export const formSchema = z.object({
 
 export type FormValues = z.infer<typeof formSchema>;
 
+// ─── デフォルト値 ──────────────────────────────────────────
+/** フォームリセット時に使用する slotTemplate のデフォルト値 */
 export const DEFAULT_SLOT_TEMPLATE: FormValues["slotTemplate"] = {
     tenantId: "",
     serviceId: "",

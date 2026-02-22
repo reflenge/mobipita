@@ -40,7 +40,22 @@ type Props = {
     tenantId: string;
 };
 
+/**
+ * 予約枠作成ページのメインコンポーネント。
+ *
+ * バリデーション戦略:
+ *   - フィールドレベル（フォーマット・必須）: zodResolver + mode:"all" が自動処理
+ *   - クロスフィールド（過去日付・終了>開始・長さ・重複）: useWatch → useMemo で同期計算し props で子に渡す
+ *     zodResolver に superRefine を含めると mode:"all" で変更フィールドのエラーしか更新されず
+ *     古いエラーが残る問題があるため、superRefine は使わない。
+ *   - submit 時: zodResolver のパス後、crossFieldErrors を追加チェック
+ *
+ * カレンダー連携:
+ *   dateTimeSlots + durationMinutes + bufferMinutes を useWatch で購読し、
+ *   useMemo で個々の予約枠イベントに変換して SlotCalender に渡す。
+ */
 export function CreateSlot({ orgId, tenantId }: Props) {
+    // ─── データ取得 ─────────────────────────────────────────
     const tenant = useQuery(api.tenants.getByIdInOrg, {
         clerkOrgId: orgId,
         tenantId: tenantId as Id<"Tenants">,
@@ -58,6 +73,9 @@ export function CreateSlot({ orgId, tenantId }: Props) {
         tenantId: tenantId as Id<"Tenants">,
     });
 
+    // ─── フォーム初期化 ────────────────────────────────────
+    // formSchema は superRefine なしのベーススキーマ。
+    // クロスフィールドバリデーションは validateDateTimeSlots で別途処理する。
     const form = useForm<FormValues>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -99,6 +117,10 @@ export function CreateSlot({ orgId, tenantId }: Props) {
         mode: "all",
     });
 
+    // ─── リアルタイム値の購読 ──────────────────────────────
+    // useWatch はフォームストアの値変更で再レンダーを起こす。
+    // これを useMemo の依存値にすることで、バリデーションとカレンダーイベント生成が
+    // レンダー中に同期的に再計算される（非同期の trigger を使わないため競合しない）。
     const watchedDateTimeSlots = useWatch({
         control: form.control,
         name: "dateTimeSlots",
@@ -112,11 +134,16 @@ export function CreateSlot({ orgId, tenantId }: Props) {
         name: "slotTemplate.bufferMinutes",
     });
 
+    // ─── クロスフィールドバリデーション（同期） ────────────
+    // 過去日付・終了>開始・長さ・重複の4種。結果は子コンポーネントに props で渡す。
     const crossFieldErrors = useMemo(
         () => validateDateTimeSlots(watchedDateTimeSlots ?? [], Number(watchedDuration)),
         [watchedDateTimeSlots, watchedDuration],
     );
 
+    // ─── カレンダーイベント生成 ────────────────────────────
+    // 各 timeRange を durationMinutes 間隔で分割し、bufferMinutes を挟んで個々の枠を生成。
+    // 例: 09:00–14:00, duration=60, buffer=30 → 09:00–10:00, 10:30–11:30, 12:00–13:00
     const calendarEvents = useMemo((): SlotEvent[] => {
         const duration = Number(watchedDuration) || 0;
         const buffer = Number(watchedBuffer) || 0;
@@ -148,6 +175,9 @@ export function CreateSlot({ orgId, tenantId }: Props) {
         return events;
     }, [watchedDateTimeSlots, watchedDuration, watchedBuffer]);
 
+    // ─── 非同期データ取得後のフォーム値補完 ────────────────
+    // Convex のクエリは非同期なので、初回レンダー時はデフォルト値が空文字。
+    // データ到着後に serviceId / locationId を設定する。
     useEffect(() => {
         if (tenant) {
             if (!form.getValues("slotTemplate.serviceId") && activeServices[0]) {
@@ -166,6 +196,9 @@ export function CreateSlot({ orgId, tenantId }: Props) {
         }
     }, [tenant, tenantId, form, activeServices, locations]);
 
+    // ─── 送信ハンドラー ────────────────────────────────────
+    // zodResolver 通過後に呼ばれるため、フィールドレベルのバリデーションは通過済み。
+    // クロスフィールドエラーが残っている場合は setError で表示して送信をブロック。
     function onSubmit(data: FormValues) {
         if (crossFieldErrors.length > 0) {
             for (const err of crossFieldErrors) {
@@ -184,10 +217,12 @@ export function CreateSlot({ orgId, tenantId }: Props) {
         );
     }
 
+    // ─── ローディング ──────────────────────────────────────
     if (!tenant || services === undefined || locations === undefined) {
         return <CreateSlotSkeleton />;
     }
 
+    // ─── レンダー ──────────────────────────────────────────
     return (
         <div className="mx-auto container px-6 py-10 space-y-6">
             <div>

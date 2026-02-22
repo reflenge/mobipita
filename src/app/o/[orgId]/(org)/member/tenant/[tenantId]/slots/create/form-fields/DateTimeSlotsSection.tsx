@@ -15,9 +15,14 @@ import type { Control } from "react-hook-form";
 
 type Props = {
     control: Control<FormValues>;
+    /** createSlot の useMemo で計算されたクロスフィールドエラー */
     crossFieldErrors: CrossFieldError[];
 };
 
+/**
+ * 「枠の日時」セクション全体を描画するコンポーネント。
+ * 日付スロット（DateSlotTimeRanges）の一覧と、追加・削除ボタンを管理する。
+ */
 export function DateTimeSlotsSection({ control, crossFieldErrors }: Props) {
     const dateTimeSlots = useWatch({ control, name: "dateTimeSlots" });
     const { errors } = useFormState({ control });
@@ -30,6 +35,7 @@ export function DateTimeSlotsSection({ control, crossFieldErrors }: Props) {
         name: "dateTimeSlots",
     });
 
+    /** 「日付を追加」ボタンで使用する次の日付を算出（最新日 + 1日） */
     const getNextDate = useCallback((): string => {
         const dates = (dateTimeSlots ?? [])
             .map((slot) => slot?.date)
@@ -87,6 +93,7 @@ export function DateTimeSlotsSection({ control, crossFieldErrors }: Props) {
                     </div>
                 ))}
             </div>
+            {/* dateTimeSlots 配列レベルのエラー（例: "日付と時間帯を1つ以上追加してください"） */}
             {typeof errors.dateTimeSlots?.message === "string" && (
                 <FieldError
                     errors={[{ message: errors.dateTimeSlots.message }]}

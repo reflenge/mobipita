@@ -10,9 +10,10 @@ import jaLocale from "@fullcalendar/core/locales/ja";
 import { toast } from "sonner";
 import type { EventSourceInput, EventClickArg } from "@fullcalendar/core";
 
+/** createSlot の useMemo で生成され、カレンダーに渡されるイベント1件の型 */
 export type SlotEvent = {
     title: string;
-    start: string;
+    start: string;   // ISO 8601（例: "2026-02-22T09:00:00"）
     end: string;
     backgroundColor?: string;
     borderColor?: string;
@@ -20,9 +21,14 @@ export type SlotEvent = {
 };
 
 type SlotCalenderProps = {
+    /** 表示する予約枠イベントの配列。フォームデータから動的に生成される */
     events?: SlotEvent[];
 };
 
+/**
+ * 予約枠プレビュー用カレンダー。
+ * createSlot から渡された events をそのまま FullCalendar に表示する。
+ */
 const SlotCalender = ({ events = [] }: SlotCalenderProps) => {
     const handleDateClick = (arg: DateClickArg) => {
         toast.info(arg.dateStr);
