@@ -8,7 +8,7 @@ import { type DateClickArg } from "@fullcalendar/interaction";
 import interactionPlugin from "@fullcalendar/interaction";
 import jaLocale from "@fullcalendar/core/locales/ja";
 import { toast } from "sonner";
-import type { EventSourceInput, EventClickArg } from "@fullcalendar/core";
+import type { EventSourceInput, EventClickArg, EventContentArg } from "@fullcalendar/core";
 
 /** createSlot の useMemo で生成され、カレンダーに渡されるイベント1件の型 */
 export type SlotEvent = {
@@ -38,6 +38,18 @@ const SlotCalender = ({ events = [] }: SlotCalenderProps) => {
         toast.info(JSON.stringify(info.event, null, 2));
     };
 
+    const renderEventContent = (arg: EventContentArg) => {
+        const locName = arg.event.extendedProps?.locationName as string | undefined;
+        return (
+            <div className="overflow-hidden px-0.5 leading-tight">
+                <div className="font-medium">{arg.event.title}</div>
+                {locName && (
+                    <div className="text-[10px] opacity-80 truncate">{locName}</div>
+                )}
+            </div>
+        );
+    };
+
     const calendarEvents: EventSourceInput = events;
 
     return (
@@ -63,6 +75,7 @@ const SlotCalender = ({ events = [] }: SlotCalenderProps) => {
                 },
             }}
             eventClick={handleEventClick}
+            eventContent={renderEventContent}
             dateClick={handleDateClick}
             events={calendarEvents}
             locale={jaLocale}

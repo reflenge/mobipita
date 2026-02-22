@@ -110,7 +110,7 @@ export function CreateSlot({ orgId, tenantId }: Props) {
             dateTimeSlots: [
                 {
                     date: getTodayYYYYMMDD(),
-                    timeRanges: [{ start: "09:00", end: "14:00" }],
+                    timeRanges: [{ start: "09:00", end: "14:00", locationId: "" }],
                 },
             ],
         },
@@ -133,12 +133,16 @@ export function CreateSlot({ orgId, tenantId }: Props) {
         control: form.control,
         name: "slotTemplate.bufferMinutes",
     });
+    const watchedDefaultLocationId = useWatch({
+        control: form.control,
+        name: "slotTemplate.defaultLocationId",
+    });
 
     // ─── クロスフィールドバリデーション（同期） ────────────
-    // 過去日付・終了>開始・長さ・重複の4種。結果は子コンポーネントに props で渡す。
+    // 過去日付・終了>開始・長さ・重複・場所の5種。結果は子コンポーネントに props で渡す。
     const crossFieldErrors = useMemo(
-        () => validateDateTimeSlots(watchedDateTimeSlots ?? [], Number(watchedDuration)),
-        [watchedDateTimeSlots, watchedDuration],
+        () => validateDateTimeSlots(watchedDateTimeSlots ?? [], Number(watchedDuration), watchedDefaultLocationId),
+        [watchedDateTimeSlots, watchedDuration, watchedDefaultLocationId],
     );
 
     // ─── カレンダーイベント生成 ────────────────────────────
@@ -148,6 +152,14 @@ export function CreateSlot({ orgId, tenantId }: Props) {
         const duration = Number(watchedDuration) || 0;
         const buffer = Number(watchedBuffer) || 0;
         if (duration <= 0) return [];
+
+        const locationMap = new Map<string, string>(
+            (locations ?? []).map((loc) => [loc._id as string, loc.name]),
+        );
+        const resolveLocationName = (locationId?: string) => {
+            const id = locationId || watchedDefaultLocationId;
+            return id ? locationMap.get(id) ?? "" : "";
+        };
 
         const events: SlotEvent[] = [];
         const pad = (n: number) => String(n).padStart(2, "0");
@@ -160,6 +172,8 @@ export function CreateSlot({ orgId, tenantId }: Props) {
                 const endMin = parseTimeToMinutes(range.end);
                 if (Number.isNaN(startMin) || Number.isNaN(endMin) || startMin >= endMin) continue;
 
+                const locName = resolveLocationName(range.locationId);
+
                 let cursor = startMin;
                 while (cursor + duration <= endMin) {
                     const slotEnd = cursor + duration;
@@ -167,13 +181,14 @@ export function CreateSlot({ orgId, tenantId }: Props) {
                         title: `${toTimeStr(cursor)}–${toTimeStr(slotEnd)}`,
                         start: `${slot.date}T${toTimeStr(cursor)}:00`,
                         end: `${slot.date}T${toTimeStr(slotEnd)}:00`,
+                        extendedProps: { locationName: locName },
                     });
                     cursor = slotEnd + buffer;
                 }
             }
         }
         return events;
-    }, [watchedDateTimeSlots, watchedDuration, watchedBuffer]);
+    }, [watchedDateTimeSlots, watchedDuration, watchedBuffer, locations, watchedDefaultLocationId]);
 
     // ─── 非同期データ取得後のフォーム値補完 ────────────────
     // Convex のクエリは非同期なので、初回レンダー時はデフォルト値が空文字。
@@ -256,6 +271,7 @@ export function CreateSlot({ orgId, tenantId }: Props) {
                         <DateTimeSlotsSection
                             control={form.control}
                             crossFieldErrors={crossFieldErrors}
+                            locations={locations ?? []}
                         />
 
                         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -310,6 +326,7 @@ export function CreateSlot({ orgId, tenantId }: Props) {
                                                 {
                                                     start: "09:00",
                                                     end: "10:00",
+                                                    locationId: "",
                                                 },
                                             ],
                                         },

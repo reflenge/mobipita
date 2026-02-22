@@ -68,10 +68,12 @@ export type CrossFieldError = { path: string; message: string };
  *   2. 終了時刻 > 開始時刻
  *   3. 時間帯の長さ >= 枠の長さ（durationMinutes）
  *   4. 同一日付内の時間帯重複
+ *   5. 場所チェック（時間帯の locationId も defaultLocationId も未指定ならエラー）
  */
 export function validateDateTimeSlots(
-    dateTimeSlots: Array<{ date: string; timeRanges: Array<{ start: string; end: string }> }>,
+    dateTimeSlots: Array<{ date: string; timeRanges: Array<{ start: string; end: string; locationId?: string }> }>,
     durationMinutes: number,
+    defaultLocationId?: string,
 ): CrossFieldError[] {
     const errors: CrossFieldError[] = [];
     const today = getTodayLocalYYYYMMDD();
@@ -134,6 +136,18 @@ export function validateDateTimeSlots(
                 }
             }
         }
+
+        // 5. 場所チェック（時間帯の locationId も defaultLocationId も未指定ならエラー）
+        timeRanges.forEach((range, rangeIndex) => {
+            const hasOwnLocation = Boolean(range.locationId);
+            const hasDefault = Boolean(defaultLocationId);
+            if (!hasOwnLocation && !hasDefault) {
+                errors.push({
+                    path: `dateTimeSlots.${slotIndex}.timeRanges.${rangeIndex}.locationId`,
+                    message: "場所を指定してください（デフォルトの場所も未設定です）",
+                });
+            }
+        });
     });
 
     return errors;
@@ -143,7 +157,7 @@ export function validateDateTimeSlots(
 // フィールドレベルのバリデーション（フォーマット・必須・最小値）のみ定義。
 // クロスフィールドバリデーションは validateDateTimeSlots() で別途処理する。
 
-/** 時刻の開始・終了ペア（フォーマットのみ検証） */
+/** 時刻の開始・終了 + 場所（フォーマットのみ検証）。locationId 未指定時は default を使う */
 export const timeRangeSchema = z.object({
     start: z
         .string()
@@ -153,6 +167,8 @@ export const timeRangeSchema = z.object({
         .string()
         .min(1, "終了時刻を入力")
         .regex(TIME_PATTERN, "時刻は HH:mm 形式で入力してください"),
+    /** 空文字 = デフォルトの場所を使用 */
+    locationId: z.string(),
 });
 
 /** 日付 + 時間帯の配列 */
@@ -171,7 +187,7 @@ export const dateTimeSlotSchema = z.object({
 export const formSchema = z.object({
     slotTemplate: z.object({
         tenantId: z.string(),
-        serviceId: z.string(),
+        serviceId: z.string().min(1, "サービスを選択してください"),
         defaultLocationId: z.string(),
         durationMinutes: z.number().min(1, "1分以上"),
         defaultCapacity: z.number().min(1, "1以上"),

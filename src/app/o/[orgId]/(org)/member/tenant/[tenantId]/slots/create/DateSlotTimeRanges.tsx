@@ -8,6 +8,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { FieldError } from "@/components/ui/field";
 import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
+import {
     Popover,
     PopoverContent,
     PopoverTrigger,
@@ -22,6 +29,8 @@ import {
 } from "./dateUtils";
 import type { FormValues, CrossFieldError } from "./schema";
 
+type Location = { _id: string; name: string };
+
 type DateSlotTimeRangesProps = {
     /** この日付スロットの配列インデックス（dateTimeSlots[dateIndex]） */
     dateIndex: number;
@@ -32,6 +41,8 @@ type DateSlotTimeRangesProps = {
      * zodResolver の fieldState とは別系統（古いエラーが残らない）。
      */
     crossFieldErrors: CrossFieldError[];
+    /** テナントに紐づく場所一覧（時間帯ごとの場所選択に使用） */
+    locations: Location[];
 };
 
 /**
@@ -46,6 +57,7 @@ export function DateSlotTimeRanges({
     dateIndex,
     control,
     crossFieldErrors,
+    locations,
 }: DateSlotTimeRangesProps) {
     const [datePickerOpen, setDatePickerOpen] = useState(false);
     const { fields, append, remove } = useFieldArray({
@@ -54,7 +66,7 @@ export function DateSlotTimeRanges({
     });
 
     const addTimeRange = () => {
-        append({ start: "09:00", end: "14:00" });
+        append({ start: "09:00", end: "14:00", locationId: "" });
     };
 
     return (
@@ -190,6 +202,46 @@ export function DateSlotTimeRanges({
                                     {/* フィールドレベルエラーがなければクロスフィールドエラーを表示 */}
                                     {!fieldState.invalid && endCrossErrors.length > 0 && (
                                         <FieldError errors={endCrossErrors.map((e) => ({ message: e.message }))} />
+                                    )}
+                                </div>
+                            );
+                        }}
+                    />
+
+                    {/* 時間帯ごとの場所選択（空 = デフォルトの場所を使用） */}
+                    <Controller
+                        name={`dateTimeSlots.${dateIndex}.timeRanges.${timeIndex}.locationId`}
+                        control={control}
+                        render={({ field: locField }) => {
+                            const locCrossErrors = crossFieldErrors.filter(
+                                (e) => e.path === `dateTimeSlots.${dateIndex}.timeRanges.${timeIndex}.locationId`
+                            );
+                            return (
+                                <div className="flex flex-col gap-0.5">
+                                    <Select
+                                        value={locField.value || "__default__"}
+                                        onValueChange={(v) => locField.onChange(v === "__default__" ? "" : v)}
+                                    >
+                                        <SelectTrigger
+                                            className={cn("w-36", locCrossErrors.length > 0 && "border-destructive")}
+                                            aria-label="場所を選択"
+                                            aria-invalid={locCrossErrors.length > 0}
+                                        >
+                                            <SelectValue placeholder="デフォルト" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="__default__">
+                                                デフォルト
+                                            </SelectItem>
+                                            {locations.map((loc) => (
+                                                <SelectItem key={loc._id} value={loc._id}>
+                                                    {loc.name}
+                                                </SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                    {locCrossErrors.length > 0 && (
+                                        <FieldError errors={locCrossErrors.map((e) => ({ message: e.message }))} />
                                     )}
                                 </div>
                             );

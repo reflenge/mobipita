@@ -32,7 +32,7 @@ export function LocationSelectField({ control, options }: Props) {
             render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
                     <FieldLabel htmlFor="form-slot-create-location-id">
-                        場所
+                        デフォルトの場所
                     </FieldLabel>
                     <Select value={field.value} onValueChange={field.onChange}>
                         <SelectTrigger
@@ -51,7 +51,8 @@ export function LocationSelectField({ control, options }: Props) {
                         </SelectContent>
                     </Select>
                     <FieldDescription>
-                        この予約枠を紐づける場所を選びます。
+                        時間帯ごとに場所を指定しない場合、この場所が使われます。
+                        固定店舗の場合はここを設定するだけでよい。
                     </FieldDescription>
                     {fieldState.invalid && (
                         <FieldError errors={[fieldState.error]} />

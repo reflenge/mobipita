@@ -13,17 +13,21 @@ import { addDaysToYYYYMMDD, getTodayYYYYMMDD } from "../dateUtils";
 import type { FormValues, CrossFieldError } from "../schema";
 import type { Control } from "react-hook-form";
 
+type Location = { _id: string; name: string };
+
 type Props = {
     control: Control<FormValues>;
     /** createSlot の useMemo で計算されたクロスフィールドエラー */
     crossFieldErrors: CrossFieldError[];
+    /** テナントに紐づく場所一覧（時間帯ごとの場所選択に使用） */
+    locations: Location[];
 };
 
 /**
  * 「枠の日時」セクション全体を描画するコンポーネント。
  * 日付スロット（DateSlotTimeRanges）の一覧と、追加・削除ボタンを管理する。
  */
-export function DateTimeSlotsSection({ control, crossFieldErrors }: Props) {
+export function DateTimeSlotsSection({ control, crossFieldErrors, locations }: Props) {
     const dateTimeSlots = useWatch({ control, name: "dateTimeSlots" });
     const { errors } = useFormState({ control });
     const {
@@ -61,7 +65,7 @@ export function DateTimeSlotsSection({ control, crossFieldErrors }: Props) {
                     onClick={() =>
                         appendDateSlot({
                             date: getNextDate(),
-                            timeRanges: [{ start: "09:00", end: "14:00" }],
+                            timeRanges: [{ start: "09:00", end: "14:00", locationId: "" }],
                         })
                     }
                 >
@@ -78,6 +82,7 @@ export function DateTimeSlotsSection({ control, crossFieldErrors }: Props) {
                             dateIndex={dateIndex}
                             control={control}
                             crossFieldErrors={crossFieldErrors}
+                            locations={locations}
                         />
                         {dateSlotFields.length >= 2 ? (
                             <Button
