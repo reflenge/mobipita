@@ -49,6 +49,7 @@ const formSchema = z.object({
     slotTemplate: z.object({
         tenantId: z.string(),
         serviceId: z.string(),
+        defaultLocationId: z.string(),
         durationMinutes: z.number().min(1, "1分以上"),
         defaultCapacity: z.number().min(1, "1以上"),
         defaultVisibility: z.enum(["public", "unlisted", "private"]),
@@ -85,10 +86,10 @@ const formSchema = z.object({
 const DEFAULT_SLOT_TEMPLATE: z.infer<typeof formSchema>["slotTemplate"] = {
     tenantId: "",
     serviceId: "",
+    defaultLocationId: "",
     durationMinutes: 60,
     defaultCapacity: 2,
     defaultVisibility: "public",
-    // defaultLocationId: "",
     acceptanceWindow: {
         openBeforeMinutes: 86400,
         closeBeforeMinutes: 180,
@@ -138,6 +139,7 @@ export function CreateSlot({ orgId, tenantId }: Props) {
             slotTemplate: {
                 tenantId,
                 serviceId: activeServices[0]?._id ?? "",
+                defaultLocationId: locations?.[0]?._id ?? "",
                 durationMinutes: 60,
                 defaultCapacity: 2,
                 defaultVisibility: "public",
@@ -172,15 +174,22 @@ export function CreateSlot({ orgId, tenantId }: Props) {
     });
 
     useEffect(() => {
-        if (
-            tenant &&
-            !form.getValues("slotTemplate.serviceId") &&
-            activeServices[0]
-        ) {
-            form.setValue("slotTemplate.tenantId", tenantId);
-            form.setValue("slotTemplate.serviceId", activeServices[0]._id);
+        if (tenant) {
+            if (!form.getValues("slotTemplate.serviceId") && activeServices[0]) {
+                form.setValue("slotTemplate.tenantId", tenantId);
+                form.setValue("slotTemplate.serviceId", activeServices[0]._id);
+            }
+            if (
+                !form.getValues("slotTemplate.defaultLocationId") &&
+                locations?.[0]
+            ) {
+                form.setValue(
+                    "slotTemplate.defaultLocationId",
+                    locations[0]._id
+                );
+            }
         }
-    }, [tenant, tenantId, form, activeServices]);
+    }, [tenant, tenantId, form, activeServices, locations]);
 
     function onSubmit(data: z.infer<typeof formSchema>) {
         console.log("🚀 => onSubmit => data:", data);
@@ -203,123 +212,100 @@ export function CreateSlot({ orgId, tenantId }: Props) {
                     {tenant.tenantName} {tenant._id} の予約枠を新規作成します
                 </p>
             </div>
-        <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
-            <form
-                id="form-slot-create"
-                onSubmit={form.handleSubmit(onSubmit)}
-                className="space-y-6"
-            >
-                <FieldGroup className="space-y-4">
-                    <input
-                        type="hidden"
-                        {...form.register("slotTemplate.tenantId")}
-                    />
+            <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
+                <form
+                    id="form-slot-create"
+                    onSubmit={form.handleSubmit(onSubmit)}
+                    className="space-y-6"
+                >
+                    <FieldGroup className="space-y-4">
+                        <input
+                            type="hidden"
+                            {...form.register("slotTemplate.tenantId")}
+                        />
 
-                    {/* サービス */}
-                    <Controller
-                        name="slotTemplate.serviceId"
-                        control={form.control}
-                        render={({ field, fieldState }) => (
-                            <Field data-invalid={fieldState.invalid}>
-                                <FieldLabel htmlFor="form-slot-create-service-id">
-                                    サービス
-                                </FieldLabel>
-                                <Select
-                                    value={field.value}
-                                    onValueChange={field.onChange}
-                                >
-                                    <SelectTrigger
-                                        id="form-slot-create-service-id"
-                                        aria-invalid={fieldState.invalid}
-                                        className="w-full max-w-xs"
+                        {/* サービス */}
+                        <Controller
+                            name="slotTemplate.serviceId"
+                            control={form.control}
+                            render={({ field, fieldState }) => (
+                                <Field data-invalid={fieldState.invalid}>
+                                    <FieldLabel htmlFor="form-slot-create-service-id">
+                                        サービス
+                                    </FieldLabel>
+                                    <Select
+                                        value={field.value}
+                                        onValueChange={field.onChange}
                                     >
-                                        <SelectValue placeholder="サービスを選択" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        {activeServices.map((s) => (
-                                            <SelectItem
-                                                key={s._id}
-                                                value={s._id}
-                                            >
-                                                {s.title}
-                                            </SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
-                                <FieldDescription>
-                                    この予約枠を紐づけるサービスを選びます。
-                                </FieldDescription>
-                                {fieldState.invalid && (
-                                    <FieldError errors={[fieldState.error]} />
-                                )}
-                            </Field>
-                        )}
-                    />
+                                        <SelectTrigger
+                                            id="form-slot-create-service-id"
+                                            aria-invalid={fieldState.invalid}
+                                            className="w-full max-w-xs"
+                                        >
+                                            <SelectValue placeholder="サービスを選択" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            {activeServices.map((s) => (
+                                                <SelectItem
+                                                    key={s._id}
+                                                    value={s._id}
+                                                >
+                                                    {s.title}
+                                                </SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                    <FieldDescription>
+                                        この予約枠を紐づけるサービスを選びます。
+                                    </FieldDescription>
+                                    {fieldState.invalid && (
+                                        <FieldError errors={[fieldState.error]} />
+                                    )}
+                                </Field>
+                            )}
+                        />
 
-                    {/* 枠の長さ・収容数・表示 */}
-                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+                        {/* ロケーション */}
                         <Controller
-                            name="slotTemplate.durationMinutes"
+                            name="slotTemplate.defaultLocationId"
                             control={form.control}
                             render={({ field, fieldState }) => (
                                 <Field data-invalid={fieldState.invalid}>
-                                    <FieldLabel htmlFor="form-slot-duration">
-                                        枠の長さ（分）
+                                    <FieldLabel htmlFor="form-slot-create-location-id">
+                                        場所
                                     </FieldLabel>
-                                    <Input
-                                        {...field}
-                                        id="form-slot-duration"
-                                        type="number"
-                                        min={1}
-                                        onChange={(e) =>
-                                            field.onChange(
-                                                e.target.valueAsNumber || 0
-                                            )
-                                        }
-                                        aria-invalid={fieldState.invalid}
-                                    />
+                                    <Select
+                                        value={field.value}
+                                        onValueChange={field.onChange}
+                                    >
+                                        <SelectTrigger
+                                            id="form-slot-create-location-id"
+                                            aria-invalid={fieldState.invalid}
+                                            className="w-full max-w-xs"
+                                        >
+                                            <SelectValue placeholder="場所を選択" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            {(locations ?? []).map((loc) => (
+                                                <SelectItem
+                                                    key={loc._id}
+                                                    value={loc._id}
+                                                >
+                                                    {loc.name}
+                                                </SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
                                     <FieldDescription>
-                                        1枠あたりの長さ。例: 60 = 1時間
+                                        この予約枠を紐づける場所を選びます。
                                     </FieldDescription>
                                     {fieldState.invalid && (
-                                        <FieldError
-                                            errors={[fieldState.error]}
-                                        />
+                                        <FieldError errors={[fieldState.error]} />
                                     )}
                                 </Field>
                             )}
                         />
-                        <Controller
-                            name="slotTemplate.defaultCapacity"
-                            control={form.control}
-                            render={({ field, fieldState }) => (
-                                <Field data-invalid={fieldState.invalid}>
-                                    <FieldLabel htmlFor="form-slot-capacity">
-                                        同時予約数
-                                    </FieldLabel>
-                                    <Input
-                                        {...field}
-                                        id="form-slot-capacity"
-                                        type="number"
-                                        min={1}
-                                        onChange={(e) =>
-                                            field.onChange(
-                                                e.target.valueAsNumber || 0
-                                            )
-                                        }
-                                        aria-invalid={fieldState.invalid}
-                                    />
-                                    <FieldDescription>
-                                        同じ枠に同時に何件まで予約できるか
-                                    </FieldDescription>
-                                    {fieldState.invalid && (
-                                        <FieldError
-                                            errors={[fieldState.error]}
-                                        />
-                                    )}
-                                </Field>
-                            )}
-                        />
+
                         <Controller
                             name="slotTemplate.defaultVisibility"
                             control={form.control}
@@ -361,213 +347,451 @@ export function CreateSlot({ orgId, tenantId }: Props) {
                                 </Field>
                             )}
                         />
-                    </div>
 
-                    {/* 受付期間 */}
-                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                        <Controller
-                            name="slotTemplate.acceptanceWindow.openBeforeMinutes"
-                            control={form.control}
-                            render={({ field, fieldState }) => (
-                                <Field data-invalid={fieldState.invalid}>
-                                    <FieldLabel htmlFor="form-slot-open-before">
-                                        受付開始（開始何分前から）
-                                    </FieldLabel>
-                                    <Input
-                                        {...field}
-                                        id="form-slot-open-before"
-                                        type="number"
-                                        min={0}
-                                        onChange={(e) =>
-                                            field.onChange(
-                                                e.target.valueAsNumber ?? 0
-                                            )
-                                        }
-                                        aria-invalid={fieldState.invalid}
-                                    />
-                                    <FieldDescription>
-                                        予約を受け付け始める時期。86400分 = 60日前から受付開始
-                                    </FieldDescription>
-                                    {fieldState.invalid && (
-                                        <FieldError
-                                            errors={[fieldState.error]}
+                        {/* 枠の長さ・収容数・表示 */}
+                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                            <Controller
+                                name="slotTemplate.durationMinutes"
+                                control={form.control}
+                                render={({ field, fieldState }) => (
+                                    <Field data-invalid={fieldState.invalid}>
+                                        <FieldLabel htmlFor="form-slot-duration">
+                                            枠の長さ（分）
+                                        </FieldLabel>
+                                        <Input
+                                            {...field}
+                                            id="form-slot-duration"
+                                            type="number"
+                                            min={1}
+                                            onChange={(e) =>
+                                                field.onChange(
+                                                    e.target.valueAsNumber || 0
+                                                )
+                                            }
+                                            aria-invalid={fieldState.invalid}
                                         />
-                                    )}
-                                </Field>
-                            )}
-                        />
-                        <Controller
-                            name="slotTemplate.acceptanceWindow.closeBeforeMinutes"
-                            control={form.control}
-                            render={({ field, fieldState }) => (
-                                <Field data-invalid={fieldState.invalid}>
-                                    <FieldLabel htmlFor="form-slot-close-before">
-                                        受付締切（開始何分前まで）
-                                    </FieldLabel>
-                                    <Input
-                                        {...field}
-                                        id="form-slot-close-before"
-                                        type="number"
-                                        min={0}
-                                        onChange={(e) =>
-                                            field.onChange(
-                                                e.target.valueAsNumber ?? 0
-                                            )
-                                        }
-                                        aria-invalid={fieldState.invalid}
-                                    />
-                                    <FieldDescription>
-                                        予約の締め切り。180分 = 開始3時間前で受付終了
-                                    </FieldDescription>
-                                    {fieldState.invalid && (
-                                        <FieldError
-                                            errors={[fieldState.error]}
+                                        <FieldDescription>
+                                            1枠あたりの長さ。例: 60 = 1時間
+                                        </FieldDescription>
+                                        {fieldState.invalid && (
+                                            <FieldError
+                                                errors={[fieldState.error]}
+                                            />
+                                        )}
+                                    </Field>
+                                )}
+                            />
+                            <Controller
+                                name="slotTemplate.defaultCapacity"
+                                control={form.control}
+                                render={({ field, fieldState }) => (
+                                    <Field data-invalid={fieldState.invalid}>
+                                        <FieldLabel htmlFor="form-slot-capacity">
+                                            同時予約数
+                                        </FieldLabel>
+                                        <Input
+                                            {...field}
+                                            id="form-slot-capacity"
+                                            type="number"
+                                            min={1}
+                                            onChange={(e) =>
+                                                field.onChange(
+                                                    e.target.valueAsNumber || 0
+                                                )
+                                            }
+                                            aria-invalid={fieldState.invalid}
                                         />
-                                    )}
-                                </Field>
-                            )}
-                        />
-                    </div>
+                                        <FieldDescription>
+                                            同じ枠に同時に何件まで予約できるか
+                                        </FieldDescription>
+                                        {fieldState.invalid && (
+                                            <FieldError
+                                                errors={[fieldState.error]}
+                                            />
+                                        )}
+                                    </Field>
+                                )}
+                            />
 
-                    {/* バッファ・1日上限 */}
-                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                        <Controller
-                            name="slotTemplate.bufferMinutes"
-                            control={form.control}
-                            render={({ field, fieldState }) => (
-                                <Field data-invalid={fieldState.invalid}>
-                                    <FieldLabel htmlFor="form-slot-buffer">
-                                        枠間バッファ（分）
-                                    </FieldLabel>
-                                    <Input
-                                        {...field}
-                                        id="form-slot-buffer"
-                                        type="number"
-                                        min={0}
-                                        onChange={(e) =>
-                                            field.onChange(
-                                                e.target.valueAsNumber ?? 0
-                                            )
-                                        }
-                                        aria-invalid={fieldState.invalid}
-                                    />
-                                    <FieldDescription>
-                                        連続する枠の間に設ける休憩時間。例: 30 = 枠と枠の間に30分空ける
-                                    </FieldDescription>
-                                    {fieldState.invalid && (
-                                        <FieldError
-                                            errors={[fieldState.error]}
-                                        />
-                                    )}
-                                </Field>
-                            )}
-                        />
-                        <Controller
-                            name="slotTemplate.dailyBookingLimit"
-                            control={form.control}
-                            render={({ field, fieldState }) => (
-                                <Field data-invalid={fieldState.invalid}>
-                                    <FieldLabel htmlFor="form-slot-daily-limit">
-                                        1日あたり予約上限
-                                    </FieldLabel>
-                                    <Input
-                                        {...field}
-                                        id="form-slot-daily-limit"
-                                        type="number"
-                                        min={0}
-                                        onChange={(e) =>
-                                            field.onChange(
-                                                e.target.valueAsNumber ?? 0
-                                            )
-                                        }
-                                        aria-invalid={fieldState.invalid}
-                                    />
-                                    <FieldDescription>
-                                        1日あたり、成立した予約が何件まで許容するか。0で無制限
-                                    </FieldDescription>
-                                    {fieldState.invalid && (
-                                        <FieldError
-                                            errors={[fieldState.error]}
-                                        />
-                                    )}
-                                </Field>
-                            )}
-                        />
-                    </div>
+                        </div>
 
-                    {/* フォーム質問（お客に聞く項目） */}
-                    <div className="space-y-4">
-                        <div className="flex items-center justify-between gap-2 flex-wrap">
+                        {/* 受付期間 */}
+                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                            <Controller
+                                name="slotTemplate.acceptanceWindow.openBeforeMinutes"
+                                control={form.control}
+                                render={({ field, fieldState }) => (
+                                    <Field data-invalid={fieldState.invalid}>
+                                        <FieldLabel htmlFor="form-slot-open-before">
+                                            受付開始（開始何分前から）
+                                        </FieldLabel>
+                                        <Input
+                                            {...field}
+                                            id="form-slot-open-before"
+                                            type="number"
+                                            min={0}
+                                            onChange={(e) =>
+                                                field.onChange(
+                                                    e.target.valueAsNumber ?? 0
+                                                )
+                                            }
+                                            aria-invalid={fieldState.invalid}
+                                        />
+                                        <FieldDescription>
+                                            予約を受け付け始める時期。86400分 = 60日前から受付開始
+                                        </FieldDescription>
+                                        {fieldState.invalid && (
+                                            <FieldError
+                                                errors={[fieldState.error]}
+                                            />
+                                        )}
+                                    </Field>
+                                )}
+                            />
+                            <Controller
+                                name="slotTemplate.acceptanceWindow.closeBeforeMinutes"
+                                control={form.control}
+                                render={({ field, fieldState }) => (
+                                    <Field data-invalid={fieldState.invalid}>
+                                        <FieldLabel htmlFor="form-slot-close-before">
+                                            受付締切（開始何分前まで）
+                                        </FieldLabel>
+                                        <Input
+                                            {...field}
+                                            id="form-slot-close-before"
+                                            type="number"
+                                            min={0}
+                                            onChange={(e) =>
+                                                field.onChange(
+                                                    e.target.valueAsNumber ?? 0
+                                                )
+                                            }
+                                            aria-invalid={fieldState.invalid}
+                                        />
+                                        <FieldDescription>
+                                            予約の締め切り。180分 = 開始3時間前で受付終了
+                                        </FieldDescription>
+                                        {fieldState.invalid && (
+                                            <FieldError
+                                                errors={[fieldState.error]}
+                                            />
+                                        )}
+                                    </Field>
+                                )}
+                            />
+                        </div>
+
+                        {/* バッファ・1日上限 */}
+                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                            <Controller
+                                name="slotTemplate.bufferMinutes"
+                                control={form.control}
+                                render={({ field, fieldState }) => (
+                                    <Field data-invalid={fieldState.invalid}>
+                                        <FieldLabel htmlFor="form-slot-buffer">
+                                            枠間バッファ（分）
+                                        </FieldLabel>
+                                        <Input
+                                            {...field}
+                                            id="form-slot-buffer"
+                                            type="number"
+                                            min={0}
+                                            onChange={(e) =>
+                                                field.onChange(
+                                                    e.target.valueAsNumber ?? 0
+                                                )
+                                            }
+                                            aria-invalid={fieldState.invalid}
+                                        />
+                                        <FieldDescription>
+                                            連続する枠の間に設ける休憩時間。例: 30 = 枠と枠の間に30分空ける
+                                        </FieldDescription>
+                                        {fieldState.invalid && (
+                                            <FieldError
+                                                errors={[fieldState.error]}
+                                            />
+                                        )}
+                                    </Field>
+                                )}
+                            />
+                            <Controller
+                                name="slotTemplate.dailyBookingLimit"
+                                control={form.control}
+                                render={({ field, fieldState }) => (
+                                    <Field data-invalid={fieldState.invalid}>
+                                        <FieldLabel htmlFor="form-slot-daily-limit">
+                                            1日あたり予約上限
+                                        </FieldLabel>
+                                        <Input
+                                            {...field}
+                                            id="form-slot-daily-limit"
+                                            type="number"
+                                            min={0}
+                                            onChange={(e) =>
+                                                field.onChange(
+                                                    e.target.valueAsNumber ?? 0
+                                                )
+                                            }
+                                            aria-invalid={fieldState.invalid}
+                                        />
+                                        <FieldDescription>
+                                            1日あたり、成立した予約が何件まで許容するか。0で無制限
+                                        </FieldDescription>
+                                        {fieldState.invalid && (
+                                            <FieldError
+                                                errors={[fieldState.error]}
+                                            />
+                                        )}
+                                    </Field>
+                                )}
+                            />
+                        </div>
+
+                        {/* フォーム質問（お客に聞く項目） */}
+                        <div className="space-y-4">
+                            <div className="flex items-center justify-between gap-2 flex-wrap">
+                                <div>
+                                    <FieldLabel>予約時に聞く質問</FieldLabel>
+                                    <FieldDescription>
+                                        予約フォームでお客様に聞く項目を追加できます。お名前・電話番号・備考など。
+                                    </FieldDescription>
+                                </div>
+                                <Button
+                                    type="button"
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() =>
+                                        append({
+                                            id: `q_${Date.now()}`,
+                                            label: "<p></p>",
+                                            type: "text",
+                                            required: false,
+                                        })
+                                    }
+                                >
+                                    質問を追加
+                                </Button>
+                            </div>
+                            {fields.map((fieldItem, index) => (
+                                <div
+                                    key={fieldItem.id}
+                                    className="rounded-lg border p-4 space-y-3"
+                                >
+                                    <div className="flex items-center justify-between gap-2">
+                                        <span className="text-sm font-medium">
+                                            質問 {index + 1}
+                                        </span>
+                                        <Button
+                                            type="button"
+                                            variant="ghost"
+                                            size="sm"
+                                            onClick={() => remove(index)}
+                                        >
+                                            削除
+                                        </Button>
+                                    </div>
+                                    <input
+                                        type="hidden"
+                                        {...form.register(
+                                            `slotTemplate.form.questions.${index}.id`
+                                        )}
+                                    />
+                                    <Controller
+                                        name={`slotTemplate.form.questions.${index}.label`}
+                                        control={form.control}
+                                        render={({ field, fieldState }) => (
+                                            <Field data-invalid={fieldState.invalid}>
+                                                <FieldLabel>ラベル（表示文言）</FieldLabel>
+                                                <FieldDescription>
+                                                    予約画面に表示する質問文。装飾（太字・リストなど）も可能です。
+                                                </FieldDescription>
+                                                <InputGroup>
+                                                    <Tiptap
+                                                        sentence={field.value}
+                                                        setSentence={field.onChange}
+                                                        onBlur={field.onBlur}
+                                                        id={`form-slot-question-label-${index}`}
+                                                        aria-invalid={fieldState.invalid}
+                                                        className="min-h-24 max-h-48 overflow-y-auto w-full"
+                                                    />
+                                                    <InputGroupAddon align="block-end">
+                                                        <InputGroupText className="tabular-nums">
+                                                            {field.value.length} 文字
+                                                        </InputGroupText>
+                                                    </InputGroupAddon>
+                                                </InputGroup>
+                                                {fieldState.invalid && (
+                                                    <FieldError
+                                                        errors={[fieldState.error]}
+                                                    />
+                                                )}
+                                            </Field>
+                                        )}
+                                    />
+                                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                                        <Controller
+                                            name={`slotTemplate.form.questions.${index}.type`}
+                                            control={form.control}
+                                            render={({ field, fieldState }) => (
+                                                <Field data-invalid={fieldState.invalid}>
+                                                    <FieldLabel>入力タイプ</FieldLabel>
+                                                    <FieldDescription>
+                                                        お客様が入力する形式（テキスト・電話番号・日付など）
+                                                    </FieldDescription>
+                                                    <Select
+                                                        value={field.value}
+                                                        onValueChange={field.onChange}
+                                                    >
+                                                        <SelectTrigger
+                                                            aria-invalid={
+                                                                fieldState.invalid
+                                                            }
+                                                        >
+                                                            <SelectValue />
+                                                        </SelectTrigger>
+                                                        <SelectContent>
+                                                            <SelectItem value="text">
+                                                                テキスト
+                                                            </SelectItem>
+                                                            <SelectItem value="textarea">
+                                                                長文
+                                                            </SelectItem>
+                                                            <SelectItem value="tel">
+                                                                電話番号
+                                                            </SelectItem>
+                                                            <SelectItem value="email">
+                                                                メール
+                                                            </SelectItem>
+                                                            <SelectItem value="number">
+                                                                数値
+                                                            </SelectItem>
+                                                            <SelectItem value="date">
+                                                                日付
+                                                            </SelectItem>
+                                                            <SelectItem value="time">
+                                                                時刻
+                                                            </SelectItem>
+                                                        </SelectContent>
+                                                    </Select>
+                                                    {fieldState.invalid && (
+                                                        <FieldError
+                                                            errors={[
+                                                                fieldState.error,
+                                                            ]}
+                                                        />
+                                                    )}
+                                                </Field>
+                                            )}
+                                        />
+                                        <Controller
+                                            name={`slotTemplate.form.questions.${index}.required`}
+                                            control={form.control}
+                                            render={({ field, fieldState }) => (
+                                                <Field data-invalid={fieldState.invalid}>
+                                                    <FieldLabel>必須 / 任意</FieldLabel>
+                                                    <FieldDescription>
+                                                        この質問が必須か任意か
+                                                    </FieldDescription>
+                                                    <Select
+                                                        value={field.value ? "required" : "optional"}
+                                                        onValueChange={(v) =>
+                                                            field.onChange(v === "required")
+                                                        }
+                                                    >
+                                                        <SelectTrigger
+                                                            aria-invalid={
+                                                                fieldState.invalid
+                                                            }
+                                                        >
+                                                            <SelectValue placeholder="選択" />
+                                                        </SelectTrigger>
+                                                        <SelectContent>
+                                                            <SelectItem value="required">
+                                                                必須
+                                                            </SelectItem>
+                                                            <SelectItem value="optional">
+                                                                任意
+                                                            </SelectItem>
+                                                        </SelectContent>
+                                                    </Select>
+                                                    {fieldState.invalid && (
+                                                        <FieldError
+                                                            errors={[
+                                                                fieldState.error,
+                                                            ]}
+                                                        />
+                                                    )}
+                                                </Field>
+                                            )}
+                                        />
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+
+                        {/* リマインダー */}
+                        <Controller
+                            name="slotTemplate.reminders.email.amountMinutes"
+                            control={form.control}
+                            render={({ field, fieldState }) => (
+                                <Field data-invalid={fieldState.invalid}>
+                                    <FieldLabel htmlFor="form-slot-reminder">
+                                        リマインダー送信（開始何分前）
+                                    </FieldLabel>
+                                    <Input
+                                        {...field}
+                                        id="form-slot-reminder"
+                                        type="number"
+                                        min={0}
+                                        onChange={(e) =>
+                                            field.onChange(
+                                                e.target.valueAsNumber ?? 0
+                                            )
+                                        }
+                                        aria-invalid={fieldState.invalid}
+                                    />
+                                    <FieldDescription>
+                                        予約の何分前にリマインダーメールを送るか。1440分 = 1日前
+                                    </FieldDescription>
+                                    {fieldState.invalid && (
+                                        <FieldError errors={[fieldState.error]} />
+                                    )}
+                                </Field>
+                            )}
+                        />
+
+                        {/* キャンセル・変更ポリシー */}
+                        <div className="space-y-4 rounded-lg border p-4">
                             <div>
-                                <FieldLabel>予約時に聞く質問</FieldLabel>
+                                <FieldLabel>キャンセル・変更ポリシー</FieldLabel>
                                 <FieldDescription>
-                                    予約フォームでお客様に聞く項目を追加できます。お名前・電話番号・備考など。
+                                    キャンセル・日時変更のルールを設定します。
                                 </FieldDescription>
                             </div>
-                            <Button
-                                type="button"
-                                variant="outline"
-                                size="sm"
-                                onClick={() =>
-                                    append({
-                                        id: `q_${Date.now()}`,
-                                        label: "<p></p>",
-                                        type: "text",
-                                        required: false,
-                                    })
-                                }
-                            >
-                                質問を追加
-                            </Button>
-                        </div>
-                        {fields.map((fieldItem, index) => (
-                            <div
-                                key={fieldItem.id}
-                                className="rounded-lg border p-4 space-y-3"
-                            >
-                                <div className="flex items-center justify-between gap-2">
-                                    <span className="text-sm font-medium">
-                                        質問 {index + 1}
-                                    </span>
-                                    <Button
-                                        type="button"
-                                        variant="ghost"
-                                        size="sm"
-                                        onClick={() => remove(index)}
-                                    >
-                                        削除
-                                    </Button>
-                                </div>
-                                <input
-                                    type="hidden"
-                                    {...form.register(
-                                        `slotTemplate.form.questions.${index}.id`
-                                    )}
-                                />
+                            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                                 <Controller
-                                    name={`slotTemplate.form.questions.${index}.label`}
+                                    name="slotTemplate.cancellationPolicy.cancelDeadlineMinutes"
                                     control={form.control}
                                     render={({ field, fieldState }) => (
                                         <Field data-invalid={fieldState.invalid}>
-                                            <FieldLabel>ラベル（表示文言）</FieldLabel>
+                                            <FieldLabel htmlFor="form-slot-cancel-deadline">
+                                                キャンセル期限（開始何分前まで）
+                                            </FieldLabel>
+                                            <Input
+                                                {...field}
+                                                id="form-slot-cancel-deadline"
+                                                type="number"
+                                                min={0}
+                                                onChange={(e) =>
+                                                    field.onChange(
+                                                        e.target.valueAsNumber ?? 0
+                                                    )
+                                                }
+                                                aria-invalid={fieldState.invalid}
+                                            />
                                             <FieldDescription>
-                                                予約画面に表示する質問文。装飾（太字・リストなど）も可能です。
+                                                お客様がキャンセルできる期限。60 = 開始1時間前まで
                                             </FieldDescription>
-                                            <InputGroup>
-                                                <Tiptap
-                                                    sentence={field.value}
-                                                    setSentence={field.onChange}
-                                                    onBlur={field.onBlur}
-                                                    id={`form-slot-question-label-${index}`}
-                                                    aria-invalid={fieldState.invalid}
-                                                    className="min-h-24 max-h-48 overflow-y-auto w-full"
-                                                />
-                                                <InputGroupAddon align="block-end">
-                                                    <InputGroupText className="tabular-nums">
-                                                        {field.value.length} 文字
-                                                    </InputGroupText>
-                                                </InputGroupAddon>
-                                            </InputGroup>
                                             {fieldState.invalid && (
                                                 <FieldError
                                                     errors={[fieldState.error]}
@@ -576,301 +800,135 @@ export function CreateSlot({ orgId, tenantId }: Props) {
                                         </Field>
                                     )}
                                 />
-                                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                                    <Controller
-                                        name={`slotTemplate.form.questions.${index}.type`}
-                                        control={form.control}
-                                        render={({ field, fieldState }) => (
-                                            <Field data-invalid={fieldState.invalid}>
-                                                <FieldLabel>入力タイプ</FieldLabel>
-                                                <FieldDescription>
-                                                    お客様が入力する形式（テキスト・電話番号・日付など）
-                                                </FieldDescription>
-                                                <Select
-                                                    value={field.value}
-                                                    onValueChange={field.onChange}
-                                                >
-                                                    <SelectTrigger
-                                                        aria-invalid={
-                                                            fieldState.invalid
-                                                        }
-                                                    >
-                                                        <SelectValue />
-                                                    </SelectTrigger>
-                                                    <SelectContent>
-                                                        <SelectItem value="text">
-                                                            テキスト
-                                                        </SelectItem>
-                                                        <SelectItem value="textarea">
-                                                            長文
-                                                        </SelectItem>
-                                                        <SelectItem value="tel">
-                                                            電話番号
-                                                        </SelectItem>
-                                                        <SelectItem value="email">
-                                                            メール
-                                                        </SelectItem>
-                                                        <SelectItem value="number">
-                                                            数値
-                                                        </SelectItem>
-                                                        <SelectItem value="date">
-                                                            日付
-                                                        </SelectItem>
-                                                        <SelectItem value="time">
-                                                            時刻
-                                                        </SelectItem>
-                                                    </SelectContent>
-                                                </Select>
-                                                {fieldState.invalid && (
-                                                    <FieldError
-                                                        errors={[
-                                                            fieldState.error,
-                                                        ]}
-                                                    />
-                                                )}
-                                            </Field>
-                                        )}
-                                    />
-                                    <Controller
-                                        name={`slotTemplate.form.questions.${index}.required`}
-                                        control={form.control}
-                                        render={({ field, fieldState }) => (
-                                            <Field data-invalid={fieldState.invalid}>
-                                                <FieldLabel>必須 / 任意</FieldLabel>
-                                                <FieldDescription>
-                                                    この質問が必須か任意か
-                                                </FieldDescription>
-                                                <Select
-                                                    value={field.value ? "required" : "optional"}
-                                                    onValueChange={(v) =>
-                                                        field.onChange(v === "required")
-                                                    }
-                                                >
-                                                    <SelectTrigger
-                                                        aria-invalid={
-                                                            fieldState.invalid
-                                                        }
-                                                    >
-                                                        <SelectValue placeholder="選択" />
-                                                    </SelectTrigger>
-                                                    <SelectContent>
-                                                        <SelectItem value="required">
-                                                            必須
-                                                        </SelectItem>
-                                                        <SelectItem value="optional">
-                                                            任意
-                                                        </SelectItem>
-                                                    </SelectContent>
-                                                </Select>
-                                                {fieldState.invalid && (
-                                                    <FieldError
-                                                        errors={[
-                                                            fieldState.error,
-                                                        ]}
-                                                    />
-                                                )}
-                                            </Field>
-                                        )}
-                                    />
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-
-                    {/* リマインダー */}
-                    <Controller
-                        name="slotTemplate.reminders.email.amountMinutes"
-                        control={form.control}
-                        render={({ field, fieldState }) => (
-                            <Field data-invalid={fieldState.invalid}>
-                                <FieldLabel htmlFor="form-slot-reminder">
-                                    リマインダー送信（開始何分前）
-                                </FieldLabel>
-                                <Input
-                                    {...field}
-                                    id="form-slot-reminder"
-                                    type="number"
-                                    min={0}
-                                    onChange={(e) =>
-                                        field.onChange(
-                                            e.target.valueAsNumber ?? 0
-                                        )
-                                    }
-                                    aria-invalid={fieldState.invalid}
+                                <Controller
+                                    name="slotTemplate.cancellationPolicy.rescheduleDeadlineMinutes"
+                                    control={form.control}
+                                    render={({ field, fieldState }) => (
+                                        <Field data-invalid={fieldState.invalid}>
+                                            <FieldLabel htmlFor="form-slot-reschedule-deadline">
+                                                変更期限（開始何分前まで）
+                                            </FieldLabel>
+                                            <Input
+                                                {...field}
+                                                id="form-slot-reschedule-deadline"
+                                                type="number"
+                                                min={0}
+                                                onChange={(e) =>
+                                                    field.onChange(
+                                                        e.target.valueAsNumber ?? 0
+                                                    )
+                                                }
+                                                aria-invalid={fieldState.invalid}
+                                            />
+                                            <FieldDescription>
+                                                日時変更（リスケ）できる期限。120 = 開始2時間前まで
+                                            </FieldDescription>
+                                            {fieldState.invalid && (
+                                                <FieldError
+                                                    errors={[fieldState.error]}
+                                                />
+                                            )}
+                                        </Field>
+                                    )}
                                 />
-                                <FieldDescription>
-                                    予約の何分前にリマインダーメールを送るか。1440分 = 1日前
-                                </FieldDescription>
-                                {fieldState.invalid && (
-                                    <FieldError errors={[fieldState.error]} />
-                                )}
-                            </Field>
-                        )}
-                    />
+                            </div>
+                            <div className="flex flex-wrap gap-6">
+                                <Controller
+                                    name="slotTemplate.cancellationPolicy.allowCustomerCancel"
+                                    control={form.control}
+                                    render={({ field, fieldState }) => (
+                                        <Field
+                                            data-invalid={fieldState.invalid}
+                                            orientation="horizontal"
+                                        >
+                                            <FieldContent>
+                                                <FieldLabel>
+                                                    顧客キャンセル可
+                                                </FieldLabel>
+                                                <FieldDescription>
+                                                    OFFにするとお客様はキャンセルできません
+                                                </FieldDescription>
+                                            </FieldContent>
+                                            <Switch
+                                                checked={field.value}
+                                                onCheckedChange={field.onChange}
+                                                aria-invalid={fieldState.invalid}
+                                            />
+                                            {fieldState.invalid && (
+                                                <FieldError
+                                                    errors={[fieldState.error]}
+                                                />
+                                            )}
+                                        </Field>
+                                    )}
+                                />
+                                <Controller
+                                    name="slotTemplate.cancellationPolicy.allowRescheduling"
+                                    control={form.control}
+                                    render={({ field, fieldState }) => (
+                                        <Field
+                                            data-invalid={fieldState.invalid}
+                                            orientation="horizontal"
+                                        >
+                                            <FieldContent>
+                                                <FieldLabel>
+                                                    日時変更（リスケジュール）可
+                                                </FieldLabel>
+                                                <FieldDescription>
+                                                    OFFにするとお客様は日時の変更ができません
+                                                </FieldDescription>
+                                            </FieldContent>
+                                            <Switch
+                                                checked={field.value}
+                                                onCheckedChange={field.onChange}
+                                                aria-invalid={fieldState.invalid}
+                                            />
+                                            {fieldState.invalid && (
+                                                <FieldError
+                                                    errors={[fieldState.error]}
+                                                />
+                                            )}
+                                        </Field>
+                                    )}
+                                />
+                            </div>
+                        </div>
+                    </FieldGroup>
 
-                    {/* キャンセル・変更ポリシー */}
-                    <div className="space-y-4 rounded-lg border p-4">
-                        <div>
-                            <FieldLabel>キャンセル・変更ポリシー</FieldLabel>
-                            <FieldDescription>
-                                キャンセル・日時変更のルールを設定します。
-                            </FieldDescription>
-                        </div>
-                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                            <Controller
-                                name="slotTemplate.cancellationPolicy.cancelDeadlineMinutes"
-                                control={form.control}
-                                render={({ field, fieldState }) => (
-                                    <Field data-invalid={fieldState.invalid}>
-                                        <FieldLabel htmlFor="form-slot-cancel-deadline">
-                                            キャンセル期限（開始何分前まで）
-                                        </FieldLabel>
-                                        <Input
-                                            {...field}
-                                            id="form-slot-cancel-deadline"
-                                            type="number"
-                                            min={0}
-                                            onChange={(e) =>
-                                                field.onChange(
-                                                    e.target.valueAsNumber ?? 0
-                                                )
-                                            }
-                                            aria-invalid={fieldState.invalid}
-                                        />
-                                        <FieldDescription>
-                                            お客様がキャンセルできる期限。60 = 開始1時間前まで
-                                        </FieldDescription>
-                                        {fieldState.invalid && (
-                                            <FieldError
-                                                errors={[fieldState.error]}
-                                            />
-                                        )}
-                                    </Field>
-                                )}
-                            />
-                            <Controller
-                                name="slotTemplate.cancellationPolicy.rescheduleDeadlineMinutes"
-                                control={form.control}
-                                render={({ field, fieldState }) => (
-                                    <Field data-invalid={fieldState.invalid}>
-                                        <FieldLabel htmlFor="form-slot-reschedule-deadline">
-                                            変更期限（開始何分前まで）
-                                        </FieldLabel>
-                                        <Input
-                                            {...field}
-                                            id="form-slot-reschedule-deadline"
-                                            type="number"
-                                            min={0}
-                                            onChange={(e) =>
-                                                field.onChange(
-                                                    e.target.valueAsNumber ?? 0
-                                                )
-                                            }
-                                            aria-invalid={fieldState.invalid}
-                                        />
-                                        <FieldDescription>
-                                            日時変更（リスケ）できる期限。120 = 開始2時間前まで
-                                        </FieldDescription>
-                                        {fieldState.invalid && (
-                                            <FieldError
-                                                errors={[fieldState.error]}
-                                            />
-                                        )}
-                                    </Field>
-                                )}
-                            />
-                        </div>
-                        <div className="flex flex-wrap gap-6">
-                            <Controller
-                                name="slotTemplate.cancellationPolicy.allowCustomerCancel"
-                                control={form.control}
-                                render={({ field, fieldState }) => (
-                                    <Field
-                                        data-invalid={fieldState.invalid}
-                                        orientation="horizontal"
-                                    >
-                                        <FieldContent>
-                                            <FieldLabel>
-                                                顧客キャンセル可
-                                            </FieldLabel>
-                                            <FieldDescription>
-                                                OFFにするとお客様はキャンセルできません
-                                            </FieldDescription>
-                                        </FieldContent>
-                                        <Switch
-                                            checked={field.value}
-                                            onCheckedChange={field.onChange}
-                                            aria-invalid={fieldState.invalid}
-                                        />
-                                        {fieldState.invalid && (
-                                            <FieldError
-                                                errors={[fieldState.error]}
-                                            />
-                                        )}
-                                    </Field>
-                                )}
-                            />
-                            <Controller
-                                name="slotTemplate.cancellationPolicy.allowRescheduling"
-                                control={form.control}
-                                render={({ field, fieldState }) => (
-                                    <Field
-                                        data-invalid={fieldState.invalid}
-                                        orientation="horizontal"
-                                    >
-                                        <FieldContent>
-                                            <FieldLabel>
-                                                日時変更（リスケジュール）可
-                                            </FieldLabel>
-                                            <FieldDescription>
-                                                OFFにするとお客様は日時の変更ができません
-                                            </FieldDescription>
-                                        </FieldContent>
-                                        <Switch
-                                            checked={field.value}
-                                            onCheckedChange={field.onChange}
-                                            aria-invalid={fieldState.invalid}
-                                        />
-                                        {fieldState.invalid && (
-                                            <FieldError
-                                                errors={[fieldState.error]}
-                                            />
-                                        )}
-                                    </Field>
-                                )}
-                            />
-                        </div>
-                    </div>
-                </FieldGroup>
-
-                <Field orientation="horizontal" className="gap-3">
-                    <Button
-                        type="button"
-                        variant="outline"
-                        onClick={() =>
-                            form.reset({
-                                slotTemplate: {
-                                    ...DEFAULT_SLOT_TEMPLATE,
-                                    tenantId,
-                                    serviceId:
-                                        form.getValues("slotTemplate.serviceId") ||
-                                        activeServices[0]?._id ||
-                                        "",
-                                },
-                            })
-                        }
-                    >
-                        Reset
-                    </Button>
-                    <Button type="submit" form="form-slot-create">
-                        作成する
-                    </Button>
-                </Field>
-            </form>
-            <div>
-                <SlotCalender />
+                    <Field orientation="horizontal" className="gap-3">
+                        <Button
+                            type="button"
+                            variant="outline"
+                            onClick={() =>
+                                form.reset({
+                                    slotTemplate: {
+                                        ...DEFAULT_SLOT_TEMPLATE,
+                                        tenantId,
+                                        serviceId:
+                                            form.getValues("slotTemplate.serviceId") ||
+                                            activeServices[0]?._id ||
+                                            "",
+                                        defaultLocationId:
+                                            form.getValues(
+                                                "slotTemplate.defaultLocationId"
+                                            ) ||
+                                            locations?.[0]?._id ||
+                                            "",
+                                    },
+                                })
+                            }
+                        >
+                            Reset
+                        </Button>
+                        <Button type="submit" form="form-slot-create">
+                            作成する
+                        </Button>
+                    </Field>
+                </form>
+                <div>
+                    <SlotCalender />
+                </div>
             </div>
-        </div>
         </div>
     );
 }
