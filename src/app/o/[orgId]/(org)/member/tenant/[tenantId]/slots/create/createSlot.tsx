@@ -10,8 +10,8 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Field, FieldGroup } from "@/components/ui/field";
 import CreateSlotSkeleton from "./createSlotSkeleton";
-import SlotCalender from "./slot-calender";
-import { getTodayYYYYMMDD } from "./dateUtils";
+import SlotCalender, { type SlotEvent } from "./slot-calender";
+import { getTodayYYYYMMDD, parseTimeToMinutes } from "./dateUtils";
 import {
     formSchema,
     type FormValues,
@@ -107,11 +107,46 @@ export function CreateSlot({ orgId, tenantId }: Props) {
         control: form.control,
         name: "slotTemplate.durationMinutes",
     });
+    const watchedBuffer = useWatch({
+        control: form.control,
+        name: "slotTemplate.bufferMinutes",
+    });
 
     const crossFieldErrors = useMemo(
         () => validateDateTimeSlots(watchedDateTimeSlots ?? [], Number(watchedDuration)),
         [watchedDateTimeSlots, watchedDuration],
     );
+
+    const calendarEvents = useMemo((): SlotEvent[] => {
+        const duration = Number(watchedDuration) || 0;
+        const buffer = Number(watchedBuffer) || 0;
+        if (duration <= 0) return [];
+
+        const events: SlotEvent[] = [];
+        const pad = (n: number) => String(n).padStart(2, "0");
+        const toTimeStr = (mins: number) => `${pad(Math.floor(mins / 60))}:${pad(mins % 60)}`;
+
+        for (const slot of watchedDateTimeSlots ?? []) {
+            if (!slot?.date) continue;
+            for (const range of slot.timeRanges ?? []) {
+                const startMin = parseTimeToMinutes(range.start);
+                const endMin = parseTimeToMinutes(range.end);
+                if (Number.isNaN(startMin) || Number.isNaN(endMin) || startMin >= endMin) continue;
+
+                let cursor = startMin;
+                while (cursor + duration <= endMin) {
+                    const slotEnd = cursor + duration;
+                    events.push({
+                        title: `${toTimeStr(cursor)}–${toTimeStr(slotEnd)}`,
+                        start: `${slot.date}T${toTimeStr(cursor)}:00`,
+                        end: `${slot.date}T${toTimeStr(slotEnd)}:00`,
+                    });
+                    cursor = slotEnd + buffer;
+                }
+            }
+        }
+        return events;
+    }, [watchedDateTimeSlots, watchedDuration, watchedBuffer]);
 
     useEffect(() => {
         if (tenant) {
@@ -255,7 +290,7 @@ export function CreateSlot({ orgId, tenantId }: Props) {
                     </Field>
                 </form>
                 <div>
-                    <SlotCalender />
+                    <SlotCalender events={calendarEvents} />
                 </div>
             </div>
         </div>
