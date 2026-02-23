@@ -6,6 +6,8 @@ import {
     tenantType,
     tenantStatus,
     storeType,
+    slotStatus,
+    slotVisibility,
 } from "./values";
 
 export default defineSchema({
@@ -107,6 +109,35 @@ export default defineSchema({
         details: v.string(),
     })
         .index("by_tenant", ["tenantId"]),
+    // 予約枠。日時ごとに1レコード。テンプレ内容は policySnapshot（JSON 文字列）に固定。
+    Slots: defineTable({
+        // 所属テナント。
+        tenantId: v.id("Tenants"),
+        // 紐づくサービス。
+        serviceId: v.id("Services"),
+        // 紐づく場所。
+        locationId: v.id("Locations"),
+        // 枠の開始日時（ISO 8601）。
+        startAt: v.string(),
+        // 枠の終了日時（ISO 8601）。
+        endAt: v.string(),
+        // 受付状態。
+        slotStatus: slotStatus,
+        // 公開範囲。
+        visibility: slotVisibility,
+        // 同時予約可能数。
+        capacity: v.number(),
+        // 作成者の Clerk userId。
+        createdByUserId: v.string(),
+        // テンプレ全項目のスナップショット（JSON.stringify）。
+        // スキーマを緻密に定義せず柔軟に保持する。
+        policySnapshot: v.string(),
+        // 場所のスナップショット（JSON.stringify）。
+        locationSnapshot: v.string(),
+    })
+        .index("by_tenant", ["tenantId"])
+        .index("by_tenant_service", ["tenantId", "serviceId"])
+        .index("by_tenant_startAt", ["tenantId", "startAt"]),
     // テナントが提供するサービス。
     Services: defineTable({
         // 所属テナント。

@@ -11,7 +11,7 @@ slots/create/
 ├── page.tsx              # ページ（ルート）
 ├── createSlot.tsx        # メインコンポーネント
 ├── createSlotSkeleton.tsx # ローディング用スケルトン
-├── slot-calender.tsx     # カレンダー表示（右カラム）
+├── slot-calender.tsx     # カレンダープレビュー（右カラム）
 ├── DateSlotTimeRanges.tsx # 日付＋時間帯入力の行
 ├── dateUtils.ts          # 日付ユーティリティ
 ├── schema.ts             # フォームの Zod スキーマ
@@ -37,7 +37,7 @@ slots/create/
 │   ├── QuestionLabelField.tsx
 │   ├── QuestionTypeField.tsx
 │   └── QuestionRequiredField.tsx
-└── README.md
+└── SlotREADME.md
 ```
 
 ---
@@ -52,10 +52,10 @@ slots/create/
 │ 【左カラム】フォーム              │ 【右カラム】カレンダー        │
 │                                  │                              │
 │ サービス選択                      │  FullCalendar                │
-│ 場所選択                         │  - 4日ビュー                 │
-│ 表示（公開/非公開）               │  - イベント表示              │
-│                                  │  - 日付クリックで toast       │
-│ 枠の日時                         │                              │
+│ 場所選択                         │  - 4日/日/週/月/リスト切替   │
+│ 表示（公開/非公開）               │  - フォーム連動イベント表示  │
+│                                  │  - 場所名をイベント内に表示  │
+│ 枠の日時                         │  - 日付クリックで toast       │
 │  - 日付を追加 ボタン              │                              │
 │  - 日付 × 時間帯の一覧            │                              │
 │                                  │                              │
@@ -85,7 +85,8 @@ slots/create/
 - **データ取得**: Convex で `tenant`, `services`, `locations` を取得
 - **フォーム**: react-hook-form + zod でバリデーション
 - **ローディング中**: `CreateSlotSkeleton` を表示
-- **送信時**: 現状は `onSubmit` で toast に JSON 表示のみ（API 未接続）
+- **カレンダー連携**: `dateTimeSlots` + `durationMinutes` + `bufferMinutes` を `useWatch` で購読し、`useMemo` で個々の予約枠イベントに変換して `SlotCalender` に渡す
+- **送信時**: `api.slots.createBatch` mutation を呼び出し、Convex DB に保存
 
 ### 3. フォームスキーマ（schema.ts）
 
@@ -107,19 +108,68 @@ slots/create/
 
 ---
 
+## バリデーション戦略
+
+- **フィールドレベル**: zodResolver + `mode:"all"` が自動処理（フォーマット・必須・最小値）
+- **クロスフィールド**: `useWatch` → `useMemo` → `validateDateTimeSlots()` で同期計算し props で子に渡す
+  - 過去日付チェック
+  - 終了時刻 > 開始時刻
+  - 時間帯の長さ >= 枠の長さ
+  - 同一日付内の時間帯重複
+  - 場所チェック（時間帯の locationId も defaultLocationId も未指定ならエラー）
+- **submit 時**: zodResolver パス後、`crossFieldErrors` を追加チェック。エラーが残っていれば `setError` で表示して送信をブロック
+
+> zodResolver に superRefine を含めると `mode:"all"` で変更フィールドのエラーしか更新されず古いエラーが残る問題があるため、superRefine は使わない。
+
+---
+
+## Convex DB 保存
+
+### Slots テーブル（convex/schema.ts）
+
+| カラム | 型 | 説明 |
+|--------|-----|------|
+| tenantId | Id\<"Tenants"\> | 所属テナント |
+| serviceId | Id\<"Services"\> | 紐づくサービス |
+| locationId | Id\<"Locations"\> | 紐づく場所 |
+| startAt | string | 枠の開始日時（ISO 8601） |
+| endAt | string | 枠の終了日時（ISO 8601） |
+| slotStatus | "open" \| "closed" | 受付状態 |
+| visibility | "public" \| "unlisted" \| "private" | 公開範囲 |
+| capacity | number | 同時予約可能数 |
+| createdByUserId | string | 作成者の Clerk userId |
+| policySnapshot | string | slotTemplate 全体を `JSON.stringify` で保存 |
+| locationSnapshot | string | 場所情報を `JSON.stringify` で保存 |
+
+### 送信フロー（createSlot.tsx → convex/slots.ts）
+
+1. フォームの `dateTimeSlots` を `durationMinutes` + `bufferMinutes` で個々の枠に展開
+2. 各枠に `policySnapshot`（slotTemplate 全体を `JSON.stringify`）と `locationSnapshot`（場所情報を `JSON.stringify`）を付与
+3. `api.slots.createBatch` mutation で一括 insert
+4. 成功時に toast で件数を表示、エラー時はエラーメッセージを表示
+5. 送信中はボタンが disabled になり「作成中…」表示
+
+> policySnapshot には枠作成時点のテンプレ全項目がスナップショットとして固定される。後からテンプレを変更しても既存枠には影響しない。
+
+---
+
 ## 主要コンポーネントの役割
 
 ### createSlot.tsx
 
 - データフェッチ（tenant, services, locations）
 - フォーム初期化と `useEffect` で初期値セット
+- `useWatch` でリアルタイム値を購読
+- クロスフィールドバリデーション（`useMemo` で同期計算）
+- カレンダーイベント生成（`useMemo` で `dateTimeSlots` を個別枠に展開）
+- `onSubmit` で Convex mutation 呼び出し
 - 各セクションを `form-fields` から組み立て
 
 ### DateSlotTimeRanges.tsx
 
 - 1つの「日付 + 複数時間帯」を表示
 - 日付: Calendar の Popover
-- 時間帯: `time` 型 Input（開始〜終了）
+- 時間帯: `time` 型 Input（開始〜終了）+ 場所選択
 - 「この日にちに別の時間帯を追加」「この時間帯を削除」ボタン
 
 ### DateTimeSlotsSection.tsx
@@ -130,8 +180,10 @@ slots/create/
 
 ### slot-calender.tsx
 
-- FullCalendar でカレンダー表示
-- 現状はモックイベント固定（フォームとは連携なし）
+- FullCalendar でカレンダープレビュー表示
+- `createSlot` から `events` props で受け取った予約枠をリアルタイム表示
+- 各イベント内に場所名（`extendedProps.locationName`）を表示
+- ビュー: 4日/日/週/月/リスト切替
 - 日付クリック・イベントクリックで toast 表示
 
 ### dateUtils.ts
@@ -139,7 +191,9 @@ slots/create/
 - `getTodayYYYYMMDD()` - 今日を yyyy-MM-dd で取得
 - `parseDateYYYYMMDD(str)` - 文字列を Date に変換
 - `formatDateJST(date)` - Date を「yyyy年M月d日」で表示
+- `parseTimeToMinutes(str)` - 時刻文字列を 0:00 基準の分数に変換
 - `addDaysToYYYYMMDD(dateStr, days)` - 日付に N 日加算
+- `getTodayLocalYYYYMMDD()` - `getTodayYYYYMMDD` のエイリアス
 
 ---
 
@@ -164,11 +218,3 @@ slots/create/
 | DateTimeSlotsSection | dateTimeSlots | 複合（DateSlotTimeRanges） |
 | FormQuestionsSection | slotTemplate.form.questions | 複合（QuestionLabel, Type, Required） |
 | CancellationPolicySection | 上記4つをまとめたセクション | - |
-
----
-
-## 今後の拡張候補
-
-- フォーム送信を Convex mutation に接続
-- SlotCalender とフォームの dateTimeSlots を連携（作成予定の枠をカレンダーに表示）
-- バリデーション強化（終了 > 開始、日付の重複チェックなど）

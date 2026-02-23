@@ -25,3 +25,16 @@ export const tenantStatus = v.union(
 
 /** 店舗の形態（移動店舗 / 固定店舗） */
 export const storeType = v.union(v.literal("mobile"), v.literal("fixed"));
+
+/** 予約枠の受付状態 */
+export const slotStatus = v.union(
+    v.literal("open"),
+    v.literal("closed"),
+);
+
+/** 予約枠の公開範囲 */
+export const slotVisibility = v.union(
+    v.literal("public"),
+    v.literal("unlisted"),
+    v.literal("private"),
+);

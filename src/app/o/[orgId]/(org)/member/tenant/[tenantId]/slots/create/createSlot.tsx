@@ -1,11 +1,11 @@
 "use client";
 
-import { useEffect, useMemo } from "react";
-import { useQuery } from "convex/react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { useMutation, useQuery } from "convex/react";
 import { api } from "@/../convex/_generated/api";
 import { Id } from "@/../convex/_generated/dataModel";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useFieldArray, useForm, useWatch } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Field, FieldGroup } from "@/components/ui/field";
@@ -15,7 +15,6 @@ import { getTodayYYYYMMDD, parseTimeToMinutes } from "./dateUtils";
 import {
     formSchema,
     type FormValues,
-    type CrossFieldError,
     DEFAULT_SLOT_TEMPLATE,
     validateDateTimeSlots,
 } from "./schema";
@@ -211,26 +210,112 @@ export function CreateSlot({ orgId, tenantId }: Props) {
         }
     }, [tenant, tenantId, form, activeServices, locations]);
 
+    // ─── Mutation ────────────────────────────────────────────
+    const createBatch = useMutation(api.slots.createBatch);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
     // ─── 送信ハンドラー ────────────────────────────────────
     // zodResolver 通過後に呼ばれるため、フィールドレベルのバリデーションは通過済み。
     // クロスフィールドエラーが残っている場合は setError で表示して送信をブロック。
-    function onSubmit(data: FormValues) {
-        if (crossFieldErrors.length > 0) {
-            for (const err of crossFieldErrors) {
-                form.setError(err.path as keyof FormValues, {
-                    type: "custom",
-                    message: err.message,
-                });
+    const onSubmit = useCallback(
+        async (data: FormValues) => {
+            if (crossFieldErrors.length > 0) {
+                for (const err of crossFieldErrors) {
+                    form.setError(err.path as keyof FormValues, {
+                        type: "custom",
+                        message: err.message,
+                    });
+                }
+                return;
             }
-            return;
-        }
-        console.log("🚀 => onSubmit => data:", data);
-        toast(
-            <pre className="bg-code text-code-foreground w-[520px] overflow-x-auto">
-                <code>{JSON.stringify(data, null, 2)}</code>
-            </pre>
-        );
-    }
+
+            const { slotTemplate, dateTimeSlots } = data;
+            const duration = slotTemplate.durationMinutes;
+            const buffer = slotTemplate.bufferMinutes;
+            const defaultLocId = slotTemplate.defaultLocationId;
+            const pad = (n: number) => String(n).padStart(2, "0");
+            const toTimeStr = (mins: number) =>
+                `${pad(Math.floor(mins / 60))}:${pad(mins % 60)}`;
+
+            // policySnapshot: slotTemplate 全体を JSON 文字列で保存
+            const policySnapshot = JSON.stringify(slotTemplate);
+
+            // 場所情報のスナップショットを構築するヘルパー
+            const locationMap = new Map(
+                (locations ?? []).map((loc) => [loc._id as string, loc]),
+            );
+            const buildLocationSnapshot = (locId: string) => {
+                const loc = locationMap.get(locId);
+                if (!loc) return "{}";
+                return JSON.stringify({
+                    type: loc.type,
+                    name: loc.name,
+                    address: loc.address,
+                    geo: { lat: loc.lat, lng: loc.lng },
+                    details: loc.details,
+                });
+            };
+
+            // dateTimeSlots を展開して個々の slot レコードを生成
+            const slotRecords: Array<{
+                locationId: Id<"Locations">;
+                startAt: string;
+                endAt: string;
+                slotStatus: "open" | "closed";
+                visibility: "public" | "unlisted" | "private";
+                capacity: number;
+                policySnapshot: string;
+                locationSnapshot: string;
+            }> = [];
+
+            for (const dateSlot of dateTimeSlots) {
+                if (!dateSlot.date) continue;
+                for (const range of dateSlot.timeRanges) {
+                    const startMin = parseTimeToMinutes(range.start);
+                    const endMin = parseTimeToMinutes(range.end);
+                    if (Number.isNaN(startMin) || Number.isNaN(endMin) || startMin >= endMin) continue;
+
+                    const locId = (range.locationId || defaultLocId) as Id<"Locations">;
+
+                    let cursor = startMin;
+                    while (cursor + duration <= endMin) {
+                        const slotEnd = cursor + duration;
+                        slotRecords.push({
+                            locationId: locId,
+                            startAt: `${dateSlot.date}T${toTimeStr(cursor)}:00`,
+                            endAt: `${dateSlot.date}T${toTimeStr(slotEnd)}:00`,
+                            slotStatus: "open",
+                            visibility: slotTemplate.defaultVisibility,
+                            capacity: slotTemplate.defaultCapacity,
+                            policySnapshot,
+                            locationSnapshot: buildLocationSnapshot(locId),
+                        });
+                        cursor = slotEnd + buffer;
+                    }
+                }
+            }
+
+            if (slotRecords.length === 0) {
+                toast.error("作成する予約枠がありません");
+                return;
+            }
+
+            setIsSubmitting(true);
+            try {
+                const ids = await createBatch({
+                    tenantId: tenantId as Id<"Tenants">,
+                    serviceId: slotTemplate.serviceId as Id<"Services">,
+                    slots: slotRecords,
+                });
+                toast.success(`${ids.length}件の予約枠を作成しました`);
+            } catch (e) {
+                toast.error(e instanceof Error ? e.message : "予約枠の作成に失敗しました");
+            } finally {
+                setIsSubmitting(false);
+            }
+        },
+        [crossFieldErrors, form, locations, createBatch, tenantId],
+    );
 
     // ─── ローディング ──────────────────────────────────────
     if (!tenant || services === undefined || locations === undefined) {
@@ -336,8 +421,12 @@ export function CreateSlot({ orgId, tenantId }: Props) {
                         >
                             Reset
                         </Button>
-                        <Button type="submit" form="form-slot-create">
-                            作成する
+                        <Button
+                            type="submit"
+                            form="form-slot-create"
+                            disabled={isSubmitting}
+                        >
+                            {isSubmitting ? "作成中…" : "作成する"}
                         </Button>
                     </Field>
                 </form>
