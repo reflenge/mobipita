@@ -1,5 +1,6 @@
 import { Link } from "@/components/link";
 import { Button } from "@/components/ui/button";
+import { SlotListCalendar } from "./_components/SlotListCalendar";
 
 type PageProps = {
     params: Promise<{ orgId: string; tenantId: string }>;
@@ -8,10 +9,14 @@ type PageProps = {
 export default async function MemberTenantPage({ params }: PageProps) {
     const { orgId, tenantId } = await params;
     return (
-        <div className="mx-auto container px-6 py-10">
-            <Link href={`/o/${orgId}/member/tenant/${tenantId}/slots/create`}>
-                <Button>予約枠を作成</Button>
-            </Link>
-        </div >
+        <div className="mx-auto container px-6 py-10 space-y-6">
+            <div className="flex items-center justify-between">
+                <h1 className="text-xl font-semibold">予約枠一覧</h1>
+                <Link href={`/o/${orgId}/member/tenant/${tenantId}/slots/create`}>
+                    <Button>予約枠を作成</Button>
+                </Link>
+            </div>
+            <SlotListCalendar orgId={orgId} tenantId={tenantId} />
+        </div>
     );
 }

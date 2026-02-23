@@ -49,6 +49,7 @@ export function isExistingOrgRoute(orgScopedPath: string): boolean {
         // member
         /^\/member$/,
         /^\/member\/tenant\/[^/]+$/, // [tenantId]
+        /^\/member\/tenant\/[^/]+\/slots$/, // slots 一覧
         /^\/member\/tenant\/[^/]+\/slots\/create$/, // slots/create
 
         // customer

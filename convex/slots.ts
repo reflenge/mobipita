@@ -61,6 +61,7 @@ export const createBatch = mutation({
 
 /**
  * テナントの予約枠一覧を取得する。
+ * サービス名・場所名を結合して返す。
  */
 export const listByTenant = query({
     args: {
@@ -70,10 +71,31 @@ export const listByTenant = query({
     handler: async (ctx, args) => {
         await requireClerkIdentity(ctx);
         const limit = typeof args.limit === "number" ? args.limit : 200;
-        return ctx.db
+        const slots = await ctx.db
             .query("Slots")
             .withIndex("by_tenant", (q) => q.eq("tenantId", args.tenantId))
             .order("desc")
             .take(limit);
+
+        const serviceCache = new Map<string, string>();
+        const locationCache = new Map<string, string>();
+
+        const results = [];
+        for (const slot of slots) {
+            let serviceName = serviceCache.get(slot.serviceId);
+            if (serviceName === undefined) {
+                const svc = await ctx.db.get(slot.serviceId);
+                serviceName = svc?.title ?? "不明";
+                serviceCache.set(slot.serviceId, serviceName);
+            }
+            let locationName = locationCache.get(slot.locationId);
+            if (locationName === undefined) {
+                const loc = await ctx.db.get(slot.locationId);
+                locationName = loc?.name ?? "不明";
+                locationCache.set(slot.locationId, locationName);
+            }
+            results.push({ ...slot, serviceName, locationName });
+        }
+        return results;
     },
 });
