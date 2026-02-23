@@ -27,7 +27,7 @@ const CustomerSidebar = ({ org }: { org: { id: string } }) => {
                         <SidebarMenuButton asChild>
                             <Link href={`/o/${org.id}/search`}>
                                 <Search />
-                                <span>店舗検索</span>
+                                <span>場所検索</span>
                             </Link>
                         </SidebarMenuButton>
                     </SidebarMenuItem>
