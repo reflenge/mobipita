@@ -157,17 +157,17 @@ const TenantList = ({ orgId }: TenantListProps) => {
         <div className="space-y-4">
             {/* 検索バー */}
             <div className="relative">
-                <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+                <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
                 <Input
                     placeholder="テナントを検索..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="pl-10"
+                    className="pl-12 h-12 text-base"
                 />
             </div>
 
             {/* テナント一覧 */}
-            <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-6 grid-cols-1">
                 {displayedTenants?.map((tenant) => {
                     const status = statusLabels[tenant.tenantStatus] ?? "不明";
                     const type = typeLabels[tenant.tenantType] ?? "不明";
@@ -180,12 +180,12 @@ const TenantList = ({ orgId }: TenantListProps) => {
                     });
 
                     return (
-                        <Card key={tenant._id} className="border border-gray-200 hover:border-blue-300 hover:shadow-md transition-all bg-white overflow-hidden">
+                        <Card key={tenant._id} className="rounded-lg border border-gray-200 hover:border-blue-300 hover:shadow-lg transition-all bg-white overflow-hidden">
                             <CardContent className="p-0">
-                                <div className="flex items-center gap-4 p-4">
+                                <div className="flex items-center gap-6 p-6">
                                     {/* ロゴエリア */}
-                                    <div className="flex-shrink-0">
-                                        <div className="w-20 h-20 bg-gray-100 rounded-lg flex items-center justify-center overflow-hidden relative">
+                                        <div className="flex-shrink-0">
+                                        <div className="w-36 h-36 bg-gray-100 rounded-lg flex items-center justify-center overflow-hidden relative">
                                             {tenant.logoUrl ? (
                                                 <>
                                                     <img
@@ -210,7 +210,7 @@ const TenantList = ({ orgId }: TenantListProps) => {
                                                         }}
                                                     />
                                                     <div className="logo-fallback hidden absolute inset-0 flex items-center justify-center bg-gray-100">
-                                                        <ImageIcon className="w-8 h-8 text-gray-400" />
+                                                        <ImageIcon className="w-14 h-14 text-gray-400" />
                                                     </div>
                                                 </>
                                             ) : (
@@ -220,13 +220,13 @@ const TenantList = ({ orgId }: TenantListProps) => {
                                     </div>
 
                                     {/* 情報エリア */}
-                                    <div className="flex-1 min-w-0">
-                                        <div className="flex items-start justify-between gap-4 mb-2">
+                                                <div className="flex-1 min-w-0">
+                                        <div className="flex items-start justify-between gap-4 mb-3">
                                             <div>
-                                                <h3 className="text-lg font-bold text-gray-900 line-clamp-1">
+                                                <h3 className="text-xl md:text-2xl font-bold text-gray-900 line-clamp-1">
                                                     {tenant.tenantName}
                                                 </h3>
-                                                <p className="text-sm text-gray-600">
+                                                <p className="text-sm md:text-base text-gray-600">
                                                     /{tenant.tenantSlug}
                                                 </p>
                                             </div>
@@ -234,15 +234,15 @@ const TenantList = ({ orgId }: TenantListProps) => {
                                                 variant={
                                                     statusVariant[tenant.tenantStatus] ?? "outline"
                                                 }
-                                                className="whitespace-nowrap font-semibold px-3 py-1"
+                                                className="whitespace-nowrap font-semibold px-3 py-1 text-sm md:text-base rounded-full"
                                             >
                                                 {status}
                                             </Badge>
                                         </div>
 
                                         {/* メタ情報 */}
-                                        <div className="flex flex-wrap items-center gap-2 text-xs text-gray-600 mb-3">
-                                            <Badge variant="secondary" className="font-medium">
+                                        <div className="flex flex-wrap items-center gap-3 text-sm md:text-base text-gray-600 mb-3">
+                                            <Badge variant="secondary" className="font-medium text-sm md:text-base">
                                                 {type}
                                             </Badge>
                                             {/* 店舗ステータス（移動/固定）バッジ */}
@@ -273,35 +273,35 @@ const TenantList = ({ orgId }: TenantListProps) => {
                                         </div>
 
                                         {/* アクションボタン */}
-                                        <div className="flex flex-wrap gap-2">
+                                        <div className="flex flex-wrap gap-3">
                                             <Button
                                                 asChild
-                                                size="sm"
+                                                size="default"
                                                 variant="outline"
-                                                className="text-xs font-semibold hover:bg-blue-50 hover:text-blue-700 hover:border-blue-300"
+                                                className="text-sm md:text-base font-semibold px-4 py-2 rounded-md hover:bg-blue-50 hover:text-blue-700 hover:border-blue-300"
                                             >
-                                                <Link href={`/o/${orgId}/admin/tenant/${tenant._id}`} className="flex items-center gap-1">
-                                                    <Eye className="w-3.5 h-3.5" />
-                                                    詳細
+                                                <Link href={`/o/${orgId}/admin/tenant/${tenant._id}`} className="flex items-center gap-2">
+                                                    <Eye className="w-4 h-4 md:w-5 md:h-5" />
+                                                    <span>詳細</span>
                                                 </Link>
                                             </Button>
                                             <Button
                                                 asChild
-                                                size="sm"
+                                                size="default"
                                                 variant="outline"
-                                                className="text-xs font-semibold hover:bg-green-50 hover:text-green-700 hover:border-green-300"
+                                                className="text-sm md:text-base font-semibold px-4 py-2 rounded-md hover:bg-green-50 hover:text-green-700 hover:border-green-300"
                                             >
-                                                <Link href={`/o/${orgId}/admin/tenant/${tenant._id}/edit`} className="flex items-center gap-1">
-                                                    <Edit2 className="w-3.5 h-3.5" />
-                                                    編集
+                                                <Link href={`/o/${orgId}/admin/tenant/${tenant._id}/edit`} className="flex items-center gap-2">
+                                                    <Edit2 className="w-4 h-4 md:w-5 md:h-5" />
+                                                    <span>編集</span>
                                                 </Link>
                                             </Button>
                                             <Button
-                                                size="sm"
+                                                size="default"
                                                 variant="outline"
-                                                className="text-xs font-semibold text-red-700 hover:bg-red-50 hover:text-red-900 hover:border-red-300"
+                                                className="text-sm md:text-base font-semibold text-red-700 px-3 py-2 rounded-md hover:bg-red-50 hover:text-red-900 hover:border-red-300"
                                             >
-                                                <Trash2 className="w-3.5 h-3.5" />
+                                                <Trash2 className="w-4 h-4 md:w-5 md:h-5" />
                                             </Button>
                                         </div>
                                     </div>
@@ -314,12 +314,12 @@ const TenantList = ({ orgId }: TenantListProps) => {
 
             {/* 合計件数表示 */}
             {filteredTenants && filteredTenants.length > 0 && (
-                <div className="mt-6">
-                    <div className="text-sm text-gray-600 mb-3">全 <span className="font-bold text-gray-900">{filteredTenants.length}</span> 件のテナント</div>
+                    <div className="mt-6">
+                    <div className="text-base text-gray-600 mb-3">全 <span className="font-bold text-gray-900">{filteredTenants.length}</span> 件のテナント</div>
                     {/* ページネーション */}
-                    <div className="flex items-center justify-center gap-2">
+                    <div className="flex items-center justify-center gap-3">
                         <button
-                            className="px-3 py-1 rounded-md border text-sm"
+                            className="px-4 py-2 rounded-md border text-sm md:text-base"
                             onClick={() => setPage((p) => Math.max(1, p - 1))}
                             disabled={page === 1}
                         >
@@ -331,14 +331,14 @@ const TenantList = ({ orgId }: TenantListProps) => {
                                 <button
                                     key={idx}
                                     onClick={() => setPage(idx)}
-                                    className={`px-3 py-1 rounded-md text-sm ${idx === page ? 'bg-blue-600 text-white' : 'border'}`}
+                                    className={`px-4 py-2 rounded-md text-sm md:text-base ${idx === page ? 'bg-blue-600 text-white' : 'border'}`}
                                 >
                                     {idx}
                                 </button>
                             );
                         })}
                         <button
-                            className="px-3 py-1 rounded-md border text-sm"
+                            className="px-4 py-2 rounded-md border text-sm md:text-base"
                             onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
                             disabled={page === totalPages}
                         >
