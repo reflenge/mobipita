@@ -8,6 +8,7 @@ import {
     DialogDescription,
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
+import { TiptapViewer } from "@/components/Tiptap/viewer";
 
 const STATUS_LABEL: Record<string, string> = {
     open: "受付中",
@@ -164,9 +165,7 @@ export function SlotDetailDialog({ open, onOpenChange, slot }: Props) {
                             <ul className="space-y-1">
                                 {form.questions.map((q, i) => (
                                     <li key={i} className="text-xs">
-                                        <span
-                                            dangerouslySetInnerHTML={{ __html: q.label }}
-                                        />{" "}
+                                        <TiptapViewer content={q.label} size="sm" />{" "}
                                         <span className="text-muted-foreground">
                                             ({q.type}{q.required ? ", 必須" : ""})
                                         </span>

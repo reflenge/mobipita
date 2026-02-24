@@ -13,6 +13,7 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "@/components/link";
+import { TiptapViewer } from "@/components/Tiptap/viewer";
 
 const typeLabels: Record<string, string> = {
     fixed: "固定店舗",
@@ -111,9 +112,9 @@ export function LocationList({ orgId, tenantId }: LocationListProps) {
                                 Google Mapsで開く
                             </a>
                             {location.details && (
-                                <p className="pt-2 text-muted-foreground line-clamp-2">
-                                    {location.details}
-                                </p>
+                                <div className="pt-2 text-muted-foreground">
+                                    <TiptapViewer content={location.details} lines={2} />
+                                </div>
                             )}
                             <Link
                                 href={detailHref}

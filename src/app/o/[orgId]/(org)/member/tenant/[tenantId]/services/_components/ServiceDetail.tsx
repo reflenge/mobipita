@@ -27,6 +27,7 @@ import { Switch } from "@/components/ui/switch";
 import { Link } from "@/components/link";
 import { useRouter } from "next/navigation";
 import Tiptap from "@/components/Tiptap";
+import { TiptapViewer } from "@/components/Tiptap/viewer";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
 import { useTransition } from "react";
@@ -337,12 +338,7 @@ export function ServiceDetail({
                     <h3 className="text-sm font-medium text-muted-foreground mb-2">
                         説明
                     </h3>
-                    <div
-                        className="prose prose-sm dark:prose-invert max-w-none"
-                        dangerouslySetInnerHTML={{
-                            __html: service.description,
-                        }}
-                    />
+                    <TiptapViewer content={service.description} />
                 </div>
             </CardContent>
         </Card>

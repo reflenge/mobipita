@@ -29,6 +29,7 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { TiptapViewer } from "@/components/Tiptap/viewer";
 import { Link } from "@/components/link";
 import { useRouter } from "next/navigation";
 import {
@@ -481,9 +482,9 @@ export function LocationDetail({
                     Google Mapsで開く
                 </a>
                 {location.details && (
-                    <p className="text-sm text-muted-foreground pt-2 border-t">
-                        {location.details}
-                    </p>
+                    <div className="text-muted-foreground pt-2 border-t">
+                        <TiptapViewer content={location.details} />
+                    </div>
                 )}
             </CardContent>
         </Card>
