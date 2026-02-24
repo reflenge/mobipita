@@ -86,38 +86,26 @@ const AdminSidebar = ({ org }: { org: { id: string } }) => {
                                     </SidebarMenuButton>
                                 </SidebarMenuSubItem>
                             </SidebarMenuSub>
-                            <SidebarMenuSub>
-                                <SidebarMenuSubItem>
-                                    <SidebarMenuButton asChild>
-                                        <Link
-                                            href={`/o/${org.id}/admin/tenant/upgrade`}
-                                        >
-                                            <UserPlus />
-                                            <span>従業員へ昇格</span>
-                                        </Link>
-                                    </SidebarMenuButton>
-                                </SidebarMenuSubItem>
-                            </SidebarMenuSub>
-                            <SidebarMenuSub>
-                                <SidebarMenuSubItem>
-                                    <SidebarMenuButton asChild>
-                                        <Link
-                                            href={`/o/${org.id}/admin/tenant/assignment`}
-                                        >
-                                            <UsersRound />
-                                            <span>各テナントへ振り分け</span>
-                                        </Link>
-                                    </SidebarMenuButton>
-                                </SidebarMenuSubItem>
-                            </SidebarMenuSub>
                         </SidebarMenuItem>
                         <SidebarMenuItem>
                             <SidebarMenuButton asChild>
                                 <Link href={`/o/${org.id}/admin/employee`}>
-                                    <Store />
+                                    <UsersRound />
                                     <span>従業員</span>
                                 </Link>
                             </SidebarMenuButton>
+                            <SidebarMenuSub>
+                                <SidebarMenuSubItem>
+                                    <SidebarMenuButton asChild>
+                                        <Link
+                                            href={`/o/${org.id}/admin/employee`}
+                                        >
+                                            <BookCopy />
+                                            <span>一覧</span>
+                                        </Link>
+                                    </SidebarMenuButton>
+                                </SidebarMenuSubItem>
+                            </SidebarMenuSub>
                             <SidebarMenuSub>
                                 <SidebarMenuSubItem>
                                     <SidebarMenuButton asChild>
@@ -136,7 +124,7 @@ const AdminSidebar = ({ org }: { org: { id: string } }) => {
                                         <Link
                                             href={`/o/${org.id}/admin/employee/assignment`}
                                         >
-                                            <UsersRound />
+                                            <Store />
                                             <span>各テナントへ振り分け</span>
                                         </Link>
                                     </SidebarMenuButton>
