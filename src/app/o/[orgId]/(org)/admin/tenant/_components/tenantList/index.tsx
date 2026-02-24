@@ -63,6 +63,9 @@ const TenantList = ({ orgId }: TenantListProps) => {
         }
     }, [tenants]);
 
+    const [page, setPage] = React.useState(1);
+    const pageSize = 6;
+
     const filteredTenants = React.useMemo(() => {
         if (!tenants) return null;
         return tenants.filter(
@@ -75,6 +78,18 @@ const TenantList = ({ orgId }: TenantListProps) => {
                     .includes(searchQuery.toLowerCase())
         );
     }, [tenants, searchQuery]);
+
+    const total = filteredTenants?.length ?? 0;
+    const totalPages = Math.max(1, Math.ceil(total / pageSize));
+    React.useEffect(() => {
+        if (page > totalPages) setPage(1);
+    }, [totalPages, page]);
+
+    const displayedTenants = React.useMemo(() => {
+        if (!filteredTenants) return null;
+        const start = (page - 1) * pageSize;
+        return filteredTenants.slice(start, start + pageSize);
+    }, [filteredTenants, page]);
 
     if (!tenants) {
         return (
@@ -142,8 +157,8 @@ const TenantList = ({ orgId }: TenantListProps) => {
             </div>
 
             {/* テナント一覧 */}
-            <div className="space-y-3">
-                {filteredTenants?.map((tenant) => {
+            <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+                {displayedTenants?.map((tenant) => {
                     const status = statusLabels[tenant.tenantStatus] ?? "不明";
                     const type = typeLabels[tenant.tenantType] ?? "不明";
                     const createdAt = new Date(
@@ -217,6 +232,18 @@ const TenantList = ({ orgId }: TenantListProps) => {
                                                     <span>連絡先: {tenant.phoneNumber}</span>
                                                 </>
                                             )}
+                                            {/* DEBUG: logoUrl を表示（クリックで新しいタブ） */}
+                                            {tenant.logoUrl && (
+                                                <a
+                                                    href={tenant.logoUrl}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="block mt-1 text-xs text-blue-600 underline truncate max-w-xs"
+                                                    aria-label={`Open logo for ${tenant.tenantName}`}
+                                                >
+                                                    {tenant.logoUrl}
+                                                </a>
+                                            )}
                                         </div>
 
                                         {/* アクションボタン */}
@@ -261,8 +288,37 @@ const TenantList = ({ orgId }: TenantListProps) => {
 
             {/* 合計件数表示 */}
             {filteredTenants && filteredTenants.length > 0 && (
-                <div className="text-center text-sm text-gray-600 py-4 border-t border-gray-200 mt-6">
-                    全 <span className="font-bold text-gray-900">{filteredTenants.length}</span> 件のテナント
+                <div className="mt-6">
+                    <div className="text-sm text-gray-600 mb-3">全 <span className="font-bold text-gray-900">{filteredTenants.length}</span> 件のテナント</div>
+                    {/* ページネーション */}
+                    <div className="flex items-center justify-center gap-2">
+                        <button
+                            className="px-3 py-1 rounded-md border text-sm"
+                            onClick={() => setPage((p) => Math.max(1, p - 1))}
+                            disabled={page === 1}
+                        >
+                            Prev
+                        </button>
+                        {Array.from({ length: totalPages }).map((_, i) => {
+                            const idx = i + 1;
+                            return (
+                                <button
+                                    key={idx}
+                                    onClick={() => setPage(idx)}
+                                    className={`px-3 py-1 rounded-md text-sm ${idx === page ? 'bg-blue-600 text-white' : 'border'}`}
+                                >
+                                    {idx}
+                                </button>
+                            );
+                        })}
+                        <button
+                            className="px-3 py-1 rounded-md border text-sm"
+                            onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                            disabled={page === totalPages}
+                        >
+                            Next
+                        </button>
+                    </div>
                 </div>
             )}
         </div>
