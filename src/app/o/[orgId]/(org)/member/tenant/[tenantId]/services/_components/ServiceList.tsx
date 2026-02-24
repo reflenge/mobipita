@@ -13,12 +13,7 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "@/components/link";
-
-function stripHtml(html: string, maxLength: number): string {
-    const text = html.replace(/<[^>]*>/g, "").trim();
-    if (text.length <= maxLength) return text;
-    return text.slice(0, maxLength) + "…";
-}
+import { TiptapViewer } from "@/components/Tiptap/viewer";
 
 type ServiceListProps = {
     orgId: string;
@@ -84,8 +79,8 @@ export function ServiceList({ orgId, tenantId }: ServiceListProps) {
                                     {service.isActive ? "有効" : "無効"}
                                 </Badge>
                             </div>
-                            <CardDescription className="line-clamp-3">
-                                {stripHtml(service.description, 120)}
+                            <CardDescription>
+                                <TiptapViewer content={service.description} lines={4} />
                             </CardDescription>
                         </CardHeader>
                     </Card>

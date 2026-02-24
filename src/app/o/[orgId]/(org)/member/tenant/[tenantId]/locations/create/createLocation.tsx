@@ -24,7 +24,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
+import Tiptap from "@/components/Tiptap";
 import {
     MapPinLocateSelect,
     MapPinLocateSelectProvider,
@@ -73,7 +73,7 @@ export function CreateLocation({ orgId, tenantId }: Props) {
                 autoAddress: "",
                 semiAddress: "",
                 geo: { ...DEFAULT_GEO },
-                details: "",
+                details: "<p></p>",
             },
         },
         mode: "all",
@@ -273,13 +273,14 @@ export function CreateLocation({ orgId, tenantId }: Props) {
                                 <FieldLabel htmlFor="form-location-create-details">
                                     詳細・備考
                                 </FieldLabel>
-                                <Textarea
-                                    {...field}
+                                <Tiptap
+                                    sentence={field.value}
+                                    setSentence={field.onChange}
+                                    onBlur={field.onBlur}
+                                    maxLength={1000}
                                     id="form-location-create-details"
                                     aria-invalid={fieldState.invalid}
-                                    placeholder="例: 入口は北側。駐車場2台分あり。"
-                                    rows={3}
-                                    className="resize-none"
+                                    className="min-h-32 max-h-96 overflow-y-auto w-full"
                                 />
                                 {fieldState.invalid && (
                                     <FieldError errors={[fieldState.error]} />

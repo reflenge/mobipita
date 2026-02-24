@@ -4,16 +4,22 @@ import { useEffect } from 'react'
 import { useEditor, EditorContent } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import ToolMenu from './menu'
+import {
+    InputGroup,
+    InputGroupAddon,
+    InputGroupText,
+} from "@/components/ui/input-group"
 
 type Props = {
     sentence: string
     setSentence: (sentence: string) => void
+    maxLength?: number
 } & Omit<React.HTMLAttributes<HTMLDivElement>, 'onBlur'> & {
     // react-hook-form の field.onBlur を受け取るため、引数なしの onBlur を許可する
     onBlur?: () => void
 }
 
-const Tiptap = ({ sentence, setSentence, className, onBlur, ...props }: Props) => {
+const Tiptap = ({ sentence, setSentence, className, onBlur, maxLength, ...props }: Props) => {
     const editor = useEditor({
         extensions: [StarterKit],
         // 初期値も HTML 文字列として扱う
@@ -66,10 +72,22 @@ const Tiptap = ({ sentence, setSentence, className, onBlur, ...props }: Props) =
     }
 
     return (
-        <>
+        <InputGroup>
             <ToolMenu editor={editor} />
-            <EditorContent editor={editor} className={className} {...props} />
-        </>
+            <EditorContent
+                editor={editor}
+                data-slot="input-group-control"
+                className={className}
+                {...props}
+            />
+            <InputGroupAddon align="block-end">
+                <InputGroupText className="tabular-nums">
+                    {maxLength
+                        ? `${sentence.length}/${maxLength}`
+                        : `${sentence.length} 文字`}
+                </InputGroupText>
+            </InputGroupAddon>
+        </InputGroup>
     )
 }
 

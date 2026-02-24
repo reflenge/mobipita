@@ -19,11 +19,6 @@ import {
     FieldLabel,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
-import {
-    InputGroup,
-    InputGroupAddon,
-    InputGroupText
-} from "@/components/ui/input-group"
 import Tiptap from "@/components/Tiptap";
 import CreateServiceSkeleton from "./createServiceSkeleton";
 
@@ -161,21 +156,15 @@ export function CreateService({ orgId, tenantId }: Props) {
                                 <FieldLabel htmlFor="form-slot-create-service-description">
                                     サービス説明
                                 </FieldLabel>
-                                <InputGroup>
-                                    <Tiptap
-                                        sentence={field.value}
-                                        setSentence={field.onChange}
-                                        onBlur={field.onBlur}
-                                        id="form-slot-create-service-description"
-                                        aria-invalid={fieldState.invalid}
-                                        className="min-h-48 max-h-96 overflow-y-auto w-full"
-                                    />
-                                    <InputGroupAddon align="block-end">
-                                        <InputGroupText className="tabular-nums">
-                                            {field.value.length}/1000 characters
-                                        </InputGroupText>
-                                    </InputGroupAddon>
-                                </InputGroup>
+                                <Tiptap
+                                    sentence={field.value}
+                                    setSentence={field.onChange}
+                                    onBlur={field.onBlur}
+                                    maxLength={1000}
+                                    id="form-slot-create-service-description"
+                                    aria-invalid={fieldState.invalid}
+                                    className="min-h-48 max-h-96 overflow-y-auto w-full"
+                                />
                                 <FieldDescription>
                                     装飾込みのHTMLで20文字以上1000文字以内で入力してください。
                                 </FieldDescription>
