@@ -1,12 +1,7 @@
 import { auth, clerkClient } from "@clerk/nextjs/server";
 import { notFound } from "next/navigation";
 
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { AppSidebar } from "./_components/sidebar";
-import { Link } from "@/components/link";
-
-import AutoBreadcrumb from "./_components/breadcrumb";
-import { cn } from "@/lib/utils";
+import { OrgLayout } from "./_components/OrgLayout";
 
 type OrganizationLayoutProps = {
     children: React.ReactNode;
@@ -48,35 +43,13 @@ export default async function OrganizationLayout({
 
     // スコープが一致している場合のみ配下コンテンツを描画する。
     return (
-        <SidebarProvider>
-            <AppSidebar
-                org={org}
-                user={{ role: userRole, userId: userId ?? "" }}
-            />
-            <section className="w-full flex flex-col min-h-dvh">
-                <h2 className="sr-only">Organization Content</h2>
-                <header className={cn(outView && "outline-1 outline-red-300", "m-2 p-2")}>
-                    <SidebarTrigger />
-                </header>
-                <main className={cn(outView && "outline-1 outline-green-300", "grow m-2 p-2")}>
-                    <AutoBreadcrumb />
-                    {children}
-                </main>
-                <footer className={cn(outView && "outline-1 outline-blue-300", "m-2 p-2")}>
-                    <section>
-                        <p className="text-sm text-muted-foreground">
-                            <Link href="/o">
-                                このエリアは単一の組織にスコープされています。
-                            </Link>
-                        </p>
-                    </section>
-                    <section>
-                        <p className="text-xs text-muted-foreground text-center">
-                            mobipita © reflenge 2025
-                        </p>
-                    </section>
-                </footer>
-            </section>
-        </SidebarProvider>
+        <OrgLayout
+            org={org}
+            userRole={userRole}
+            userId={userId ?? ""}
+            outView={outView}
+        >
+            {children}
+        </OrgLayout>
     );
 }
