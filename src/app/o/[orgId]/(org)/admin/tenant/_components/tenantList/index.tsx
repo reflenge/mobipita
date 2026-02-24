@@ -182,9 +182,9 @@ const TenantList = ({ orgId }: TenantListProps) => {
                     return (
                         <Card key={tenant._id} className="rounded-lg border border-gray-200 hover:border-blue-300 hover:shadow-lg transition-all bg-white overflow-hidden">
                             <CardContent className="p-0">
-                                <div className="flex items-center gap-6 p-6">
-                                    {/* ロゴエリア */}
-                                        <div className="flex-shrink-0">
+                                <div className="flex items-stretch gap-6 p-6">
+                                    {/* ロゴエリア（左） */}
+                                    <div className="flex-shrink-0">
                                         <div className="w-36 h-36 bg-gray-100 rounded-lg flex items-center justify-center overflow-hidden relative">
                                             {tenant.logoUrl ? (
                                                 <>
@@ -203,7 +203,6 @@ const TenantList = ({ orgId }: TenantListProps) => {
                                                         }}
                                                         onLoad={(e) => {
                                                             const img = e.currentTarget as HTMLImageElement;
-                                                            // 画像読み込み成功時にフォールバックが見えている場合は隠す
                                                             const fallback = img.parentElement?.querySelector('.logo-fallback') as HTMLElement | null;
                                                             if (fallback) fallback.classList.add('hidden');
                                                             img.style.display = '';
@@ -219,90 +218,107 @@ const TenantList = ({ orgId }: TenantListProps) => {
                                         </div>
                                     </div>
 
-                                    {/* 情報エリア */}
+                                    {/* 右側エリア（情報＋アクション） */}
+                                    <div className="flex-1 min-w-0 flex flex-col justify-between">
+                                        {/* 上部：テナント名＋バッジ＋設定ボタン */}
+                                        <div className="mb-3">
+                                            <div className="flex items-center justify-between gap-3 mb-2">
                                                 <div className="flex-1 min-w-0">
-                                        <div className="flex items-start justify-between gap-4 mb-3">
-                                            <div>
-                                                <h3 className="text-xl md:text-2xl font-bold text-gray-900 line-clamp-1">
-                                                    {tenant.tenantName}
-                                                </h3>
-                                                <p className="text-sm md:text-base text-gray-600">
-                                                    /{tenant.tenantSlug}
-                                                </p>
-                                            </div>
-                                            <Badge
-                                                variant={
-                                                    statusVariant[tenant.tenantStatus] ?? "outline"
-                                                }
-                                                className="whitespace-nowrap font-semibold px-3 py-1 text-sm md:text-base rounded-full"
-                                            >
-                                                {status}
-                                            </Badge>
-                                        </div>
-
-                                        {/* メタ情報 */}
-                                        <div className="flex flex-wrap items-center gap-3 text-sm md:text-base text-gray-600 mb-3">
-                                            <Badge variant="secondary" className="font-medium text-sm md:text-base">
-                                                {type}
-                                            </Badge>
-                                            {/* 店舗ステータス（移動/固定）バッジ */}
-                                            {tenant.storeType && (
-                                                <Badge variant={storeTypeVariant[tenant.storeType] ?? 'outline'} className="font-medium">
-                                                    {storeTypeLabels[tenant.storeType] ?? tenant.storeType}
-                                                </Badge>
-                                            )}
-                                            <span>作成日: {createdAt}</span>
-                                            {tenant.phoneNumber && (
-                                                <>
-                                                    <span>•</span>
-                                                    <span>連絡先: {tenant.phoneNumber}</span>
-                                                </>
-                                            )}
-                                            {/* DEBUG: logoUrl を表示（クリックで新しいタブ） */}
-                                            {tenant.logoUrl && (
-                                                <a
-                                                    href={tenant.logoUrl}
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    className="block mt-1 text-xs text-blue-600 underline truncate max-w-xs"
-                                                    aria-label={`Open logo for ${tenant.tenantName}`}
+                                                    <h3 className="text-xl md:text-2xl font-bold text-gray-900 line-clamp-1">
+                                                        {tenant.tenantName}
+                                                    </h3>
+                                                    <p className="text-sm md:text-base text-gray-600">
+                                                        /{tenant.tenantSlug}
+                                                    </p>
+                                                </div>
+                                                {/* 設定ボタン（右上） */}
+                                                <Button
+                                                    size="icon"
+                                                    variant="ghost"
+                                                    className="flex-shrink-0 h-8 w-8"
                                                 >
-                                                    {tenant.logoUrl}
-                                                </a>
-                                            )}
+                                                    <span className="text-lg">⋯</span>
+                                                </Button>
+                                            </div>
+
+                                            {/* バッジ行：営業状況、形態等を集約 */}
+                                            <div className="flex flex-wrap items-center gap-2">
+                                                <Badge
+                                                    variant={
+                                                        statusVariant[tenant.tenantStatus] ?? "outline"
+                                                    }
+                                                    className="whitespace-nowrap font-semibold px-2 py-1 text-xs md:text-sm rounded-full"
+                                                >
+                                                    {status}
+                                                </Badge>
+                                                <Badge variant="secondary" className="font-medium text-xs md:text-sm">
+                                                    {type}
+                                                </Badge>
+                                                {tenant.storeType && (
+                                                    <Badge variant={storeTypeVariant[tenant.storeType] ?? 'outline'} className="font-medium text-xs md:text-sm">
+                                                        {storeTypeLabels[tenant.storeType] ?? tenant.storeType}
+                                                    </Badge>
+                                                )}
+                                            </div>
                                         </div>
 
-                                        {/* アクションボタン */}
-                                        <div className="flex flex-wrap gap-3">
-                                            <Button
-                                                asChild
-                                                size="default"
-                                                variant="outline"
-                                                className="text-sm md:text-base font-semibold px-4 py-2 rounded-md hover:bg-blue-50 hover:text-blue-700 hover:border-blue-300"
-                                            >
-                                                <Link href={`/o/${orgId}/admin/tenant/${tenant._id}`} className="flex items-center gap-2">
-                                                    <Eye className="w-4 h-4 md:w-5 md:h-5" />
-                                                    <span>詳細</span>
-                                                </Link>
-                                            </Button>
-                                            <Button
-                                                asChild
-                                                size="default"
-                                                variant="outline"
-                                                className="text-sm md:text-base font-semibold px-4 py-2 rounded-md hover:bg-green-50 hover:text-green-700 hover:border-green-300"
-                                            >
-                                                <Link href={`/o/${orgId}/admin/tenant/${tenant._id}/edit`} className="flex items-center gap-2">
-                                                    <Edit2 className="w-4 h-4 md:w-5 md:h-5" />
-                                                    <span>編集</span>
-                                                </Link>
-                                            </Button>
-                                            <Button
-                                                size="default"
-                                                variant="outline"
-                                                className="text-sm md:text-base font-semibold text-red-700 px-3 py-2 rounded-md hover:bg-red-50 hover:text-red-900 hover:border-red-300"
-                                            >
-                                                <Trash2 className="w-4 h-4 md:w-5 md:h-5" />
-                                            </Button>
+                                        {/* 下部：メタ情報＋アクションボタン */}
+                                        <div>
+                                            {/* メタ情報行 */}
+                                            <div className="flex flex-wrap items-center gap-3 text-xs md:text-sm text-gray-600 mb-3">
+                                                <span>作成日: {createdAt}</span>
+                                                {tenant.phoneNumber && (
+                                                    <>
+                                                        <span>•</span>
+                                                        <span>連絡先: {tenant.phoneNumber}</span>
+                                                    </>
+                                                )}
+                                                {/* DEBUG: logoUrl を表示（クリックで新しいタブ） */}
+                                                {tenant.logoUrl && (
+                                                    <a
+                                                        href={tenant.logoUrl}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        className="text-xs text-blue-600 underline truncate max-w-xs"
+                                                        aria-label={`Open logo for ${tenant.tenantName}`}
+                                                    >
+                                                        logo
+                                                    </a>
+                                                )}
+                                            </div>
+
+                                            {/* アクションボタン */}
+                                            <div className="flex flex-wrap gap-2">
+                                                <Button
+                                                    asChild
+                                                    size="sm"
+                                                    variant="outline"
+                                                    className="font-semibold rounded-md hover:bg-blue-50 hover:text-blue-700 hover:border-blue-300"
+                                                >
+                                                    <Link href={`/o/${orgId}/admin/tenant/${tenant._id}`} className="flex items-center gap-1">
+                                                        <Eye className="w-4 h-4" />
+                                                        <span>詳細</span>
+                                                    </Link>
+                                                </Button>
+                                                <Button
+                                                    asChild
+                                                    size="sm"
+                                                    variant="outline"
+                                                    className="font-semibold rounded-md hover:bg-green-50 hover:text-green-700 hover:border-green-300"
+                                                >
+                                                    <Link href={`/o/${orgId}/admin/tenant/${tenant._id}/edit`} className="flex items-center gap-1">
+                                                        <Edit2 className="w-4 h-4" />
+                                                        <span>編集</span>
+                                                    </Link>
+                                                </Button>
+                                                <Button
+                                                    size="sm"
+                                                    variant="outline"
+                                                    className="font-semibold text-red-700 rounded-md hover:bg-red-50 hover:text-red-900 hover:border-red-300"
+                                                >
+                                                    <Trash2 className="w-4 h-4" />
+                                                </Button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
