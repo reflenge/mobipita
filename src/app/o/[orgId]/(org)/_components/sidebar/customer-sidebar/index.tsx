@@ -12,7 +12,7 @@ import { Home, Search } from "lucide-react";
 const CustomerSidebar = ({ org }: { org: { id: string } }) => {
     return (
         <SidebarGroup>
-            <SidebarGroupLabel>Customer</SidebarGroupLabel>
+            <SidebarGroupLabel>カスタマー</SidebarGroupLabel>
             <SidebarGroupContent>
                 <SidebarMenu>
                     <SidebarMenuItem>

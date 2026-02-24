@@ -43,14 +43,14 @@ const AdminSidebar = ({ org }: { org: { id: string } }) => {
         <>
             <SidebarSeparator />
             <SidebarGroup>
-                <SidebarGroupLabel>Admin</SidebarGroupLabel>
+                <SidebarGroupLabel>管理者</SidebarGroupLabel>
                 <SidebarGroupContent>
                     <SidebarMenu>
                         <SidebarMenuItem>
                             <SidebarMenuButton asChild>
                                 <Link href={`/o/${org.id}/admin`}>
                                     <ShieldUser />
-                                    <span>Admin</span>
+                                    <span>管理者</span>
                                 </Link>
                             </SidebarMenuButton>
                         </SidebarMenuItem>
@@ -59,7 +59,7 @@ const AdminSidebar = ({ org }: { org: { id: string } }) => {
                             <SidebarMenuButton asChild>
                                 <Link href={`/o/${org.id}/admin/tenant`}>
                                     <Store />
-                                    <span>Tenant</span>
+                                    <span>テナント</span>
                                 </Link>
                             </SidebarMenuButton>
                             <SidebarMenuSub>

@@ -19,14 +19,14 @@ export default function MemberSidebar({ org }: MemberSidebarProps) {
         <>
             <SidebarSeparator />
             <SidebarGroup>
-                <SidebarGroupLabel>Member</SidebarGroupLabel>
+                <SidebarGroupLabel>従業員</SidebarGroupLabel>
                 <SidebarGroupContent>
                     <SidebarMenu>
                         <SidebarMenuItem>
                             <SidebarMenuButton asChild>
                                 <Link href={`/o/${org.id}/member`}>
                                     <UserStar />
-                                    <span>Member</span>
+                                    <span>従業員</span>
                                 </Link>
                             </SidebarMenuButton>
                         </SidebarMenuItem>
@@ -34,7 +34,7 @@ export default function MemberSidebar({ org }: MemberSidebarProps) {
                             <SidebarMenuButton asChild>
                                 <Link href={`/o/${org.id}/member/tenant`}>
                                     <Store />
-                                    <span>Tenant</span>
+                                    <span>テナント</span>
                                 </Link>
                             </SidebarMenuButton>
                         </SidebarMenuItem>
