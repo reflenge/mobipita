@@ -72,7 +72,7 @@ export function AppSidebar({ org, user }: AppSidebarProps) {
             <SidebarContent>
                 <CustomerSidebar org={org} />
                 {(user.role === "org:member" || user.role === "org:admin") && (
-                    <MemberSidebar org={org} userId={user.userId} />
+                    <MemberSidebar org={org} />
                 )}
 
                 {user.role === "org:admin" && <AdminSidebar org={org} />}
