@@ -29,6 +29,16 @@ const typeLabels: Record<string, string> = {
     tenant: "テナント",
 };
 
+const storeTypeLabels: Record<string, string> = {
+    mobile: "移動店舗",
+    fixed: "固定店舗",
+};
+
+const storeTypeVariant: Record<string, "default" | "secondary" | "outline"> = {
+    mobile: "outline",
+    fixed: "secondary",
+};
+
 const statusVariant: Record<
     string,
     "default" | "secondary" | "destructive" | "outline"
@@ -235,6 +245,12 @@ const TenantList = ({ orgId }: TenantListProps) => {
                                             <Badge variant="secondary" className="font-medium">
                                                 {type}
                                             </Badge>
+                                            {/* 店舗ステータス（移動/固定）バッジ */}
+                                            {tenant.storeType && (
+                                                <Badge variant={storeTypeVariant[tenant.storeType] ?? 'outline'} className="font-medium">
+                                                    {storeTypeLabels[tenant.storeType] ?? tenant.storeType}
+                                                </Badge>
+                                            )}
                                             <span>作成日: {createdAt}</span>
                                             {tenant.phoneNumber && (
                                                 <>

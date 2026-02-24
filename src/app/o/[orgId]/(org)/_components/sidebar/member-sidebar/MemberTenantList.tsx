@@ -79,19 +79,20 @@ export function MemberTenantList({ orgId, userId }: MemberTenantListProps) {
                                         <SidebarMenuButton asChild>
                                             <Link
                                                 href={`/o/${orgId}/member/tenant/${tenant._id}`}
+                                                className="flex items-center gap-3"
                                             >
                                                 {logoUrl ? (
                                                     <img
                                                         src={logoUrl}
                                                         alt=""
                                                         className={cn(
-                                                            "size-5 shrink-0 rounded object-cover",
+                                                            "w-12 h-12 flex-shrink-0 rounded-lg object-cover",
                                                         )}
                                                     />
                                                 ) : (
-                                                    <Store className="size-5 shrink-0" />
+                                                    <Store className="w-12 h-12 flex-shrink-0" />
                                                 )}
-                                                <span>{tenant.tenantName}</span>
+                                                <span className="truncate max-w-[12rem]">{tenant.tenantName}</span>
                                             </Link>
                                         </SidebarMenuButton>
                                         <SidebarMenuSub>
@@ -100,7 +101,7 @@ export function MemberTenantList({ orgId, userId }: MemberTenantListProps) {
                                                     <Link
                                                         href={`/o/${orgId}/member/tenant/${tenant._id}`}
                                                     >
-                                                        <Home className="size-4" />
+                                                        <Home className="w-5 h-5" />
                                                         <span>店舗トップ</span>
                                                     </Link>
                                                 </SidebarMenuButton>
@@ -110,7 +111,7 @@ export function MemberTenantList({ orgId, userId }: MemberTenantListProps) {
                                                     <Link
                                                         href={`/o/${orgId}/member/tenant/${tenant._id}/slots/create`}
                                                     >
-                                                        <CalendarPlus className="size-4" />
+                                                        <CalendarPlus className="w-5 h-5" />
                                                         <span>予約枠作成</span>
                                                     </Link>
                                                 </SidebarMenuButton>
