@@ -13,6 +13,8 @@ import {
 } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Link } from "@/components/link";
+import { Button } from "@/components/ui/button";
+import { ChevronRight, Edit2, Eye } from "lucide-react";
 
 const statusLabels: Record<string, string> = {
     preparing: "準備中",
@@ -48,9 +50,9 @@ const TenantList = ({ orgId }: TenantListProps) => {
 
     if (!tenants) {
         return (
-            <div className="grid gap-4 md:grid-cols-2">
-                {Array.from({ length: 4 }).map((_, index) => (
-                    <Card key={`tenant-skeleton-${index}`}>
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                {Array.from({ length: 6 }).map((_, index) => (
+                    <Card key={`tenant-skeleton-${index}`} className="border border-gray-200 hover:border-gray-300 transition-colors">
                         <CardHeader className="gap-3">
                             <Skeleton className="h-5 w-40" />
                             <Skeleton className="h-4 w-28" />
@@ -67,10 +69,10 @@ const TenantList = ({ orgId }: TenantListProps) => {
 
     if (tenants.length === 0) {
         return (
-            <Card className="border-dashed">
-                <CardHeader>
-                    <CardTitle>テナントはまだありません</CardTitle>
-                    <CardDescription>
+            <Card className="border-2 border-dashed border-gray-300 bg-gray-50">
+                <CardHeader className="text-center py-12">
+                    <CardTitle className="text-gray-700">テナントはまだありません</CardTitle>
+                    <CardDescription className="mt-2">
                         最初のテナントを作成して、組織の運用を始めましょう。
                     </CardDescription>
                 </CardHeader>
