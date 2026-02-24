@@ -207,11 +207,11 @@ export function LeafletMap({ value, onChange }: Props) {
     const handleMarkerRef = useCallback(
         (node: L.Marker | null) => {
             markerRef.current = node;
-            if (node && value) {
+            if (node) {
                 node.openPopup();
             }
         },
-        [value]
+        []
     );
 
     useEffect(() => {
@@ -274,7 +274,7 @@ export function LeafletMap({ value, onChange }: Props) {
                     ref={handleMarkerRef}
                     position={[value.lat, value.lng] as LatLngExpression}
                 >
-                    <Popup>
+                    <Popup autoPan={false}>
                         {addressError
                             ? addressError
                             : address ?? "住所取得中..."}
