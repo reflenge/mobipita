@@ -14,7 +14,8 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { Link } from "@/components/link";
 import { Button } from "@/components/ui/button";
-import { ChevronRight, Edit2, Eye } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Edit2, Eye, Trash2, Search, ImageIcon } from "lucide-react";
 
 const statusLabels: Record<string, string> = {
     preparing: "準備中",
@@ -43,48 +44,106 @@ type TenantListProps = {
 };
 
 const TenantList = ({ orgId }: TenantListProps) => {
+    const [searchQuery, setSearchQuery] = React.useState("");
     const tenants = useQuery(api.tenants.listByOrg, {
         clerkOrgId: orgId,
         limit: 50,
     });
 
+    React.useEffect(() => {
+        // デバッグ: サーバーから取得した tenants データと logoUrl を確認
+        if (tenants) {
+            try {
+                // eslint-disable-next-line no-console
+                console.debug("TenantList: tenants fetched", tenants.map(t => ({ id: t._id, name: t.tenantName, logoUrl: t.logoUrl })));
+            } catch (e) {
+                // eslint-disable-next-line no-console
+                console.debug("TenantList: tenants fetched", tenants);
+            }
+        }
+    }, [tenants]);
+
+    const filteredTenants = React.useMemo(() => {
+        if (!tenants) return null;
+        return tenants.filter(
+            (tenant) =>
+                tenant.tenantName
+                    .toLowerCase()
+                    .includes(searchQuery.toLowerCase()) ||
+                tenant.tenantSlug
+                    .toLowerCase()
+                    .includes(searchQuery.toLowerCase())
+        );
+    }, [tenants, searchQuery]);
+
     if (!tenants) {
         return (
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                {Array.from({ length: 6 }).map((_, index) => (
-                    <Card key={`tenant-skeleton-${index}`} className="border border-gray-200 hover:border-gray-300 transition-colors">
-                        <CardHeader className="gap-3">
-                            <Skeleton className="h-5 w-40" />
-                            <Skeleton className="h-4 w-28" />
-                        </CardHeader>
-                        <CardContent className="space-y-3">
-                            <Skeleton className="h-4 w-56" />
-                            <Skeleton className="h-4 w-40" />
-                        </CardContent>
-                    </Card>
-                ))}
+            <div className="space-y-4">
+                {/* 検索バースケルトン */}
+                <div className="flex gap-2">
+                    <Skeleton className="h-10 flex-1" />
+                </div>
+                {/* カードスケルトン */}
+                <div className="grid gap-4">
+                    {Array.from({ length: 3 }).map((_, index) => (
+                        <Card key={`tenant-skeleton-${index}`} className="border border-gray-200">
+                            <CardHeader className="pb-4">
+                                <div className="flex items-start gap-4">
+                                    <Skeleton className="h-16 w-16 rounded" />
+                                    <div className="flex-1 space-y-2">
+                                        <Skeleton className="h-6 w-48" />
+                                        <Skeleton className="h-4 w-32" />
+                                    </div>
+                                </div>
+                            </CardHeader>
+                        </Card>
+                    ))}
+                </div>
             </div>
         );
     }
 
-    if (tenants.length === 0) {
+    if (filteredTenants?.length === 0) {
         return (
-            <Card className="border-2 border-dashed border-gray-300 bg-gray-50">
-                <CardHeader className="text-center py-12">
-                    <CardTitle className="text-gray-700">テナントはまだありません</CardTitle>
-                    <CardDescription className="mt-2">
-                        最初のテナントを作成して、組織の運用を始めましょう。
-                    </CardDescription>
-                </CardHeader>
-            </Card>
+            <div className="space-y-4">
+                {/* 検索バー */}
+                <div className="relative">
+                    <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+                    <Input
+                        placeholder="テナントを検索..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        className="pl-10"
+                    />
+                </div>
+                <Card className="border-2 border-dashed border-gray-300 bg-gray-50">
+                    <CardHeader className="text-center py-12">
+                        <CardTitle className="text-gray-700">テナントはまだありません</CardTitle>
+                        <CardDescription className="mt-2">
+                            最初のテナントを作成して、組織の運用を始めましょう。
+                        </CardDescription>
+                    </CardHeader>
+                </Card>
+            </div>
         );
     }
 
     return (
-        <div className="space-y-6">
-            {/* テナント一覧グリッド */}
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                {tenants.map((tenant) => {
+        <div className="space-y-4">
+            {/* 検索バー */}
+            <div className="relative">
+                <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+                <Input
+                    placeholder="テナントを検索..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="pl-10"
+                />
+            </div>
+
+            {/* テナント一覧 */}
+            <div className="space-y-3">
+                {filteredTenants?.map((tenant) => {
                     const status = statusLabels[tenant.tenantStatus] ?? "不明";
                     const type = typeLabels[tenant.tenantType] ?? "不明";
                     const createdAt = new Date(
@@ -96,94 +155,116 @@ const TenantList = ({ orgId }: TenantListProps) => {
                     });
 
                     return (
-                        <Link
-                            key={tenant._id}
-                            href={`/o/${orgId}/admin/tenant/${tenant._id}`}
-                            className="group"
-                        >
-                            <Card className="h-full border border-gray-200 hover:border-blue-300 hover:shadow-md transition-all duration-200 hover:-translate-y-1 cursor-pointer bg-white">
-                                <CardHeader className="pb-3">
-                                    <div className="flex items-start justify-between gap-2">
-                                        <div className="flex-1 min-w-0">
-                                            <CardTitle className="text-lg font-bold text-gray-900 line-clamp-2 group-hover:text-blue-600 transition-colors">
-                                                {tenant.tenantName}
-                                            </CardTitle>
-                                            <CardDescription className="text-xs text-gray-600 mt-1">
-                                                /{tenant.tenantSlug}
-                                            </CardDescription>
+                        <Card key={tenant._id} className="border border-gray-200 hover:border-blue-300 hover:shadow-md transition-all bg-white overflow-hidden">
+                            <CardContent className="p-0">
+                                <div className="flex items-center gap-4 p-4">
+                                    {/* ロゴエリア */}
+                                    <div className="flex-shrink-0">
+                                        <div className="w-20 h-20 bg-gray-100 rounded-lg flex items-center justify-center overflow-hidden relative">
+                                            {tenant.logoUrl ? (
+                                                <>
+                                                    <img
+                                                        src={tenant.logoUrl}
+                                                        alt={tenant.tenantName}
+                                                        className="w-full h-full object-cover"
+                                                        onError={(e) => {
+                                                            const img = e.currentTarget as HTMLImageElement;
+                                                            img.style.display = "none";
+                                                            const fallback = img.parentElement?.querySelector('.logo-fallback') as HTMLElement | null;
+                                                            if (fallback) fallback.classList.remove('hidden');
+                                                        }}
+                                                    />
+                                                    <div className="logo-fallback hidden absolute inset-0 flex items-center justify-center bg-gray-100">
+                                                        <ImageIcon className="w-8 h-8 text-gray-400" />
+                                                    </div>
+                                                </>
+                                            ) : (
+                                                <ImageIcon className="w-8 h-8 text-gray-400" />
+                                            )}
                                         </div>
-                                        <Badge
-                                            variant={
-                                                statusVariant[tenant.tenantStatus] ?? "outline"
-                                            }
-                                            className="whitespace-nowrap text-xs font-semibold px-2.5 py-1"
-                                        >
-                                            {status}
-                                        </Badge>
-                                    </div>
-                                </CardHeader>
-
-                                <CardContent className="space-y-3 pb-4">
-                                    {/* 種別情報 */}
-                                    <div className="flex items-center justify-between">
-                                        <span className="text-xs font-medium text-gray-600">種別</span>
-                                        <Badge variant="secondary" className="text-xs px-2 py-1">
-                                            {type}
-                                        </Badge>
                                     </div>
 
-                                    {/* 電話番号（存在する場合） */}
-                                    {tenant.phoneNumber && (
-                                        <div className="flex items-start justify-between gap-2">
-                                            <span className="text-xs font-medium text-gray-600">連絡先</span>
-                                            <span className="text-xs text-gray-900 font-semibold text-right break-all">
-                                                {tenant.phoneNumber}
-                                            </span>
-                                        </div>
-                                    )}
-
-                                    {/* 作成日 */}
-                                    <div className="flex items-center justify-between">
-                                        <span className="text-xs font-medium text-gray-600">作成日</span>
-                                        <span className="text-xs text-gray-700">{createdAt}</span>
-                                    </div>
-
-                                    {/* アクションボタン */}
-                                    <div className="flex gap-2 pt-2 border-t border-gray-100">
-                                        <Button
-                                            asChild
-                                            size="sm"
-                                            variant="ghost"
-                                            className="flex-1 text-xs font-semibold text-gray-700 hover:bg-blue-50 hover:text-blue-700 transition-colors"
-                                        >
-                                            <div className="flex items-center justify-center gap-1">
-                                                <Eye className="w-3.5 h-3.5" />
-                                                <span>詳細</span>
+                                    {/* 情報エリア */}
+                                    <div className="flex-1 min-w-0">
+                                        <div className="flex items-start justify-between gap-4 mb-2">
+                                            <div>
+                                                <h3 className="text-lg font-bold text-gray-900 line-clamp-1">
+                                                    {tenant.tenantName}
+                                                </h3>
+                                                <p className="text-sm text-gray-600">
+                                                    /{tenant.tenantSlug}
+                                                </p>
                                             </div>
-                                        </Button>
-                                        <Button
-                                            asChild
-                                            size="sm"
-                                            variant="ghost"
-                                            className="flex-1 text-xs font-semibold text-gray-700 hover:bg-green-50 hover:text-green-700 transition-colors"
-                                        >
-                                            <Link href={`/o/${orgId}/admin/tenant/${tenant._id}/edit`} className="flex items-center justify-center gap-1">
-                                                <Edit2 className="w-3.5 h-3.5" />
-                                                <span>編集</span>
-                                            </Link>
-                                        </Button>
+                                            <Badge
+                                                variant={
+                                                    statusVariant[tenant.tenantStatus] ?? "outline"
+                                                }
+                                                className="whitespace-nowrap font-semibold px-3 py-1"
+                                            >
+                                                {status}
+                                            </Badge>
+                                        </div>
+
+                                        {/* メタ情報 */}
+                                        <div className="flex flex-wrap items-center gap-2 text-xs text-gray-600 mb-3">
+                                            <Badge variant="secondary" className="font-medium">
+                                                {type}
+                                            </Badge>
+                                            <span>作成日: {createdAt}</span>
+                                            {tenant.phoneNumber && (
+                                                <>
+                                                    <span>•</span>
+                                                    <span>連絡先: {tenant.phoneNumber}</span>
+                                                </>
+                                            )}
+                                        </div>
+
+                                        {/* アクションボタン */}
+                                        <div className="flex flex-wrap gap-2">
+                                            <Button
+                                                asChild
+                                                size="sm"
+                                                variant="outline"
+                                                className="text-xs font-semibold hover:bg-blue-50 hover:text-blue-700 hover:border-blue-300"
+                                            >
+                                                <Link href={`/o/${orgId}/admin/tenant/${tenant._id}`} className="flex items-center gap-1">
+                                                    <Eye className="w-3.5 h-3.5" />
+                                                    詳細
+                                                </Link>
+                                            </Button>
+                                            <Button
+                                                asChild
+                                                size="sm"
+                                                variant="outline"
+                                                className="text-xs font-semibold hover:bg-green-50 hover:text-green-700 hover:border-green-300"
+                                            >
+                                                <Link href={`/o/${orgId}/admin/tenant/${tenant._id}/edit`} className="flex items-center gap-1">
+                                                    <Edit2 className="w-3.5 h-3.5" />
+                                                    編集
+                                                </Link>
+                                            </Button>
+                                            <Button
+                                                size="sm"
+                                                variant="outline"
+                                                className="text-xs font-semibold text-red-700 hover:bg-red-50 hover:text-red-900 hover:border-red-300"
+                                            >
+                                                <Trash2 className="w-3.5 h-3.5" />
+                                            </Button>
+                                        </div>
                                     </div>
-                                </CardContent>
-                            </Card>
-                        </Link>
+                                </div>
+                            </CardContent>
+                        </Card>
                     );
                 })}
             </div>
 
-            {/* テナント合計数 */}
-            <div className="text-center text-sm text-gray-600 py-4 border-t border-gray-200">
-                全 <span className="font-bold text-gray-900">{tenants.length}</span> 件のテナント
-            </div>
+            {/* 合計件数表示 */}
+            {filteredTenants && filteredTenants.length > 0 && (
+                <div className="text-center text-sm text-gray-600 py-4 border-t border-gray-200 mt-6">
+                    全 <span className="font-bold text-gray-900">{filteredTenants.length}</span> 件のテナント
+                </div>
+            )}
         </div>
     );
 };
