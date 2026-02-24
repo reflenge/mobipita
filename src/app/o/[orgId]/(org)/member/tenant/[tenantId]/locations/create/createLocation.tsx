@@ -37,7 +37,8 @@ const formSchema = z.object({
         tenantId: z.string(),
         type: z.enum(["fixed", "mobile"]),
         name: z.string().min(1, "場所名を入力してください").max(100, "場所名は100文字以内で入力してください"),
-        address: z.string().min(1, "住所を入力してください").max(255, "住所は255文字以内で入力してください"),
+        autoAddress: z.string().max(255, "住所は255文字以内で入力してください"),
+        semiAddress: z.string().min(1, "住所を入力してください").max(255, "住所は255文字以内で入力してください"),
         geo: z.object({
             lat: z.number(),
             lng: z.number(),
@@ -69,7 +70,8 @@ export function CreateLocation({ orgId, tenantId }: Props) {
                 tenantId,
                 type: "fixed",
                 name: "",
-                address: "",
+                autoAddress: "",
+                semiAddress: "",
                 geo: { ...DEFAULT_GEO },
                 details: "",
             },
@@ -84,14 +86,12 @@ export function CreateLocation({ orgId, tenantId }: Props) {
             if (!v) return;
             form.setValue("locations.geo", v, { shouldValidate: true });
             reverseGeocodeFromLatLng(v.lat, v.lng)
-                .then((address) => {
-                    form.setValue("locations.address", address, {
+                .then((addr) => {
+                    form.setValue("locations.autoAddress", addr, {
                         shouldValidate: true,
                     });
                 })
-                .catch(() => {
-                    // 逆ジオコーディング失敗時は座標だけ反映（住所は手入力可）
-                });
+                .catch(() => {});
         },
         [form]
     );
@@ -103,7 +103,8 @@ export function CreateLocation({ orgId, tenantId }: Props) {
                     tenantId: data.locations.tenantId as Id<"Tenants">,
                     type: data.locations.type,
                     name: data.locations.name,
-                    address: data.locations.address,
+                    autoAddress: data.locations.autoAddress,
+                    semiAddress: data.locations.semiAddress,
                     lat: data.locations.geo.lat,
                     lng: data.locations.geo.lng,
                     details: data.locations.details,
@@ -202,20 +203,44 @@ export function CreateLocation({ orgId, tenantId }: Props) {
                         )}
                     />
 
-                    {/* 住所（地図から取得 or 手入力） */}
+                    {/* 自動住所（地図クリックで自動入力、編集不可） */}
                     <Controller
-                        name="locations.address"
+                        name="locations.autoAddress"
                         control={form.control}
                         render={({ field, fieldState }) => (
                             <Field data-invalid={fieldState.invalid}>
-                                <FieldLabel htmlFor="form-location-create-address">
-                                    住所
+                                <FieldLabel htmlFor="form-location-create-autoAddress">
+                                    住所（自動取得）
+                                </FieldLabel>
+                                <Input
+                                    value={field.value}
+                                    id="form-location-create-autoAddress"
+                                    readOnly
+                                    tabIndex={-1}
+                                    className="bg-muted cursor-not-allowed"
+                                    placeholder="地図をクリックすると自動で入ります"
+                                />
+                                {fieldState.invalid && (
+                                    <FieldError errors={[fieldState.error]} />
+                                )}
+                            </Field>
+                        )}
+                    />
+
+                    {/* 正式住所（ユーザー手入力） */}
+                    <Controller
+                        name="locations.semiAddress"
+                        control={form.control}
+                        render={({ field, fieldState }) => (
+                            <Field data-invalid={fieldState.invalid}>
+                                <FieldLabel htmlFor="form-location-create-semiAddress">
+                                    住所（正式）
                                 </FieldLabel>
                                 <Input
                                     {...field}
-                                    id="form-location-create-address"
+                                    id="form-location-create-semiAddress"
                                     aria-invalid={fieldState.invalid}
-                                    placeholder="地図でピンを立てるか、直接入力"
+                                    placeholder="例: 東京都千代田区丸の内1-1-1"
                                     autoComplete="off"
                                 />
                                 {fieldState.invalid && (

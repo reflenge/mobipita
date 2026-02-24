@@ -86,7 +86,7 @@ export function LocationList({ orgId, tenantId }: LocationListProps) {
                                 <Badge variant="secondary">{type}</Badge>
                             </div>
                             <CardDescription>
-                                {location.address}
+                                {location.semiAddress}
                             </CardDescription>
                         </CardHeader>
                         <CardContent className="space-y-2 text-sm text-muted-foreground">

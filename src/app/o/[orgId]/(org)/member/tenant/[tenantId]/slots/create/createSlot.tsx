@@ -250,7 +250,8 @@ export function CreateSlot({ orgId, tenantId }: Props) {
                 return JSON.stringify({
                     type: loc.type,
                     name: loc.name,
-                    address: loc.address,
+                    autoAddress: loc.autoAddress,
+                    semiAddress: loc.semiAddress,
                     geo: { lat: loc.lat, lng: loc.lng },
                     details: loc.details,
                 });

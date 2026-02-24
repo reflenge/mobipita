@@ -44,7 +44,8 @@ export const listLocationsByOrg = query({
             tenantName: string;
             type: "fixed" | "mobile";
             name: string;
-            address: string;
+            autoAddress: string;
+            semiAddress: string;
             lat: number;
             lng: number;
             details: string;
@@ -62,7 +63,8 @@ export const listLocationsByOrg = query({
                     tenantName: tenant.tenantName,
                     type: loc.type,
                     name: loc.name,
-                    address: loc.address,
+                    autoAddress: loc.autoAddress,
+                    semiAddress: loc.semiAddress,
                     lat: loc.lat,
                     lng: loc.lng,
                     details: loc.details,
@@ -98,7 +100,8 @@ export const create = mutation({
         tenantId: v.id("Tenants"),
         type: storeType,
         name: v.string(),
-        address: v.string(),
+        autoAddress: v.string(),
+        semiAddress: v.string(),
         lat: v.number(),
         lng: v.number(),
         details: v.string(),
@@ -115,7 +118,8 @@ export const create = mutation({
             tenantId: args.tenantId,
             type: args.type,
             name: args.name,
-            address: args.address,
+            autoAddress: args.autoAddress,
+            semiAddress: args.semiAddress,
             lat: args.lat,
             lng: args.lng,
             details: args.details,
@@ -132,7 +136,8 @@ export const update = mutation({
         locationId: v.id("Locations"),
         type: storeType,
         name: v.string(),
-        address: v.string(),
+        autoAddress: v.string(),
+        semiAddress: v.string(),
         lat: v.number(),
         lng: v.number(),
         details: v.string(),
@@ -152,7 +157,8 @@ export const update = mutation({
         await ctx.db.patch(args.locationId, {
             type: args.type,
             name: args.name,
-            address: args.address,
+            autoAddress: args.autoAddress,
+            semiAddress: args.semiAddress,
             lat: args.lat,
             lng: args.lng,
             details: args.details,

@@ -55,7 +55,10 @@ const formSchema = z.object({
             .string()
             .min(1, "場所名を入力してください")
             .max(100, "場所名は100文字以内で入力してください"),
-        address: z
+        autoAddress: z
+            .string()
+            .max(255, "住所は255文字以内で入力してください"),
+        semiAddress: z
             .string()
             .min(1, "住所を入力してください")
             .max(255, "住所は255文字以内で入力してください"),
@@ -95,7 +98,8 @@ export function LocationDetail({
             locations: {
                 type: "fixed",
                 name: "",
-                address: "",
+                autoAddress: "",
+                semiAddress: "",
                 geo: { lat: 35.6812, lng: 139.7671 },
                 details: "",
             },
@@ -114,7 +118,8 @@ export function LocationDetail({
                             ? location.type
                             : "fixed",
                     name: location.name,
-                    address: location.address,
+                    autoAddress: location.autoAddress,
+                    semiAddress: location.semiAddress,
                     geo: { lat: location.lat, lng: location.lng },
                     details: location.details ?? "",
                 },
@@ -132,7 +137,8 @@ export function LocationDetail({
                             ? location.type
                             : "fixed",
                     name: location.name,
-                    address: location.address,
+                    autoAddress: location.autoAddress,
+                    semiAddress: location.semiAddress,
                     geo: { lat: location.lat, lng: location.lng },
                     details: location.details ?? "",
                 },
@@ -145,8 +151,8 @@ export function LocationDetail({
             if (!v) return;
             form.setValue("locations.geo", v, { shouldValidate: true });
             reverseGeocodeFromLatLng(v.lat, v.lng)
-                .then((address) => {
-                    form.setValue("locations.address", address, {
+                .then((addr) => {
+                    form.setValue("locations.autoAddress", addr, {
                         shouldValidate: true,
                     });
                 })
@@ -163,7 +169,8 @@ export function LocationDetail({
                     locationId: locationId as Id<"Locations">,
                     type: data.locations.type,
                     name: data.locations.name,
-                    address: data.locations.address,
+                    autoAddress: data.locations.autoAddress,
+                    semiAddress: data.locations.semiAddress,
                     lat: data.locations.geo.lat,
                     lng: data.locations.geo.lng,
                     details: data.locations.details,
@@ -319,15 +326,36 @@ export function LocationDetail({
                                 )}
                             />
                             <Controller
-                                name="locations.address"
+                                name="locations.autoAddress"
                                 control={form.control}
                                 render={({ field, fieldState }) => (
                                     <Field data-invalid={fieldState.invalid}>
-                                        <FieldLabel>住所</FieldLabel>
+                                        <FieldLabel>住所（自動取得）</FieldLabel>
+                                        <Input
+                                            value={field.value}
+                                            readOnly
+                                            tabIndex={-1}
+                                            className="bg-muted cursor-not-allowed"
+                                            placeholder="地図をクリックすると自動で入ります"
+                                        />
+                                        {fieldState.invalid && (
+                                            <FieldError
+                                                errors={[fieldState.error]}
+                                            />
+                                        )}
+                                    </Field>
+                                )}
+                            />
+                            <Controller
+                                name="locations.semiAddress"
+                                control={form.control}
+                                render={({ field, fieldState }) => (
+                                    <Field data-invalid={fieldState.invalid}>
+                                        <FieldLabel>住所（正式）</FieldLabel>
                                         <Input
                                             {...field}
                                             aria-invalid={fieldState.invalid}
-                                            placeholder="地図でピンを立てるか、直接入力"
+                                            placeholder="例: 東京都千代田区丸の内1-1-1"
                                             autoComplete="off"
                                         />
                                         {fieldState.invalid && (
@@ -425,7 +453,7 @@ export function LocationDetail({
                         </Button>
                     </div>
                 </div>
-                <CardDescription>{location.address}</CardDescription>
+                <CardDescription>{location.semiAddress}</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
                 <div>

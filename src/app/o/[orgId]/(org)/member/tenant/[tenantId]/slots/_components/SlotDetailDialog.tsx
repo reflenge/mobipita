@@ -110,9 +110,9 @@ export function SlotDetailDialog({ open, onOpenChange, slot }: Props) {
 
                     <InfoRow label="場所">
                         <div>{slot.locationName}</div>
-                        {(location as { address?: string }).address && (
+                        {(location as { semiAddress?: string }).semiAddress && (
                             <div className="text-xs text-muted-foreground mt-0.5">
-                                {location.address as string}
+                                {location.semiAddress as string}
                             </div>
                         )}
                     </InfoRow>

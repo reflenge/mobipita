@@ -36,14 +36,15 @@ type LocationWithDistance = {
     tenantName: string;
     type: "fixed" | "mobile";
     name: string;
-    address: string;
+    autoAddress: string;
+    semiAddress: string;
     lat: number;
     lng: number;
     details: string;
     distanceKm: number;
 };
 
-function filterByKeyword<T extends { name: string; tenantName: string; address: string }>(
+function filterByKeyword<T extends { name: string; tenantName: string; semiAddress: string }>(
     items: T[],
     keyword: string
 ): T[] {
@@ -53,7 +54,7 @@ function filterByKeyword<T extends { name: string; tenantName: string; address: 
         (loc) =>
             loc.name.toLowerCase().includes(q) ||
             loc.tenantName.toLowerCase().includes(q) ||
-            loc.address.toLowerCase().includes(q)
+            loc.semiAddress.toLowerCase().includes(q)
     );
 }
 
@@ -195,7 +196,7 @@ export function StoreSearch({ orgId }: StoreSearchProps) {
                                             {loc.tenantName}
                                         </div>
                                         <div className="mt-1 text-sm text-muted-foreground">
-                                            {loc.address}
+                                            {loc.semiAddress}
                                         </div>
                                         <div className="mt-1 text-xs text-muted-foreground">
                                             {loc.type === "fixed"

@@ -99,8 +99,10 @@ export default defineSchema({
         type: storeType,
         // 場所名。
         name: v.string(),
-        // 住所。
-        address: v.string(),
+        // 住所（地図クリックによる自動取得、編集不可）。
+        autoAddress: v.string(),
+        // 住所（ユーザー手入力の正式住所）。
+        semiAddress: v.string(),
         // 緯度。
         lat: v.number(),
         // 経度。
