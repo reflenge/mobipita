@@ -90,7 +90,7 @@ const AdminSidebar = ({ org }: { org: { id: string } }) => {
                                 <SidebarMenuSubItem>
                                     <SidebarMenuButton asChild>
                                         <Link
-                                            href={`/o/${org.id}/admin/tenant/employee-assignments/upgrade`}
+                                            href={`/o/${org.id}/admin/tenant/upgrade`}
                                         >
                                             <UserPlus />
                                             <span>従業員へ昇格</span>
@@ -102,7 +102,39 @@ const AdminSidebar = ({ org }: { org: { id: string } }) => {
                                 <SidebarMenuSubItem>
                                     <SidebarMenuButton asChild>
                                         <Link
-                                            href={`/o/${org.id}/admin/tenant/employee-assignments/assignment`}
+                                            href={`/o/${org.id}/admin/tenant/assignment`}
+                                        >
+                                            <UsersRound />
+                                            <span>各テナントへ振り分け</span>
+                                        </Link>
+                                    </SidebarMenuButton>
+                                </SidebarMenuSubItem>
+                            </SidebarMenuSub>
+                        </SidebarMenuItem>
+                        <SidebarMenuItem>
+                            <SidebarMenuButton asChild>
+                                <Link href={`/o/${org.id}/admin/employee`}>
+                                    <Store />
+                                    <span>従業員</span>
+                                </Link>
+                            </SidebarMenuButton>
+                            <SidebarMenuSub>
+                                <SidebarMenuSubItem>
+                                    <SidebarMenuButton asChild>
+                                        <Link
+                                            href={`/o/${org.id}/admin/employee/upgrade`}
+                                        >
+                                            <UserPlus />
+                                            <span>従業員へ昇格</span>
+                                        </Link>
+                                    </SidebarMenuButton>
+                                </SidebarMenuSubItem>
+                            </SidebarMenuSub>
+                            <SidebarMenuSub>
+                                <SidebarMenuSubItem>
+                                    <SidebarMenuButton asChild>
+                                        <Link
+                                            href={`/o/${org.id}/admin/employee/assignment`}
                                         >
                                             <UsersRound />
                                             <span>各テナントへ振り分け</span>
