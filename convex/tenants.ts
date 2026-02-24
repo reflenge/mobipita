@@ -177,3 +177,38 @@ export const update = mutation({
         return args.id;
     },
 });
+
+export const updateDetail = mutation({
+    args: {
+        clerkOrgId: v.string(),
+        tenantId: v.id("Tenants"),
+        phoneNumber: v.optional(v.string()),
+    },
+    handler: async (ctx, args) => {
+        // 認証必須
+        await requireClerkIdentity(ctx);
+
+        // テナントの存在確認と権限チェック
+        const tenant = await ctx.db.get(args.tenantId);
+        if (!tenant || tenant.clerkOrgId !== args.clerkOrgId) {
+            throw new Error("権限がないか、テナントが存在しません");
+        }
+
+        // 詳細テーブルの更新
+        const detail = await ctx.db
+            .query("TenantDetails")
+            .withIndex("by_tenantId", (q) => q.eq("tenantId", args.tenantId))
+            .unique();
+
+        if (detail) {
+            await ctx.db.patch(detail._id, { phoneNumber: args.phoneNumber });
+        } else {
+            await ctx.db.insert("TenantDetails", {
+                tenantId: args.tenantId,
+                phoneNumber: args.phoneNumber,
+            });
+        }
+
+        return args.tenantId;
+    },
+});

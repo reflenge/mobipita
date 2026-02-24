@@ -55,11 +55,32 @@ export function MemberTenantContent({ orgId, tenantId }: Props) {
         <div className="mx-auto container px-6 py-10">
             <Card>
                 <CardHeader>
-                    <CardTitle className="text-xl">{tenant.tenantName}</CardTitle>
-                    <p className="text-sm text-muted-foreground">
-                        /{tenant.tenantSlug}
-                    </p>
+                    <div className="flex flex-wrap items-start justify-between gap-3">
+                        <div className="space-y-2">
+                            <CardTitle className="text-xl">{tenant.tenantName}</CardTitle>
+                            <p className="text-sm text-muted-foreground">
+                                /{tenant.tenantSlug}
+                            </p>
+                        </div>
+                        <Button asChild variant="outline" size="sm">
+                            <Link href={`/o/${orgId}/member/tenant/${tenantId}/detail/edit`}>
+                                詳細編集
+                            </Link>
+                        </Button>
+                    </div>
                 </CardHeader>
+                <CardContent className="space-y-4 text-sm text-muted-foreground">
+                    <div className="flex items-center justify-between">
+                        <span>テナント名</span>
+                        <span className="text-foreground">{tenant.tenantName}</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                        <span>連絡先（電話）</span>
+                        <span className="text-foreground">
+                            {tenant.phoneNumber ?? "未設定"}
+                        </span>
+                    </div>
+                </CardContent>
             </Card>
         </div>
     );

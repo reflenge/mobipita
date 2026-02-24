@@ -105,9 +105,13 @@ const TenantDetail = ({ orgId, tenantId }: TenantDetailProps) => {
                     {/* ここに編集ボタンを追加 */}
                     <div className="flex items-center gap-2">
                         <Button asChild variant="outline" size="sm">
-                            {/* 編集ページへのリンク（パスはプロジェクトに合わせて調整してください） */}
                             <Link href={`/o/${orgId}/admin/tenant/${tenantId}/edit`}>
-                                編集する
+                                編集
+                            </Link>
+                        </Button>
+                        <Button asChild variant="outline" size="sm">
+                            <Link href={`/o/${orgId}/admin/tenant/${tenantId}/detail/edit`}>
+                                詳細編集
                             </Link>
                         </Button>
                         <Badge

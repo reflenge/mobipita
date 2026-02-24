@@ -2,6 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import {
     Breadcrumb,
     BreadcrumbItem,
@@ -17,6 +18,11 @@ import { BreadcrumbDropdown } from "./BreadcrumbDropdown";
 
 export default function AutoBreadcrumb() {
     const pathname = usePathname();
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
 
     // /o/[orgId] をhomeとして、それ以降のパスを解析
     const pathMatch = pathname.match(/^\/o\/([^/]+)(\/.*)?$/);
@@ -58,6 +64,11 @@ export default function AutoBreadcrumb() {
         (_, index) =>
             index !== homeIndex && index !== prevIndex && index !== currentIndex,
     );
+
+    // Radix UI の hydration 問題を回避するため、マウント後のみレンダリング
+    if (!mounted) {
+        return null;
+    }
 
     return (
         <Breadcrumb>
