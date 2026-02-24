@@ -181,12 +181,22 @@ const TenantList = ({ orgId }: TenantListProps) => {
                                                     <img
                                                         src={tenant.logoUrl}
                                                         alt={tenant.tenantName}
+                                                        loading="eager"
+                                                        crossOrigin="anonymous"
+                                                        decoding="async"
                                                         className="w-full h-full object-cover"
                                                         onError={(e) => {
                                                             const img = e.currentTarget as HTMLImageElement;
                                                             img.style.display = "none";
                                                             const fallback = img.parentElement?.querySelector('.logo-fallback') as HTMLElement | null;
                                                             if (fallback) fallback.classList.remove('hidden');
+                                                        }}
+                                                        onLoad={(e) => {
+                                                            const img = e.currentTarget as HTMLImageElement;
+                                                            // 画像読み込み成功時にフォールバックが見えている場合は隠す
+                                                            const fallback = img.parentElement?.querySelector('.logo-fallback') as HTMLElement | null;
+                                                            if (fallback) fallback.classList.add('hidden');
+                                                            img.style.display = '';
                                                         }}
                                                     />
                                                     <div className="logo-fallback hidden absolute inset-0 flex items-center justify-center bg-gray-100">
