@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ArrowRight, CalendarPlus, Home, MapPin, Store } from "lucide-react";
+import Image from "next/image";
 
 type Props = {
     orgId: string;
@@ -26,9 +27,7 @@ export function MemberTenantListPage({ orgId }: Props) {
 
     const assignedTenantIds = useQuery(
         api.tenantMemberAssignments.listByMember,
-        userId && orgId
-            ? { clerkOrgId: orgId, clerkUserId: userId }
-            : "skip",
+        userId && orgId ? { clerkOrgId: orgId, clerkUserId: userId } : "skip",
     );
     const allTenants = useQuery(
         api.tenants.listByOrg,
@@ -53,13 +52,14 @@ export function MemberTenantListPage({ orgId }: Props) {
         logoFileIds.length > 0 ? { fileIds: logoFileIds } : "skip",
     );
 
-    const isLoading = assignedTenantIds === undefined || allTenants === undefined;
+    const isLoading =
+        assignedTenantIds === undefined || allTenants === undefined;
 
     return (
-        <div className="mx-auto container px-6 py-10 space-y-6">
+        <div className="container mx-auto space-y-6 px-6 py-10">
             <div>
                 <h1 className="text-2xl font-semibold">テナント管理</h1>
-                <p className="text-sm text-muted-foreground">
+                <p className="text-muted-foreground text-sm">
                     担当テナントの一覧と各管理機能
                 </p>
             </div>
@@ -97,7 +97,7 @@ export function MemberTenantListPage({ orgId }: Props) {
                         <CardTitle>担当テナントがありません</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <p className="text-sm text-muted-foreground">
+                        <p className="text-muted-foreground text-sm">
                             管理者にテナントの割り当てを依頼してください。
                         </p>
                     </CardContent>
@@ -145,21 +145,21 @@ export function MemberTenantListPage({ orgId }: Props) {
                                     className="group mb-4 flex items-center gap-3"
                                 >
                                     {logoUrl ? (
-                                        <img
+                                        <Image
                                             src={logoUrl}
                                             alt=""
-                                            className="size-9 shrink-0 rounded-full object-cover ring-2 ring-border"
+                                            className="ring-border size-9 shrink-0 rounded-full object-cover ring-2"
                                         />
                                     ) : (
-                                        <div className="flex size-9 shrink-0 items-center justify-center rounded-full bg-muted ring-2 ring-border">
-                                            <Store className="size-4 text-muted-foreground" />
+                                        <div className="bg-muted ring-border flex size-9 shrink-0 items-center justify-center rounded-full ring-2">
+                                            <Store className="text-muted-foreground size-4" />
                                         </div>
                                     )}
                                     <div className="min-w-0">
-                                        <h2 className="text-lg font-semibold truncate group-hover:underline underline-offset-2">
+                                        <h2 className="truncate text-lg font-semibold underline-offset-2 group-hover:underline">
                                             {tenant.tenantName}
                                         </h2>
-                                        <p className="text-xs text-muted-foreground">
+                                        <p className="text-muted-foreground text-xs">
                                             /{tenant.tenantSlug}
                                         </p>
                                     </div>
@@ -167,13 +167,17 @@ export function MemberTenantListPage({ orgId }: Props) {
 
                                 <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
                                     {features.map((f) => (
-                                        <Link key={f.href} href={f.href} className="group/card">
-                                            <Card className="h-full transition-colors group-hover/card:border-primary/40 group-hover/card:bg-accent/50">
+                                        <Link
+                                            key={f.href}
+                                            href={f.href}
+                                            className="group/card"
+                                        >
+                                            <Card className="group-hover/card:border-primary/40 group-hover/card:bg-accent/50 h-full transition-colors">
                                                 <CardHeader>
                                                     <CardTitle className="flex items-center justify-between gap-2">
                                                         <f.icon className="size-5" />
                                                         {f.label}
-                                                        <ArrowRight className="size-3 opacity-0 -translate-x-1 transition-all group-hover/card:opacity-100 group-hover/card:translate-x-0" />
+                                                        <ArrowRight className="size-3 -translate-x-1 opacity-0 transition-all group-hover/card:translate-x-0 group-hover/card:opacity-100" />
                                                     </CardTitle>
                                                     <CardDescription>
                                                         {f.description}

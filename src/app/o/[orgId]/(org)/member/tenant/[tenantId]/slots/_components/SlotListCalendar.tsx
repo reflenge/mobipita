@@ -10,7 +10,11 @@ import listPlugin from "@fullcalendar/list";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import jaLocale from "@fullcalendar/core/locales/ja";
-import type { EventClickArg, EventContentArg, EventInput } from "@fullcalendar/core";
+import type {
+    EventClickArg,
+    EventContentArg,
+    EventInput,
+} from "@fullcalendar/core";
 import { SlotDetailDialog, type SlotData } from "./SlotDetailDialog";
 
 const STATUS_COLOR: Record<string, string> = {
@@ -25,11 +29,10 @@ const VISIBILITY_LABEL: Record<string, string> = {
 };
 
 type Props = {
-    orgId: string;
     tenantId: string;
 };
 
-export function SlotListCalendar({ orgId, tenantId }: Props) {
+export function SlotListCalendar({ tenantId }: Props) {
     const slots = useQuery(api.slots.listByTenant, {
         tenantId: tenantId as Id<"Tenants">,
         limit: 500,
@@ -81,24 +84,28 @@ export function SlotListCalendar({ orgId, tenantId }: Props) {
     };
 
     const renderEventContent = (arg: EventContentArg) => {
-        const { locationName, capacity, slotStatus: status, visibility } =
-            arg.event.extendedProps as Record<string, string>;
+        const {
+            locationName,
+            capacity,
+            slotStatus: status,
+            visibility,
+        } = arg.event.extendedProps as Record<string, string>;
         const timeText = arg.timeText;
         return (
-            <div className="overflow-hidden px-1 py-0.5 leading-tight text-xs">
-                <div className="font-semibold truncate">{arg.event.title}</div>
+            <div className="overflow-hidden px-1 py-0.5 text-xs leading-tight">
+                <div className="truncate font-semibold">{arg.event.title}</div>
                 <div className="opacity-90">{timeText}</div>
                 {locationName && (
                     <div className="truncate opacity-80">{locationName}</div>
                 )}
-                <div className="flex gap-1 mt-0.5 flex-wrap">
-                    <span className="bg-white/20 rounded px-1">
+                <div className="mt-0.5 flex flex-wrap gap-1">
+                    <span className="rounded bg-white/20 px-1">
                         定員{capacity}
                     </span>
-                    <span className="bg-white/20 rounded px-1">
+                    <span className="rounded bg-white/20 px-1">
                         {status === "open" ? "受付中" : "締切"}
                     </span>
-                    <span className="bg-white/20 rounded px-1">
+                    <span className="rounded bg-white/20 px-1">
                         {VISIBILITY_LABEL[visibility] ?? visibility}
                     </span>
                 </div>
@@ -108,7 +115,7 @@ export function SlotListCalendar({ orgId, tenantId }: Props) {
 
     if (slots === undefined) {
         return (
-            <div className="flex h-64 items-center justify-center rounded-md border bg-muted text-sm text-muted-foreground">
+            <div className="bg-muted text-muted-foreground flex h-64 items-center justify-center rounded-md border text-sm">
                 読み込み中…
             </div>
         );
@@ -117,7 +124,12 @@ export function SlotListCalendar({ orgId, tenantId }: Props) {
     return (
         <>
             <FullCalendar
-                plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin, listPlugin]}
+                plugins={[
+                    dayGridPlugin,
+                    timeGridPlugin,
+                    interactionPlugin,
+                    listPlugin,
+                ]}
                 timeZone="local"
                 initialView="timeGridWeek"
                 headerToolbar={{

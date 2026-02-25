@@ -32,10 +32,7 @@ export function TenantStatusField() {
                     <FieldLabel htmlFor={`${FORM_ID}-tenant-status`}>
                         店舗ステータス
                     </FieldLabel>
-                    <Select
-                        value={field.value}
-                        onValueChange={field.onChange}
-                    >
+                    <Select value={field.value} onValueChange={field.onChange}>
                         <SelectTrigger
                             id={`${FORM_ID}-tenant-status`}
                             aria-invalid={fieldState.invalid}

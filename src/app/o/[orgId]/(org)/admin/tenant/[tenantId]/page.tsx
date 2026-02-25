@@ -23,13 +23,13 @@ export default async function OrganizationPage({
     const organizationName = organization?.name ?? "不明";
 
     return (
-        <div className="mx-auto container flex flex-col gap-8 px-6 py-10">
+        <div className="container mx-auto flex flex-col gap-8 px-6 py-10">
             <div className="flex flex-wrap items-start justify-between gap-4">
                 <div className="space-y-2">
                     <h1 className="text-3xl font-semibold">
                         {organizationName} のテナント詳細
                     </h1>
-                    <div className="text-sm text-muted-foreground">
+                    <div className="text-muted-foreground text-sm">
                         <p>Org ID: {organizationId}</p>
                         <p>Tenant ID: {tenantId}</p>
                     </div>

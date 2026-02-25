@@ -105,8 +105,9 @@ const TenantList = ({ orgId }: TenantListProps) => {
                                     </CardTitle>
                                     <Badge
                                         variant={
-                                            statusVariant[tenant.tenantStatus] ??
-                                            "outline"
+                                            statusVariant[
+                                                tenant.tenantStatus
+                                            ] ?? "outline"
                                         }
                                     >
                                         {status}
@@ -114,12 +115,12 @@ const TenantList = ({ orgId }: TenantListProps) => {
                                 </div>
                                 <CardDescription className="flex flex-wrap items-center gap-2">
                                     <Badge variant="secondary">{type}</Badge>
-                                    <span className="text-xs text-muted-foreground">
+                                    <span className="text-muted-foreground text-xs">
                                         /{tenant.tenantSlug}
                                     </span>
                                 </CardDescription>
                             </CardHeader>
-                            <CardContent className="space-y-3 text-sm text-muted-foreground">
+                            <CardContent className="text-muted-foreground space-y-3 text-sm">
                                 <div className="flex items-center justify-between">
                                     <span>作成日</span>
                                     <span className="text-foreground">

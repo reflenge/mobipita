@@ -6,7 +6,5 @@ type PageProps = {
 
 export default async function MemberLocationCreatePage({ params }: PageProps) {
     const { orgId, tenantId } = await params;
-    return (
-        <CreateLocation orgId={orgId} tenantId={tenantId} />
-    );
+    return <CreateLocation orgId={orgId} tenantId={tenantId} />;
 }

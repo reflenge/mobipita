@@ -1,5 +1,8 @@
 import { clerkClient } from "@clerk/nextjs/server";
-import { EmployeeList, type EmployeeSummary } from "./_components/employee-list";
+import {
+    EmployeeList,
+    type EmployeeSummary,
+} from "./_components/employee-list";
 
 type PageProps = {
     params: Promise<{ orgId: string }>;
@@ -23,8 +26,7 @@ export default async function EmployeePage({ params }: PageProps) {
         const firstName = pub?.firstName ?? "";
         const lastName = pub?.lastName ?? "";
         const displayName =
-            `${firstName} ${lastName}`.trim() ||
-            (pub?.identifier ?? "不明");
+            `${firstName} ${lastName}`.trim() || (pub?.identifier ?? "不明");
         return {
             userId: pub?.userId ?? "",
             role: m.role,
@@ -36,7 +38,7 @@ export default async function EmployeePage({ params }: PageProps) {
     });
 
     return (
-        <div className="mx-auto container flex flex-col gap-8 px-6 py-10">
+        <div className="container mx-auto flex flex-col gap-8 px-6 py-10">
             <EmployeeList orgId={organizationId} employees={employees} />
         </div>
     );

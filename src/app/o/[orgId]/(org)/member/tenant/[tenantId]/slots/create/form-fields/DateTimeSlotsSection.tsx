@@ -27,7 +27,11 @@ type Props = {
  * 「枠の日時」セクション全体を描画するコンポーネント。
  * 日付スロット（DateSlotTimeRanges）の一覧と、追加・削除ボタンを管理する。
  */
-export function DateTimeSlotsSection({ control, crossFieldErrors, locations }: Props) {
+export function DateTimeSlotsSection({
+    control,
+    crossFieldErrors,
+    locations,
+}: Props) {
     const dateTimeSlots = useWatch({ control, name: "dateTimeSlots" });
     const { errors } = useFormState({ control });
     const {
@@ -51,7 +55,7 @@ export function DateTimeSlotsSection({ control, crossFieldErrors, locations }: P
 
     return (
         <div className="space-y-4 rounded-lg border p-4">
-            <div className="flex items-center justify-between gap-2 flex-wrap">
+            <div className="flex flex-wrap items-center justify-between gap-2">
                 <div>
                     <FieldLabel>枠の日時</FieldLabel>
                     <FieldDescription>
@@ -65,7 +69,13 @@ export function DateTimeSlotsSection({ control, crossFieldErrors, locations }: P
                     onClick={() =>
                         appendDateSlot({
                             date: getNextDate(),
-                            timeRanges: [{ start: "09:00", end: "14:00", locationId: "" }],
+                            timeRanges: [
+                                {
+                                    start: "09:00",
+                                    end: "14:00",
+                                    locationId: "",
+                                },
+                            ],
                         })
                     }
                 >

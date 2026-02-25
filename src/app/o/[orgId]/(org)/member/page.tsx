@@ -18,17 +18,17 @@ export default async function OrganizationPage({
     const organizationName = organization?.name ?? "不明";
 
     return (
-        <div className="mx-auto container px-6 py-10">
+        <div className="container mx-auto px-6 py-10">
             {/* 現在の組織を表示（組織スコープの目印） */}
             <h1 className="text-2xl font-semibold">組織: {organizationName}</h1>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-muted-foreground text-sm">
                 Org Slug: {organization?.slug ?? "不明"}
             </p>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-muted-foreground text-sm">
                 Org ID: {organizationId}
             </p>
             {/* この配下が「組織単位」で固定されることを示すガイド文 */}
-            <p className="text-sm text-muted-foreground">
+            <p className="text-muted-foreground text-sm">
                 このエリアは単一の組織にスコープされています。
             </p>
         </div>

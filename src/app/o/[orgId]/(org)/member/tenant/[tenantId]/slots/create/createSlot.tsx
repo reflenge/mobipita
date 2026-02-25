@@ -65,7 +65,7 @@ export function CreateSlot({ orgId, tenantId }: Props) {
     });
     const activeServices = useMemo(
         () => services?.filter((service) => service.isActive) ?? [],
-        [services]
+        [services],
     );
 
     const locations = useQuery(api.locations.listByTenant, {
@@ -93,7 +93,12 @@ export function CreateSlot({ orgId, tenantId }: Props) {
                 dailyBookingLimit: 4,
                 form: {
                     questions: [
-                        { id: "q_question1", label: "<p>質問1</p>", type: "textarea", required: false },
+                        {
+                            id: "q_question1",
+                            label: "<p>質問1</p>",
+                            type: "textarea",
+                            required: false,
+                        },
                     ],
                 },
                 reminders: {
@@ -109,7 +114,9 @@ export function CreateSlot({ orgId, tenantId }: Props) {
             dateTimeSlots: [
                 {
                     date: getTodayYYYYMMDD(),
-                    timeRanges: [{ start: "09:00", end: "14:00", locationId: "" }],
+                    timeRanges: [
+                        { start: "09:00", end: "14:00", locationId: "" },
+                    ],
                 },
             ],
         },
@@ -140,7 +147,12 @@ export function CreateSlot({ orgId, tenantId }: Props) {
     // ─── クロスフィールドバリデーション（同期） ────────────
     // 過去日付・終了>開始・長さ・重複・場所の5種。結果は子コンポーネントに props で渡す。
     const crossFieldErrors = useMemo(
-        () => validateDateTimeSlots(watchedDateTimeSlots ?? [], Number(watchedDuration), watchedDefaultLocationId),
+        () =>
+            validateDateTimeSlots(
+                watchedDateTimeSlots ?? [],
+                Number(watchedDuration),
+                watchedDefaultLocationId,
+            ),
         [watchedDateTimeSlots, watchedDuration, watchedDefaultLocationId],
     );
 
@@ -157,19 +169,25 @@ export function CreateSlot({ orgId, tenantId }: Props) {
         );
         const resolveLocationName = (locationId?: string) => {
             const id = locationId || watchedDefaultLocationId;
-            return id ? locationMap.get(id) ?? "" : "";
+            return id ? (locationMap.get(id) ?? "") : "";
         };
 
         const events: SlotEvent[] = [];
         const pad = (n: number) => String(n).padStart(2, "0");
-        const toTimeStr = (mins: number) => `${pad(Math.floor(mins / 60))}:${pad(mins % 60)}`;
+        const toTimeStr = (mins: number) =>
+            `${pad(Math.floor(mins / 60))}:${pad(mins % 60)}`;
 
         for (const slot of watchedDateTimeSlots ?? []) {
             if (!slot?.date) continue;
             for (const range of slot.timeRanges ?? []) {
                 const startMin = parseTimeToMinutes(range.start);
                 const endMin = parseTimeToMinutes(range.end);
-                if (Number.isNaN(startMin) || Number.isNaN(endMin) || startMin >= endMin) continue;
+                if (
+                    Number.isNaN(startMin) ||
+                    Number.isNaN(endMin) ||
+                    startMin >= endMin
+                )
+                    continue;
 
                 const locName = resolveLocationName(range.locationId);
 
@@ -187,14 +205,23 @@ export function CreateSlot({ orgId, tenantId }: Props) {
             }
         }
         return events;
-    }, [watchedDateTimeSlots, watchedDuration, watchedBuffer, locations, watchedDefaultLocationId]);
+    }, [
+        watchedDateTimeSlots,
+        watchedDuration,
+        watchedBuffer,
+        locations,
+        watchedDefaultLocationId,
+    ]);
 
     // ─── 非同期データ取得後のフォーム値補完 ────────────────
     // Convex のクエリは非同期なので、初回レンダー時はデフォルト値が空文字。
     // データ到着後に serviceId / locationId を設定する。
     useEffect(() => {
         if (tenant) {
-            if (!form.getValues("slotTemplate.serviceId") && activeServices[0]) {
+            if (
+                !form.getValues("slotTemplate.serviceId") &&
+                activeServices[0]
+            ) {
                 form.setValue("slotTemplate.tenantId", tenantId);
                 form.setValue("slotTemplate.serviceId", activeServices[0]._id);
             }
@@ -204,7 +231,7 @@ export function CreateSlot({ orgId, tenantId }: Props) {
             ) {
                 form.setValue(
                     "slotTemplate.defaultLocationId",
-                    locations[0]._id
+                    locations[0]._id,
                 );
             }
         }
@@ -237,7 +264,9 @@ export function CreateSlot({ orgId, tenantId }: Props) {
             const toTimeStr = (mins: number) =>
                 `${pad(Math.floor(mins / 60))}:${pad(mins % 60)}`;
 
-            const selectedService = activeServices.find((s) => s._id === slotTemplate.serviceId);
+            const selectedService = activeServices.find(
+                (s) => s._id === slotTemplate.serviceId,
+            );
             const policySnapshot = JSON.stringify({
                 ...slotTemplate,
                 serviceName: selectedService?.title ?? "",
@@ -277,9 +306,15 @@ export function CreateSlot({ orgId, tenantId }: Props) {
                 for (const range of dateSlot.timeRanges) {
                     const startMin = parseTimeToMinutes(range.start);
                     const endMin = parseTimeToMinutes(range.end);
-                    if (Number.isNaN(startMin) || Number.isNaN(endMin) || startMin >= endMin) continue;
+                    if (
+                        Number.isNaN(startMin) ||
+                        Number.isNaN(endMin) ||
+                        startMin >= endMin
+                    )
+                        continue;
 
-                    const locId = (range.locationId || defaultLocId) as Id<"Locations">;
+                    const locId = (range.locationId ||
+                        defaultLocId) as Id<"Locations">;
 
                     let cursor = startMin;
                     while (cursor + duration <= endMin) {
@@ -313,7 +348,11 @@ export function CreateSlot({ orgId, tenantId }: Props) {
                 });
                 toast.success(`${ids.length}件の予約枠を作成しました`);
             } catch (e) {
-                toast.error(e instanceof Error ? e.message : "予約枠の作成に失敗しました");
+                toast.error(
+                    e instanceof Error
+                        ? e.message
+                        : "予約枠の作成に失敗しました",
+                );
             } finally {
                 setIsSubmitting(false);
             }
@@ -328,10 +367,10 @@ export function CreateSlot({ orgId, tenantId }: Props) {
 
     // ─── レンダー ──────────────────────────────────────────
     return (
-        <div className="mx-auto container px-6 py-10 space-y-6">
+        <div className="container mx-auto space-y-6 px-6 py-10">
             <div>
                 <div className="text-xl">予約枠作成</div>
-                <p className="text-sm text-muted-foreground">
+                <p className="text-muted-foreground text-sm">
                     {tenant.tenantName} {tenant._id} の予約枠を新規作成します
                 </p>
             </div>
@@ -398,12 +437,14 @@ export function CreateSlot({ orgId, tenantId }: Props) {
                                         ...DEFAULT_SLOT_TEMPLATE,
                                         tenantId,
                                         serviceId:
-                                            form.getValues("slotTemplate.serviceId") ||
+                                            form.getValues(
+                                                "slotTemplate.serviceId",
+                                            ) ||
                                             activeServices[0]?._id ||
                                             "",
                                         defaultLocationId:
                                             form.getValues(
-                                                "slotTemplate.defaultLocationId"
+                                                "slotTemplate.defaultLocationId",
                                             ) ||
                                             locations?.[0]?._id ||
                                             "",

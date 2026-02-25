@@ -104,7 +104,9 @@ export const create = mutation({
 
         const tenant = await ctx.db.get(args.tenantId);
         if (!tenant || tenant.clerkOrgId !== args.clerkOrgId) {
-            throw new Error("テナントが見つからないか、この組織に属していません。");
+            throw new Error(
+                "テナントが見つからないか、この組織に属していません。",
+            );
         }
 
         const serviceId = await ctx.db.insert("Services", {

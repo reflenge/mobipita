@@ -36,8 +36,7 @@ export function ReminderInputField({ control }: Props) {
                         aria-invalid={fieldState.invalid}
                     />
                     <FieldDescription>
-                        予約の何分前にリマインダーメールを送るか。1440分 =
-                        1日前
+                        予約の何分前にリマインダーメールを送るか。1440分 = 1日前
                     </FieldDescription>
                     {fieldState.invalid && (
                         <FieldError errors={[fieldState.error]} />

@@ -21,16 +21,15 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import {
-    CalendarIcon,
-    ClockIcon,
-    MapPinIcon,
-    XCircleIcon,
-} from "lucide-react";
+import { CalendarIcon, ClockIcon, MapPinIcon, XCircleIcon } from "lucide-react";
 
-type Props = { orgId: string };
-
-const STATUS_CONFIG: Record<string, { label: string; variant: "default" | "secondary" | "destructive" | "outline" }> = {
+const STATUS_CONFIG: Record<
+    string,
+    {
+        label: string;
+        variant: "default" | "secondary" | "destructive" | "outline";
+    }
+> = {
     pending: { label: "仮確定", variant: "outline" },
     confirmed: { label: "確定", variant: "default" },
     canceled: { label: "キャンセル済み", variant: "secondary" },
@@ -64,7 +63,7 @@ function formatTime(iso: string): string {
     }
 }
 
-export function MyBookingsList({ orgId }: Props) {
+export function MyBookingsList() {
     const bookings = useQuery(api.bookings.listMyBookings, {});
     const cancelBooking = useMutation(api.bookings.cancel);
     const [cancellingId, setCancellingId] = useState<string | null>(null);
@@ -78,7 +77,9 @@ export function MyBookingsList({ orgId }: Props) {
                 toast.success("予約をキャンセルしました");
             } catch (err) {
                 toast.error(
-                    err instanceof Error ? err.message : "キャンセルに失敗しました",
+                    err instanceof Error
+                        ? err.message
+                        : "キャンセルに失敗しました",
                 );
             } finally {
                 setCancellingId(null);
@@ -89,8 +90,8 @@ export function MyBookingsList({ orgId }: Props) {
 
     if (bookings === undefined) {
         return (
-            <div className="mx-auto max-w-2xl py-10 px-6">
-                <div className="flex h-40 items-center justify-center rounded-md border bg-muted text-sm text-muted-foreground">
+            <div className="mx-auto max-w-2xl px-6 py-10">
+                <div className="bg-muted text-muted-foreground flex h-40 items-center justify-center rounded-md border text-sm">
                     読み込み中...
                 </div>
             </div>
@@ -98,17 +99,17 @@ export function MyBookingsList({ orgId }: Props) {
     }
 
     return (
-        <div className="mx-auto max-w-2xl py-10 px-6 space-y-6">
+        <div className="mx-auto max-w-2xl space-y-6 px-6 py-10">
             <div>
                 <h1 className="text-2xl font-semibold">マイ予約</h1>
-                <p className="text-sm text-muted-foreground mt-1">
+                <p className="text-muted-foreground mt-1 text-sm">
                     {bookings.length}件の予約
                 </p>
             </div>
 
             {bookings.length === 0 && (
                 <Card>
-                    <CardContent className="py-8 text-center text-muted-foreground">
+                    <CardContent className="text-muted-foreground py-8 text-center">
                         まだ予約はありません
                     </CardContent>
                 </Card>
@@ -140,16 +141,16 @@ export function MyBookingsList({ orgId }: Props) {
                         </CardHeader>
                         <CardContent className="space-y-2">
                             <div className="flex items-center gap-2 text-sm">
-                                <CalendarIcon className="size-4 text-muted-foreground" />
+                                <CalendarIcon className="text-muted-foreground size-4" />
                                 {formatDate(booking.startAt)}
                             </div>
                             <div className="flex items-center gap-2 text-sm">
-                                <ClockIcon className="size-4 text-muted-foreground" />
+                                <ClockIcon className="text-muted-foreground size-4" />
                                 {formatTime(booking.startAt)} 〜{" "}
                                 {formatTime(booking.endAt)}
                             </div>
                             <div className="flex items-center gap-2 text-sm">
-                                <MapPinIcon className="size-4 text-muted-foreground" />
+                                <MapPinIcon className="text-muted-foreground size-4" />
                                 {booking.locationName}
                             </div>
 
@@ -160,9 +161,11 @@ export function MyBookingsList({ orgId }: Props) {
                                         variant="destructive"
                                         size="sm"
                                         disabled={cancellingId === booking._id}
-                                        onClick={() => handleCancel(booking._id)}
+                                        onClick={() =>
+                                            handleCancel(booking._id)
+                                        }
                                     >
-                                        <XCircleIcon className="size-4 mr-1" />
+                                        <XCircleIcon className="mr-1 size-4" />
                                         {cancellingId === booking._id
                                             ? "キャンセル中..."
                                             : "予約をキャンセル"}

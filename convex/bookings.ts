@@ -26,12 +26,29 @@ export const getSlotForBooking = query({
         const location = await ctx.db.get(slot.locationId);
 
         let policy: Record<string, unknown> = {};
-        try { policy = JSON.parse(slot.policySnapshot); } catch { /* ignore */ }
+        try {
+            policy = JSON.parse(slot.policySnapshot);
+        } catch {
+            /* ignore */
+        }
 
         let locationSnapshot: Record<string, unknown> = {};
-        try { locationSnapshot = JSON.parse(slot.locationSnapshot); } catch { /* ignore */ }
+        try {
+            locationSnapshot = JSON.parse(slot.locationSnapshot);
+        } catch {
+            /* ignore */
+        }
 
-        const form = policy.form as { questions?: Array<{ id: string; label: string; type: string; required: boolean }> } | undefined;
+        const form = policy.form as
+            | {
+                  questions?: Array<{
+                      id: string;
+                      label: string;
+                      type: string;
+                      required: boolean;
+                  }>;
+              }
+            | undefined;
 
         return {
             _id: slot._id,
@@ -47,7 +64,9 @@ export const getSlotForBooking = query({
             locationName: location?.name ?? "不明",
             locationSnapshot,
             questions: form?.questions ?? [],
-            cancellationPolicy: policy.cancellationPolicy as Record<string, unknown> | undefined,
+            cancellationPolicy: policy.cancellationPolicy as
+                | Record<string, unknown>
+                | undefined,
         };
     },
 });
@@ -65,11 +84,17 @@ export const create = mutation({
 
         const slot = await ctx.db.get(args.slotId);
         if (!slot) throw new ConvexError("スロットが見つかりません");
-        if (slot.slotStatus !== "open") throw new ConvexError("この枠は現在受付していません");
-        if (slot.visibility === "private") throw new ConvexError("この枠は非公開です");
+        if (slot.slotStatus !== "open")
+            throw new ConvexError("この枠は現在受付していません");
+        if (slot.visibility === "private")
+            throw new ConvexError("この枠は非公開です");
 
         let policy: Record<string, unknown> = {};
-        try { policy = JSON.parse(slot.policySnapshot); } catch { /* ignore */ }
+        try {
+            policy = JSON.parse(slot.policySnapshot);
+        } catch {
+            /* ignore */
+        }
 
         const now = new Date();
         const startMs = new Date(slot.startAt).getTime();
@@ -77,8 +102,10 @@ export const create = mutation({
             | { openBeforeMinutes?: number; closeBeforeMinutes?: number }
             | undefined;
         if (acceptance) {
-            const openMs = startMs - (acceptance.openBeforeMinutes ?? 0) * 60_000;
-            const closeMs = startMs - (acceptance.closeBeforeMinutes ?? 0) * 60_000;
+            const openMs =
+                startMs - (acceptance.openBeforeMinutes ?? 0) * 60_000;
+            const closeMs =
+                startMs - (acceptance.closeBeforeMinutes ?? 0) * 60_000;
             const nowMs = now.getTime();
             if (nowMs < openMs) throw new ConvexError("受付期間前です");
             if (nowMs > closeMs) throw new ConvexError("受付は締め切りました");
@@ -108,7 +135,9 @@ export const create = mutation({
             const allSlots = await ctx.db
                 .query("Slots")
                 .withIndex("by_tenant_service", (q) =>
-                    q.eq("tenantId", slot.tenantId).eq("serviceId", slot.serviceId),
+                    q
+                        .eq("tenantId", slot.tenantId)
+                        .eq("serviceId", slot.serviceId),
                 )
                 .collect();
             const sameDaySlotIds = allSlots
@@ -123,10 +152,14 @@ export const create = mutation({
                         q.eq("slotId", sid).eq("status", "confirmed"),
                     )
                     .collect();
-                dailyCount += bookings.filter((b) => b.clerkUserId === userId).length;
+                dailyCount += bookings.filter(
+                    (b) => b.clerkUserId === userId,
+                ).length;
             }
             if (dailyCount >= dailyLimit) {
-                throw new ConvexError(`1日の予約上限（${dailyLimit}件）に達しています`);
+                throw new ConvexError(
+                    `1日の予約上限（${dailyLimit}件）に達しています`,
+                );
             }
         }
 
@@ -156,11 +189,17 @@ export const cancel = mutation({
 
         const booking = await ctx.db.get(args.bookingId);
         if (!booking) throw new ConvexError("予約が見つかりません");
-        if (booking.clerkUserId !== userId) throw new ConvexError("この予約をキャンセルする権限がありません");
-        if (booking.status !== "confirmed") throw new ConvexError("この予約はキャンセルできません");
+        if (booking.clerkUserId !== userId)
+            throw new ConvexError("この予約をキャンセルする権限がありません");
+        if (booking.status !== "confirmed")
+            throw new ConvexError("この予約はキャンセルできません");
 
         let bookingPolicy: Record<string, unknown> = {};
-        try { bookingPolicy = JSON.parse(booking.policySnapshot); } catch { /* ignore */ }
+        try {
+            bookingPolicy = JSON.parse(booking.policySnapshot);
+        } catch {
+            /* ignore */
+        }
 
         const cancellation = bookingPolicy.cancellationPolicy as
             | { allowCustomerCancel?: boolean; cancelDeadlineMinutes?: number }
@@ -173,7 +212,8 @@ export const cancel = mutation({
         const slot = await ctx.db.get(booking.slotId);
         if (slot && cancellation?.cancelDeadlineMinutes) {
             const startMs = new Date(slot.startAt).getTime();
-            const deadlineMs = startMs - cancellation.cancelDeadlineMinutes * 60_000;
+            const deadlineMs =
+                startMs - cancellation.cancelDeadlineMinutes * 60_000;
             if (Date.now() > deadlineMs) {
                 throw new ConvexError("キャンセル期限を過ぎています");
             }
@@ -197,7 +237,10 @@ export const listMyBookings = query({
             .order("desc")
             .take(100);
 
-        const slotCache = new Map<string, Awaited<ReturnType<typeof ctx.db.get<"Slots">>>>();
+        const slotCache = new Map<
+            string,
+            Awaited<ReturnType<typeof ctx.db.get<"Slots">>>
+        >();
         const serviceCache = new Map<string, string>();
         const locationCache = new Map<string, string>();
 
@@ -237,20 +280,37 @@ export const listMyBookings = query({
                     locationCache.set(slot.locationId, locationName);
                 }
 
-                try { locationSnapshot = JSON.parse(slot.locationSnapshot); } catch { /* ignore */ }
+                try {
+                    locationSnapshot = JSON.parse(slot.locationSnapshot);
+                } catch {
+                    /* ignore */
+                }
             }
 
             let bookingPolicy: Record<string, unknown> = {};
-            try { bookingPolicy = JSON.parse(booking.policySnapshot); } catch { /* ignore */ }
+            try {
+                bookingPolicy = JSON.parse(booking.policySnapshot);
+            } catch {
+                /* ignore */
+            }
 
             const cancellation = bookingPolicy.cancellationPolicy as
-                | { allowCustomerCancel?: boolean; cancelDeadlineMinutes?: number }
+                | {
+                      allowCustomerCancel?: boolean;
+                      cancelDeadlineMinutes?: number;
+                  }
                 | undefined;
 
             let canCancel = false;
-            if (booking.status === "confirmed" && cancellation?.allowCustomerCancel && slot) {
+            if (
+                booking.status === "confirmed" &&
+                cancellation?.allowCustomerCancel &&
+                slot
+            ) {
                 const startMs = new Date(slot.startAt).getTime();
-                const deadlineMs = startMs - (cancellation.cancelDeadlineMinutes ?? 0) * 60_000;
+                const deadlineMs =
+                    startMs -
+                    (cancellation.cancelDeadlineMinutes ?? 0) * 60_000;
                 canCancel = Date.now() <= deadlineMs;
             }
 

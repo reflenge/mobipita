@@ -35,11 +35,11 @@ export function DateSearchPage({ orgId }: Props) {
     });
 
     return (
-        <div className="mx-auto max-w-2xl py-10 px-6 space-y-4">
+        <div className="mx-auto max-w-2xl space-y-4 px-6 py-10">
             <div className="flex items-center gap-2">
                 <Button variant="ghost" size="sm" asChild>
                     <Link href={`/o/${orgId}`}>
-                        <ArrowLeftIcon className="size-4 mr-1" />
+                        <ArrowLeftIcon className="mr-1 size-4" />
                         トップへ戻る
                     </Link>
                 </Button>
@@ -47,7 +47,7 @@ export function DateSearchPage({ orgId }: Props) {
 
             <div>
                 <h1 className="text-xl font-semibold">日付から探す</h1>
-                <p className="text-sm text-muted-foreground mt-0.5">
+                <p className="text-muted-foreground mt-0.5 text-sm">
                     日付を選択すると、その日の予約可能枠が表示されます
                 </p>
             </div>

@@ -51,7 +51,9 @@ export const listByMember = query({
         const list = await ctx.db
             .query("TenantMemberAssignments")
             .withIndex("by_org_user", (q) =>
-                q.eq("clerkOrgId", args.clerkOrgId).eq("clerkUserId", args.clerkUserId),
+                q
+                    .eq("clerkOrgId", args.clerkOrgId)
+                    .eq("clerkUserId", args.clerkUserId),
             )
             .collect();
         return list.map((a) => a.tenantId);
@@ -76,7 +78,9 @@ export const assign = mutation({
         const existing = await ctx.db
             .query("TenantMemberAssignments")
             .withIndex("by_tenant_user", (q) =>
-                q.eq("tenantId", args.tenantId).eq("clerkUserId", args.clerkUserId),
+                q
+                    .eq("tenantId", args.tenantId)
+                    .eq("clerkUserId", args.clerkUserId),
             )
             .first();
         if (existing) {
@@ -104,7 +108,9 @@ export const unassign = mutation({
         const assignment = await ctx.db
             .query("TenantMemberAssignments")
             .withIndex("by_tenant_user", (q) =>
-                q.eq("tenantId", args.tenantId).eq("clerkUserId", args.clerkUserId),
+                q
+                    .eq("tenantId", args.tenantId)
+                    .eq("clerkUserId", args.clerkUserId),
             )
             .first();
         if (assignment && assignment.clerkOrgId === args.clerkOrgId) {
@@ -127,7 +133,9 @@ export const setAssignmentsForMember = mutation({
         const current = await ctx.db
             .query("TenantMemberAssignments")
             .withIndex("by_org_user", (q) =>
-                q.eq("clerkOrgId", args.clerkOrgId).eq("clerkUserId", args.clerkUserId),
+                q
+                    .eq("clerkOrgId", args.clerkOrgId)
+                    .eq("clerkUserId", args.clerkUserId),
             )
             .collect();
 

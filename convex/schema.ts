@@ -110,8 +110,7 @@ export default defineSchema({
         lng: v.number(),
         // 詳細・備考。
         details: v.string(),
-    })
-        .index("by_tenant", ["tenantId"]),
+    }).index("by_tenant", ["tenantId"]),
     // 予約枠。日時ごとに1レコード。テンプレ内容は policySnapshot（JSON 文字列）に固定。
     Slots: defineTable({
         // 所属テナント。

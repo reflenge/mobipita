@@ -14,7 +14,6 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Input } from "@/components/ui/input";
-import { Separator } from "@/components/ui/separator";
 import { Link } from "@/components/link";
 import { cn } from "@/lib/utils";
 import {
@@ -48,7 +47,11 @@ type EmployeeListProps = {
 
 const ROLE_CONFIG: Record<
     string,
-    { label: string; variant: "default" | "secondary" | "outline"; icon: React.ElementType }
+    {
+        label: string;
+        variant: "default" | "secondary" | "outline";
+        icon: React.ElementType;
+    }
 > = {
     "org:admin": { label: "Admin", variant: "default", icon: ShieldCheck },
     "org:member": { label: "Member", variant: "secondary", icon: Briefcase },
@@ -139,7 +142,7 @@ export function EmployeeList({ orgId, employees }: EmployeeListProps) {
                     <h1 className="text-2xl font-semibold tracking-tight">
                         従業員一覧
                     </h1>
-                    <p className="text-sm leading-relaxed text-muted-foreground">
+                    <p className="text-muted-foreground text-sm leading-relaxed">
                         組織に所属するすべてのメンバーと、各メンバーの割当テナントを確認できます。
                     </p>
                 </div>
@@ -210,7 +213,7 @@ export function EmployeeList({ orgId, employees }: EmployeeListProps) {
             {/* 検索バー */}
             {employees.length > 4 && (
                 <div className="relative">
-                    <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+                    <Search className="text-muted-foreground absolute top-1/2 left-3 size-4 -translate-y-1/2" />
                     <Input
                         placeholder="名前またはメールで検索..."
                         value={searchQuery}
@@ -224,8 +227,8 @@ export function EmployeeList({ orgId, employees }: EmployeeListProps) {
             {employees.length === 0 ? (
                 <Card className="border-dashed">
                     <CardContent className="flex flex-col items-center gap-4 py-12 text-center">
-                        <div className="flex size-14 items-center justify-center rounded-full bg-muted">
-                            <Users className="size-7 text-muted-foreground" />
+                        <div className="bg-muted flex size-14 items-center justify-center rounded-full">
+                            <Users className="text-muted-foreground size-7" />
                         </div>
                         <div className="space-y-1">
                             <CardTitle className="text-lg">
@@ -240,8 +243,8 @@ export function EmployeeList({ orgId, employees }: EmployeeListProps) {
             ) : filteredEmployees.length === 0 ? (
                 <Card className="border-dashed">
                     <CardContent className="flex flex-col items-center gap-2 py-8 text-center">
-                        <Search className="size-8 text-muted-foreground/50" />
-                        <p className="text-sm text-muted-foreground">
+                        <Search className="text-muted-foreground/50 size-8" />
+                        <p className="text-muted-foreground text-sm">
                             条件に一致するメンバーが見つかりません
                         </p>
                     </CardContent>
@@ -271,7 +274,10 @@ export function EmployeeList({ orgId, employees }: EmployeeListProps) {
                             : [];
 
                         return (
-                            <Card key={emp.userId} className="transition-colors hover:bg-accent/30">
+                            <Card
+                                key={emp.userId}
+                                className="hover:bg-accent/30 transition-colors"
+                            >
                                 <CardContent className="flex items-center gap-4 py-4">
                                     {/* アバター */}
                                     <Avatar className="size-11 shrink-0">
@@ -298,7 +304,7 @@ export function EmployeeList({ orgId, employees }: EmployeeListProps) {
                                                 {config.label}
                                             </Badge>
                                         </div>
-                                        <p className="truncate text-xs text-muted-foreground">
+                                        <p className="text-muted-foreground truncate text-xs">
                                             {emp.identifier}
                                         </p>
                                     </div>
@@ -309,21 +315,19 @@ export function EmployeeList({ orgId, employees }: EmployeeListProps) {
                                             <Skeleton className="h-5 w-24 rounded-full" />
                                         ) : assignedTenants.length > 0 ? (
                                             <div className="flex flex-wrap justify-end gap-1">
-                                                {assignedTenants.map(
-                                                    (name) => (
-                                                        <Badge
-                                                            key={name}
-                                                            variant="outline"
-                                                            className="gap-1 text-[10px]"
-                                                        >
-                                                            <Building2 className="size-3" />
-                                                            {name}
-                                                        </Badge>
-                                                    ),
-                                                )}
+                                                {assignedTenants.map((name) => (
+                                                    <Badge
+                                                        key={name}
+                                                        variant="outline"
+                                                        className="gap-1 text-[10px]"
+                                                    >
+                                                        <Building2 className="size-3" />
+                                                        {name}
+                                                    </Badge>
+                                                ))}
                                             </div>
                                         ) : emp.role !== "org:customer" ? (
-                                            <span className="text-xs text-muted-foreground">
+                                            <span className="text-muted-foreground text-xs">
                                                 未割当
                                             </span>
                                         ) : null}
@@ -341,21 +345,20 @@ export function EmployeeList({ orgId, employees }: EmployeeListProps) {
                                 </CardContent>
 
                                 {/* モバイル用テナント表示 */}
-                                {!isLoading &&
-                                    assignedTenants.length > 0 && (
-                                        <div className="flex flex-wrap gap-1 border-t px-6 py-2.5 sm:hidden">
-                                            {assignedTenants.map((name) => (
-                                                <Badge
-                                                    key={name}
-                                                    variant="outline"
-                                                    className="gap-1 text-[10px]"
-                                                >
-                                                    <Building2 className="size-3" />
-                                                    {name}
-                                                </Badge>
-                                            ))}
-                                        </div>
-                                    )}
+                                {!isLoading && assignedTenants.length > 0 && (
+                                    <div className="flex flex-wrap gap-1 border-t px-6 py-2.5 sm:hidden">
+                                        {assignedTenants.map((name) => (
+                                            <Badge
+                                                key={name}
+                                                variant="outline"
+                                                className="gap-1 text-[10px]"
+                                            >
+                                                <Building2 className="size-3" />
+                                                {name}
+                                            </Badge>
+                                        ))}
+                                    </div>
+                                )}
                             </Card>
                         );
                     })}
@@ -384,8 +387,8 @@ function SummaryCard({
     return (
         <Card
             className={cn(
-                "cursor-pointer transition-colors select-none hover:bg-accent/40",
-                active && "ring-2 ring-primary/40",
+                "hover:bg-accent/40 cursor-pointer transition-colors select-none",
+                active && "ring-primary/40 ring-2",
             )}
             onClick={onClick}
         >
@@ -399,10 +402,10 @@ function SummaryCard({
                     <Icon className="size-5" />
                 </div>
                 <div>
-                    <p className="text-2xl font-bold leading-none tabular-nums">
+                    <p className="text-2xl leading-none font-bold tabular-nums">
                         {value}
                     </p>
-                    <p className="text-xs text-muted-foreground">{label}</p>
+                    <p className="text-muted-foreground text-xs">{label}</p>
                 </div>
             </CardContent>
         </Card>

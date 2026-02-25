@@ -31,10 +31,7 @@ export function TenantLogoField() {
                 const files = field.value ? [field.value] : [];
 
                 return (
-                    <Field
-                        className="pt-6"
-                        data-invalid={fieldState.invalid}
-                    >
+                    <Field className="pt-6" data-invalid={fieldState.invalid}>
                         <FieldLabel>テナントアイコン画像</FieldLabel>
                         <FilePond
                             key={field.value?.name ?? "empty"}

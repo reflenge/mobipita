@@ -16,12 +16,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Link } from "@/components/link";
-import {
-    CalendarIcon,
-    ClockIcon,
-    MapPinIcon,
-    UsersIcon,
-} from "lucide-react";
+import { CalendarIcon, ClockIcon, MapPinIcon, UsersIcon } from "lucide-react";
 
 type Props = { orgId: string; tenantId: string };
 
@@ -86,8 +81,8 @@ export function TenantSlots({ orgId, tenantId }: Props) {
 
     if (tenant === undefined || slots === undefined) {
         return (
-            <div className="mx-auto max-w-2xl py-10 px-6">
-                <div className="flex h-40 items-center justify-center rounded-md border bg-muted text-sm text-muted-foreground">
+            <div className="mx-auto max-w-2xl px-6 py-10">
+                <div className="bg-muted text-muted-foreground flex h-40 items-center justify-center rounded-md border text-sm">
                     読み込み中...
                 </div>
             </div>
@@ -96,24 +91,26 @@ export function TenantSlots({ orgId, tenantId }: Props) {
 
     if (!tenant) {
         return (
-            <div className="mx-auto max-w-2xl py-10 px-6">
-                <p className="text-muted-foreground">テナントが見つかりません。</p>
+            <div className="mx-auto max-w-2xl px-6 py-10">
+                <p className="text-muted-foreground">
+                    テナントが見つかりません。
+                </p>
             </div>
         );
     }
 
     return (
-        <div className="mx-auto max-w-2xl py-10 px-6 space-y-6">
+        <div className="mx-auto max-w-2xl space-y-6 px-6 py-10">
             <div>
                 <h1 className="text-2xl font-semibold">{tenant.tenantName}</h1>
-                <p className="text-sm text-muted-foreground mt-1">
+                <p className="text-muted-foreground mt-1 text-sm">
                     予約可能な枠を選択してください
                 </p>
             </div>
 
             {groupedByDate.length === 0 && (
                 <Card>
-                    <CardContent className="py-8 text-center text-muted-foreground">
+                    <CardContent className="text-muted-foreground py-8 text-center">
                         現在予約可能な枠はありません
                     </CardContent>
                 </Card>
@@ -125,7 +122,7 @@ export function TenantSlots({ orgId, tenantId }: Props) {
                     <Card key={dateStr.slice(0, 10)}>
                         <CardHeader className="pb-3">
                             <CardTitle className="flex items-center gap-2 text-base">
-                                <CalendarIcon className="size-4 text-muted-foreground" />
+                                <CalendarIcon className="text-muted-foreground size-4" />
                                 {formatDate(dateStr)}
                             </CardTitle>
                         </CardHeader>
@@ -134,33 +131,40 @@ export function TenantSlots({ orgId, tenantId }: Props) {
                                 <div key={slot._id}>
                                     {i > 0 && <Separator className="my-2" />}
                                     <div className="flex items-center justify-between gap-3">
-                                        <div className="space-y-1 min-w-0 flex-1">
+                                        <div className="min-w-0 flex-1 space-y-1">
                                             <div className="flex items-center gap-2 text-sm font-medium">
-                                                <ClockIcon className="size-3.5 text-muted-foreground shrink-0" />
-                                                {formatTime(slot.startAt)} 〜 {formatTime(slot.endAt)}
+                                                <ClockIcon className="text-muted-foreground size-3.5 shrink-0" />
+                                                {formatTime(slot.startAt)} 〜{" "}
+                                                {formatTime(slot.endAt)}
                                             </div>
-                                            <div className="text-sm text-muted-foreground truncate">
+                                            <div className="text-muted-foreground truncate text-sm">
                                                 {slot.serviceName}
                                             </div>
-                                            <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                                            <div className="text-muted-foreground flex items-center gap-3 text-xs">
                                                 <span className="flex items-center gap-1">
                                                     <MapPinIcon className="size-3" />
                                                     {slot.locationName}
                                                 </span>
                                                 <span className="flex items-center gap-1">
                                                     <UsersIcon className="size-3" />
-                                                    残り {slot.remaining}/{slot.capacity}
+                                                    残り {slot.remaining}/
+                                                    {slot.capacity}
                                                 </span>
                                             </div>
                                         </div>
-                                        <div className="shrink-0 flex items-center gap-2">
+                                        <div className="flex shrink-0 items-center gap-2">
                                             {slot.remaining <= 2 && (
-                                                <Badge variant="destructive" className="text-[10px]">
+                                                <Badge
+                                                    variant="destructive"
+                                                    className="text-[10px]"
+                                                >
                                                     残りわずか
                                                 </Badge>
                                             )}
                                             <Button asChild size="sm">
-                                                <Link href={`/o/${orgId}/tenant/${tenantId}/book/${slot._id}`}>
+                                                <Link
+                                                    href={`/o/${orgId}/tenant/${tenantId}/book/${slot._id}`}
+                                                >
                                                     予約する
                                                 </Link>
                                             </Button>

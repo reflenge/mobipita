@@ -9,7 +9,7 @@ type PageProps = {
 export default async function MemberTenantServicesPage({ params }: PageProps) {
     const { orgId, tenantId } = await params;
     return (
-        <div className="mx-auto container px-6 py-10 space-y-6">
+        <div className="container mx-auto space-y-6 px-6 py-10">
             <div className="flex items-center justify-between">
                 <h1 className="text-xl font-semibold">サービス一覧</h1>
                 <Link

@@ -16,7 +16,7 @@ export default function OrganizationMembershipList() {
     if (userMemberships.count === 0) {
         return (
             <div className="flex items-center justify-center p-2">
-                <p className="text-sm text-muted-foreground">
+                <p className="text-muted-foreground text-sm">
                     あなたは組織に所属していません。
                 </p>
             </div>

@@ -16,33 +16,29 @@ export default async function AssignmentPage({ params }: PageProps) {
         .catch(() => null);
     const organizationId = organization?.id ?? orgId;
 
-    const memberships = await client.organizations.getOrganizationMembershipList(
-        {
+    const memberships =
+        await client.organizations.getOrganizationMembershipList({
             organizationId: organizationId,
             // limit: 100,
             role: ["org:admin", "org:member"],
-        },
-    );
-    const staffMembers: MemberSummary[] = (memberships.data ?? []).map(
-        (m) => {
-            const pub = m.publicUserData;
-            const firstName = pub?.firstName ?? "";
-            const lastName = pub?.lastName ?? "";
-            const displayName =
-                `${firstName} ${lastName}`.trim() ||
-                (pub?.identifier ?? "不明");
-            return {
-                userId: m.publicUserData?.userId ?? "",
-                role: m.role,
-                displayName,
-                identifier: pub?.identifier ?? "不明",
-                imageUrl: pub?.imageUrl ?? null,
-            };
-        },
-    );
+        });
+    const staffMembers: MemberSummary[] = (memberships.data ?? []).map((m) => {
+        const pub = m.publicUserData;
+        const firstName = pub?.firstName ?? "";
+        const lastName = pub?.lastName ?? "";
+        const displayName =
+            `${firstName} ${lastName}`.trim() || (pub?.identifier ?? "不明");
+        return {
+            userId: m.publicUserData?.userId ?? "",
+            role: m.role,
+            displayName,
+            identifier: pub?.identifier ?? "不明",
+            imageUrl: pub?.imageUrl ?? null,
+        };
+    });
 
     return (
-        <div className="mx-auto container flex flex-col gap-8 px-6 py-10">
+        <div className="container mx-auto flex flex-col gap-8 px-6 py-10">
             <StaffAssignment orgId={organizationId} members={staffMembers} />
         </div>
     );

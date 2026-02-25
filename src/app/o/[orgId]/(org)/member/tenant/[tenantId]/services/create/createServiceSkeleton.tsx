@@ -1,8 +1,8 @@
-import { Skeleton } from "@/components/ui/skeleton"
+import { Skeleton } from "@/components/ui/skeleton";
 
 const CreateServiceSkeleton = () => {
     return (
-        <div className="mx-auto container px-6 py-10 space-y-6">
+        <div className="container mx-auto space-y-6 px-6 py-10">
             {/* タイトル */}
             <div className="space-y-2">
                 <Skeleton className="h-7 w-40" />
@@ -27,27 +27,29 @@ const CreateServiceSkeleton = () => {
                 {/* サービス説明（リッチテキストエリア想定） */}
                 <div className="space-y-2">
                     <Skeleton className="h-4 w-28" /> {/* ラベル */}
-                    <Skeleton className="h-32 w-full max-w-2xl" /> {/* Tiptap エリア */}
+                    <Skeleton className="h-32 w-full max-w-2xl" />{" "}
+                    {/* Tiptap エリア */}
                     <Skeleton className="h-4 w-40" /> {/* 文字数カウンタなど */}
                 </div>
 
                 {/* サービス有効化（スイッチ） */}
-                <div className="flex items-center justify-between max-w-md">
+                <div className="flex max-w-md items-center justify-between">
                     <div className="space-y-1">
                         <Skeleton className="h-4 w-28" /> {/* ラベル */}
                         <Skeleton className="h-4 w-64" /> {/* 説明 */}
                     </div>
-                    <Skeleton className="h-6 w-11 rounded-full" /> {/* Switch */}
+                    <Skeleton className="h-6 w-11 rounded-full" />{" "}
+                    {/* Switch */}
                 </div>
             </div>
 
             {/* フッターボタン */}
-            <div className="flex gap-3 justify-end pt-4">
+            <div className="flex justify-end gap-3 pt-4">
                 <Skeleton className="h-9 w-20" /> {/* Reset */}
                 <Skeleton className="h-9 w-24" /> {/* Submit */}
             </div>
         </div>
-    )
-}
+    );
+};
 
-export default CreateServiceSkeleton
+export default CreateServiceSkeleton;

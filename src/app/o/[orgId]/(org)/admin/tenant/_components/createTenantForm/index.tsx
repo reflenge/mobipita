@@ -156,7 +156,10 @@ export default function CreateTenantForm({ org }: CreateTenantFormProps) {
             } catch (error) {
                 // 構造化エラー（id / message）の場合は RHF のフィールドエラーに反映
                 if (error instanceof ConvexError) {
-                    const data = error.data as { id?: string; message?: string };
+                    const data = error.data as {
+                        id?: string;
+                        message?: string;
+                    };
                     if (data?.id === "TENANT_SLUG_DUPLICATE") {
                         form.setError("tenantSlug", {
                             type: "manual",
@@ -184,7 +187,7 @@ export default function CreateTenantForm({ org }: CreateTenantFormProps) {
     }
 
     return (
-        <div className="mx-auto flex w-full container flex-col gap-6 p-6 ">
+        <div className="container mx-auto flex w-full flex-col gap-6 p-6">
             <FormProvider {...form}>
                 <form
                     id={FORM_ID}

@@ -90,21 +90,21 @@ slots/create/
 
 ### 3. フォームスキーマ（schema.ts）
 
-| フィールド | 型 | 説明 |
-|-----------|-----|------|
-| slotTemplate.tenantId | string | テナントID |
-| slotTemplate.serviceId | string | サービスID |
-| slotTemplate.defaultLocationId | string | 場所ID |
-| slotTemplate.durationMinutes | number | 枠の長さ（分） |
-| slotTemplate.defaultCapacity | number | 同時予約数 |
-| slotTemplate.defaultVisibility | enum | public / unlisted / private |
-| slotTemplate.acceptanceWindow | object | openBeforeMinutes, closeBeforeMinutes |
-| slotTemplate.bufferMinutes | number | 枠間バッファ |
-| slotTemplate.dailyBookingLimit | number | 1日あたり予約上限 |
-| slotTemplate.form.questions | array | 予約フォームの質問項目 |
-| slotTemplate.reminders.email.amountMinutes | number | リマインダー送信タイミング |
-| slotTemplate.cancellationPolicy | object | キャンセル・リスケ期限・可否 |
-| dateTimeSlots | array | 日付と時間帯の配列 |
+| フィールド                                 | 型     | 説明                                  |
+| ------------------------------------------ | ------ | ------------------------------------- |
+| slotTemplate.tenantId                      | string | テナントID                            |
+| slotTemplate.serviceId                     | string | サービスID                            |
+| slotTemplate.defaultLocationId             | string | 場所ID                                |
+| slotTemplate.durationMinutes               | number | 枠の長さ（分）                        |
+| slotTemplate.defaultCapacity               | number | 同時予約数                            |
+| slotTemplate.defaultVisibility             | enum   | public / unlisted / private           |
+| slotTemplate.acceptanceWindow              | object | openBeforeMinutes, closeBeforeMinutes |
+| slotTemplate.bufferMinutes                 | number | 枠間バッファ                          |
+| slotTemplate.dailyBookingLimit             | number | 1日あたり予約上限                     |
+| slotTemplate.form.questions                | array  | 予約フォームの質問項目                |
+| slotTemplate.reminders.email.amountMinutes | number | リマインダー送信タイミング            |
+| slotTemplate.cancellationPolicy            | object | キャンセル・リスケ期限・可否          |
+| dateTimeSlots                              | array  | 日付と時間帯の配列                    |
 
 ---
 
@@ -112,11 +112,11 @@ slots/create/
 
 - **フィールドレベル**: zodResolver + `mode:"all"` が自動処理（フォーマット・必須・最小値）
 - **クロスフィールド**: `useWatch` → `useMemo` → `validateDateTimeSlots()` で同期計算し props で子に渡す
-  - 過去日付チェック
-  - 終了時刻 > 開始時刻
-  - 時間帯の長さ >= 枠の長さ
-  - 同一日付内の時間帯重複
-  - 場所チェック（時間帯の locationId も defaultLocationId も未指定ならエラー）
+    - 過去日付チェック
+    - 終了時刻 > 開始時刻
+    - 時間帯の長さ >= 枠の長さ
+    - 同一日付内の時間帯重複
+    - 場所チェック（時間帯の locationId も defaultLocationId も未指定ならエラー）
 - **submit 時**: zodResolver パス後、`crossFieldErrors` を追加チェック。エラーが残っていれば `setError` で表示して送信をブロック
 
 > zodResolver に superRefine を含めると `mode:"all"` で変更フィールドのエラーしか更新されず古いエラーが残る問題があるため、superRefine は使わない。
@@ -127,19 +127,19 @@ slots/create/
 
 ### Slots テーブル（convex/schema.ts）
 
-| カラム | 型 | 説明 |
-|--------|-----|------|
-| tenantId | Id\<"Tenants"\> | 所属テナント |
-| serviceId | Id\<"Services"\> | 紐づくサービス |
-| locationId | Id\<"Locations"\> | 紐づく場所 |
-| startAt | string | 枠の開始日時（ISO 8601） |
-| endAt | string | 枠の終了日時（ISO 8601） |
-| slotStatus | "open" \| "closed" | 受付状態 |
-| visibility | "public" \| "unlisted" \| "private" | 公開範囲 |
-| capacity | number | 同時予約可能数 |
-| createdByUserId | string | 作成者の Clerk userId |
-| policySnapshot | string | slotTemplate 全体を `JSON.stringify` で保存 |
-| locationSnapshot | string | 場所情報を `JSON.stringify` で保存 |
+| カラム           | 型                                  | 説明                                        |
+| ---------------- | ----------------------------------- | ------------------------------------------- |
+| tenantId         | Id\<"Tenants"\>                     | 所属テナント                                |
+| serviceId        | Id\<"Services"\>                    | 紐づくサービス                              |
+| locationId       | Id\<"Locations"\>                   | 紐づく場所                                  |
+| startAt          | string                              | 枠の開始日時（ISO 8601）                    |
+| endAt            | string                              | 枠の終了日時（ISO 8601）                    |
+| slotStatus       | "open" \| "closed"                  | 受付状態                                    |
+| visibility       | "public" \| "unlisted" \| "private" | 公開範囲                                    |
+| capacity         | number                              | 同時予約可能数                              |
+| createdByUserId  | string                              | 作成者の Clerk userId                       |
+| policySnapshot   | string                              | slotTemplate 全体を `JSON.stringify` で保存 |
+| locationSnapshot | string                              | 場所情報を `JSON.stringify` で保存          |
 
 ### 送信フロー（createSlot.tsx → convex/slots.ts）
 
@@ -199,22 +199,22 @@ slots/create/
 
 ## form-fields 一覧
 
-| コンポーネント | フォームフィールド | UI |
-|---------------|-------------------|-----|
-| ServiceSelectField | slotTemplate.serviceId | Select |
-| LocationSelectField | slotTemplate.defaultLocationId | Select |
-| VisibilitySelectField | slotTemplate.defaultVisibility | Select |
-| DurationInputField | slotTemplate.durationMinutes | Input (number) |
-| CapacityInputField | slotTemplate.defaultCapacity | Input (number) |
-| OpenBeforeInputField | acceptanceWindow.openBeforeMinutes | Input (number) |
-| CloseBeforeInputField | acceptanceWindow.closeBeforeMinutes | Input (number) |
-| BufferInputField | slotTemplate.bufferMinutes | Input (number) |
-| DailyLimitInputField | slotTemplate.dailyBookingLimit | Input (number) |
-| ReminderInputField | reminders.email.amountMinutes | Input (number) |
-| CancelDeadlineInputField | cancellationPolicy.cancelDeadlineMinutes | Input (number) |
-| RescheduleDeadlineInputField | cancellationPolicy.rescheduleDeadlineMinutes | Input (number) |
-| AllowCustomerCancelField | cancellationPolicy.allowCustomerCancel | Switch |
-| AllowReschedulingField | cancellationPolicy.allowRescheduling | Switch |
-| DateTimeSlotsSection | dateTimeSlots | 複合（DateSlotTimeRanges） |
-| FormQuestionsSection | slotTemplate.form.questions | 複合（QuestionLabel, Type, Required） |
-| CancellationPolicySection | 上記4つをまとめたセクション | - |
+| コンポーネント               | フォームフィールド                           | UI                                    |
+| ---------------------------- | -------------------------------------------- | ------------------------------------- |
+| ServiceSelectField           | slotTemplate.serviceId                       | Select                                |
+| LocationSelectField          | slotTemplate.defaultLocationId               | Select                                |
+| VisibilitySelectField        | slotTemplate.defaultVisibility               | Select                                |
+| DurationInputField           | slotTemplate.durationMinutes                 | Input (number)                        |
+| CapacityInputField           | slotTemplate.defaultCapacity                 | Input (number)                        |
+| OpenBeforeInputField         | acceptanceWindow.openBeforeMinutes           | Input (number)                        |
+| CloseBeforeInputField        | acceptanceWindow.closeBeforeMinutes          | Input (number)                        |
+| BufferInputField             | slotTemplate.bufferMinutes                   | Input (number)                        |
+| DailyLimitInputField         | slotTemplate.dailyBookingLimit               | Input (number)                        |
+| ReminderInputField           | reminders.email.amountMinutes                | Input (number)                        |
+| CancelDeadlineInputField     | cancellationPolicy.cancelDeadlineMinutes     | Input (number)                        |
+| RescheduleDeadlineInputField | cancellationPolicy.rescheduleDeadlineMinutes | Input (number)                        |
+| AllowCustomerCancelField     | cancellationPolicy.allowCustomerCancel       | Switch                                |
+| AllowReschedulingField       | cancellationPolicy.allowRescheduling         | Switch                                |
+| DateTimeSlotsSection         | dateTimeSlots                                | 複合（DateSlotTimeRanges）            |
+| FormQuestionsSection         | slotTemplate.form.questions                  | 複合（QuestionLabel, Type, Required） |
+| CancellationPolicySection    | 上記4つをまとめたセクション                  | -                                     |

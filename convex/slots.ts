@@ -23,7 +23,7 @@ export const createBatch = mutation({
                 capacity: v.number(),
                 policySnapshot: v.string(),
                 locationSnapshot: v.string(),
-            })
+            }),
         ),
     },
     handler: async (ctx, args) => {
@@ -36,7 +36,9 @@ export const createBatch = mutation({
 
         const service = await ctx.db.get(args.serviceId);
         if (!service || service.tenantId !== args.tenantId) {
-            throw new Error("サービスが見つからないか、このテナントに属していません");
+            throw new Error(
+                "サービスが見つからないか、このテナントに属していません",
+            );
         }
 
         const insertedIds: import("./_generated/dataModel").Id<"Slots">[] = [];
@@ -83,8 +85,14 @@ export const listByTenant = query({
             slots = slots.filter((s) => s.startAt >= args.from!);
         }
 
-        const serviceCache = new Map<string, { title: string; deleted: boolean }>();
-        const locationCache = new Map<string, { name: string; deleted: boolean }>();
+        const serviceCache = new Map<
+            string,
+            { title: string; deleted: boolean }
+        >();
+        const locationCache = new Map<
+            string,
+            { name: string; deleted: boolean }
+        >();
 
         const results = [];
         for (const slot of slots) {
@@ -109,13 +117,17 @@ export const listByTenant = query({
             try {
                 const parsed = JSON.parse(slot.locationSnapshot);
                 snapshotLocationName = parsed?.name;
-            } catch { /* ignore */ }
+            } catch {
+                /* ignore */
+            }
 
             let snapshotServiceName: string | undefined;
             try {
                 const parsed = JSON.parse(slot.policySnapshot);
                 snapshotServiceName = parsed?.serviceName;
-            } catch { /* ignore */ }
+            } catch {
+                /* ignore */
+            }
 
             const locationChanged =
                 !locInfo.deleted &&
@@ -168,15 +180,21 @@ export const listAvailableByTenant = query({
             if (slot.startAt < fromStr) continue;
 
             let policy: Record<string, unknown> = {};
-            try { policy = JSON.parse(slot.policySnapshot); } catch { /* ignore */ }
+            try {
+                policy = JSON.parse(slot.policySnapshot);
+            } catch {
+                /* ignore */
+            }
 
             const acceptance = policy.acceptanceWindow as
                 | { openBeforeMinutes?: number; closeBeforeMinutes?: number }
                 | undefined;
             if (acceptance) {
                 const startMs = new Date(slot.startAt).getTime();
-                const openMs = startMs - (acceptance.openBeforeMinutes ?? 0) * 60_000;
-                const closeMs = startMs - (acceptance.closeBeforeMinutes ?? 0) * 60_000;
+                const openMs =
+                    startMs - (acceptance.openBeforeMinutes ?? 0) * 60_000;
+                const closeMs =
+                    startMs - (acceptance.closeBeforeMinutes ?? 0) * 60_000;
                 const nowMs = now.getTime();
                 if (nowMs < openMs || nowMs > closeMs) continue;
             }
@@ -186,7 +204,9 @@ export const listAvailableByTenant = query({
                 const bookings = await ctx.db
                     .query("Bookings")
                     .withIndex("by_slot_status", (q) =>
-                        q.eq("slotId", slot._id as Id<"Slots">).eq("status", "confirmed"),
+                        q
+                            .eq("slotId", slot._id as Id<"Slots">)
+                            .eq("status", "confirmed"),
                     )
                     .collect();
                 confirmedCount = bookings.length;
@@ -211,7 +231,11 @@ export const listAvailableByTenant = query({
             }
 
             let locationSnapshot: Record<string, unknown> = {};
-            try { locationSnapshot = JSON.parse(slot.locationSnapshot); } catch { /* ignore */ }
+            try {
+                locationSnapshot = JSON.parse(slot.locationSnapshot);
+            } catch {
+                /* ignore */
+            }
 
             results.push({
                 _id: slot._id,
@@ -278,19 +302,26 @@ export const listAvailableByOrg = query({
                 const slotDate = slot.startAt.slice(0, 10);
                 if (slotDate !== args.date) continue;
             }
-            if (args.locationId && slot.locationId !== args.locationId) continue;
+            if (args.locationId && slot.locationId !== args.locationId)
+                continue;
             if (args.serviceId && slot.serviceId !== args.serviceId) continue;
 
             let policy: Record<string, unknown> = {};
-            try { policy = JSON.parse(slot.policySnapshot); } catch { /* ignore */ }
+            try {
+                policy = JSON.parse(slot.policySnapshot);
+            } catch {
+                /* ignore */
+            }
 
             const acceptance = policy.acceptanceWindow as
                 | { openBeforeMinutes?: number; closeBeforeMinutes?: number }
                 | undefined;
             if (acceptance) {
                 const startMs = new Date(slot.startAt).getTime();
-                const openMs = startMs - (acceptance.openBeforeMinutes ?? 0) * 60_000;
-                const closeMs = startMs - (acceptance.closeBeforeMinutes ?? 0) * 60_000;
+                const openMs =
+                    startMs - (acceptance.openBeforeMinutes ?? 0) * 60_000;
+                const closeMs =
+                    startMs - (acceptance.closeBeforeMinutes ?? 0) * 60_000;
                 const nowMs = now.getTime();
                 if (nowMs < openMs || nowMs > closeMs) continue;
             }
@@ -298,7 +329,9 @@ export const listAvailableByOrg = query({
             const bookings = await ctx.db
                 .query("Bookings")
                 .withIndex("by_slot_status", (q) =>
-                    q.eq("slotId", slot._id as Id<"Slots">).eq("status", "confirmed"),
+                    q
+                        .eq("slotId", slot._id as Id<"Slots">)
+                        .eq("status", "confirmed"),
                 )
                 .collect();
             const remaining = slot.capacity - bookings.length;

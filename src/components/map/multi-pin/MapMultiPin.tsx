@@ -19,7 +19,7 @@ const MapMultiPinInternal = dynamic(
     {
         ssr: false,
         loading: () => (
-            <div className="flex h-64 items-center justify-center rounded-md border bg-muted text-sm text-muted-foreground">
+            <div className="bg-muted text-muted-foreground flex h-64 items-center justify-center rounded-md border text-sm">
                 地図を読み込み中…
             </div>
         ),

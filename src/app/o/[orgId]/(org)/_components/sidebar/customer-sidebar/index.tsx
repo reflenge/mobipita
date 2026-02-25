@@ -10,7 +10,15 @@ import {
     SidebarMenuSubButton,
     SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
-import { CalendarCheck, CalendarIcon, Home, MapPinIcon, ShoppingBagIcon, StoreIcon, SearchIcon } from "lucide-react";
+import {
+    CalendarCheck,
+    CalendarIcon,
+    Home,
+    MapPinIcon,
+    ShoppingBagIcon,
+    StoreIcon,
+    SearchIcon,
+} from "lucide-react";
 
 const CustomerSidebar = ({ org }: { org: { id: string } }) => {
     return (
@@ -42,7 +50,9 @@ const CustomerSidebar = ({ org }: { org: { id: string } }) => {
                             </SidebarMenuSubItem>
                             <SidebarMenuSubItem>
                                 <SidebarMenuSubButton asChild>
-                                    <Link href={`/o/${org.id}/reserve/location`}>
+                                    <Link
+                                        href={`/o/${org.id}/reserve/location`}
+                                    >
                                         <MapPinIcon />
                                         <span>場所から探す</span>
                                     </Link>

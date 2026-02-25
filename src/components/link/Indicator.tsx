@@ -9,6 +9,6 @@ export function Indicator() {
 
     return pending ? (
         // fixed で画面上部に貼り付け、globals.css の .indicator でアニメーションさせる。
-        <span className="fixed left-0 top-0 z-1 h-0.75 bg-blue-300 opacity-50 indicator" />
+        <span className="indicator fixed top-0 left-0 z-1 h-0.75 bg-blue-300 opacity-50" />
     ) : null;
 }

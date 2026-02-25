@@ -35,7 +35,8 @@ export function TenantSlugField() {
                         autoComplete="off"
                     />
                     <FieldDescription>
-                        一時的に自動採番（UUID v4）です。リセットで新しい値に変わります。
+                        一時的に自動採番（UUID
+                        v4）です。リセットで新しい値に変わります。
                     </FieldDescription>
                     {fieldState.invalid && (
                         <FieldError errors={[fieldState.error]} />

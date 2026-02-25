@@ -82,8 +82,9 @@ function QuestionField({
     const inputProps = {
         id,
         value,
-        onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
-            onChange(e.target.value),
+        onChange: (
+            e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+        ) => onChange(e.target.value),
         required: question.required,
     };
 
@@ -100,7 +101,13 @@ function QuestionField({
             ) : (
                 <Input
                     {...inputProps}
-                    type={question.type === "tel" ? "tel" : question.type === "email" ? "email" : "text"}
+                    type={
+                        question.type === "tel"
+                            ? "tel"
+                            : question.type === "email"
+                              ? "email"
+                              : "text"
+                    }
                 />
             )}
         </div>
@@ -117,9 +124,12 @@ export function BookingForm({ orgId, tenantId, slotId }: Props) {
     const [answers, setAnswers] = useState<Record<string, string>>({});
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-    const handleAnswerChange = useCallback((questionId: string, value: string) => {
-        setAnswers((prev) => ({ ...prev, [questionId]: value }));
-    }, []);
+    const handleAnswerChange = useCallback(
+        (questionId: string, value: string) => {
+            setAnswers((prev) => ({ ...prev, [questionId]: value }));
+        },
+        [],
+    );
 
     const handleSubmit = useCallback(
         async (e: React.FormEvent) => {
@@ -155,8 +165,8 @@ export function BookingForm({ orgId, tenantId, slotId }: Props) {
 
     if (slot === undefined) {
         return (
-            <div className="mx-auto max-w-lg py-10 px-6">
-                <div className="flex h-40 items-center justify-center rounded-md border bg-muted text-sm text-muted-foreground">
+            <div className="mx-auto max-w-lg px-6 py-10">
+                <div className="bg-muted text-muted-foreground flex h-40 items-center justify-center rounded-md border text-sm">
                     読み込み中...
                 </div>
             </div>
@@ -165,17 +175,18 @@ export function BookingForm({ orgId, tenantId, slotId }: Props) {
 
     if (!slot) {
         return (
-            <div className="mx-auto max-w-lg py-10 px-6">
-                <p className="text-muted-foreground">スロットが見つかりません。</p>
+            <div className="mx-auto max-w-lg px-6 py-10">
+                <p className="text-muted-foreground">
+                    スロットが見つかりません。
+                </p>
             </div>
         );
     }
 
-    const isAvailable =
-        slot.slotStatus === "open" && slot.remaining > 0;
+    const isAvailable = slot.slotStatus === "open" && slot.remaining > 0;
 
     return (
-        <div className="mx-auto max-w-lg py-10 px-6 space-y-6">
+        <div className="mx-auto max-w-lg space-y-6 px-6 py-10">
             <div className="flex items-center gap-2">
                 <Button variant="ghost" size="sm" asChild>
                     <Link href={`/o/${orgId}/tenant/${tenantId}`}>
@@ -187,26 +198,31 @@ export function BookingForm({ orgId, tenantId, slotId }: Props) {
 
             <Card>
                 <CardHeader>
-                    <CardTitle className="text-lg">{slot.serviceName}</CardTitle>
+                    <CardTitle className="text-lg">
+                        {slot.serviceName}
+                    </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3">
                     <div className="flex items-center gap-2 text-sm">
-                        <CalendarIcon className="size-4 text-muted-foreground" />
+                        <CalendarIcon className="text-muted-foreground size-4" />
                         {formatDate(slot.startAt)}
                     </div>
                     <div className="flex items-center gap-2 text-sm">
-                        <ClockIcon className="size-4 text-muted-foreground" />
+                        <ClockIcon className="text-muted-foreground size-4" />
                         {formatTime(slot.startAt)} 〜 {formatTime(slot.endAt)}
                     </div>
                     <div className="flex items-center gap-2 text-sm">
-                        <MapPinIcon className="size-4 text-muted-foreground" />
+                        <MapPinIcon className="text-muted-foreground size-4" />
                         {slot.locationName}
                     </div>
                     <div className="flex items-center gap-2 text-sm">
-                        <UsersIcon className="size-4 text-muted-foreground" />
+                        <UsersIcon className="text-muted-foreground size-4" />
                         残り {slot.remaining}/{slot.capacity}
                         {slot.remaining <= 2 && (
-                            <Badge variant="destructive" className="text-[10px]">
+                            <Badge
+                                variant="destructive"
+                                className="text-[10px]"
+                            >
                                 残りわずか
                             </Badge>
                         )}
@@ -216,14 +232,16 @@ export function BookingForm({ orgId, tenantId, slotId }: Props) {
 
             {!isAvailable ? (
                 <Card>
-                    <CardContent className="py-8 text-center text-muted-foreground">
+                    <CardContent className="text-muted-foreground py-8 text-center">
                         この枠は現在予約できません
                     </CardContent>
                 </Card>
             ) : (
                 <Card>
                     <CardHeader>
-                        <CardTitle className="text-base">予約フォーム</CardTitle>
+                        <CardTitle className="text-base">
+                            予約フォーム
+                        </CardTitle>
                     </CardHeader>
                     <CardContent>
                         <form onSubmit={handleSubmit} className="space-y-4">
@@ -233,11 +251,13 @@ export function BookingForm({ orgId, tenantId, slotId }: Props) {
                                         key={q.id}
                                         question={q}
                                         value={answers[q.id] ?? ""}
-                                        onChange={(v) => handleAnswerChange(q.id, v)}
+                                        onChange={(v) =>
+                                            handleAnswerChange(q.id, v)
+                                        }
                                     />
                                 ))
                             ) : (
-                                <p className="text-sm text-muted-foreground">
+                                <p className="text-muted-foreground text-sm">
                                     入力項目はありません
                                 </p>
                             )}
@@ -253,7 +273,7 @@ export function BookingForm({ orgId, tenantId, slotId }: Props) {
                                     "予約中..."
                                 ) : (
                                     <>
-                                        <SendIcon className="size-4 mr-2" />
+                                        <SendIcon className="mr-2 size-4" />
                                         予約を確定する
                                     </>
                                 )}

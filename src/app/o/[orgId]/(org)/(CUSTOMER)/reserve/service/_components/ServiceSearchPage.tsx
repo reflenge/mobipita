@@ -24,7 +24,9 @@ import { ArrowLeftIcon, SearchIcon, ShoppingBagIcon } from "lucide-react";
 type Props = { orgId: string };
 
 export function ServiceSearchPage({ orgId }: Props) {
-    const [selectedServiceId, setSelectedServiceId] = useState<string | null>(null);
+    const [selectedServiceId, setSelectedServiceId] = useState<string | null>(
+        null,
+    );
     const [keyword, setKeyword] = useState("");
 
     const services = useQuery(api.services.listByOrg, {
@@ -45,28 +47,33 @@ export function ServiceSearchPage({ orgId }: Props) {
     const slots = useQuery(
         api.slots.listAvailableByOrg,
         selectedServiceId
-            ? { clerkOrgId: orgId, serviceId: selectedServiceId as Id<"Services"> }
+            ? {
+                  clerkOrgId: orgId,
+                  serviceId: selectedServiceId as Id<"Services">,
+              }
             : "skip",
     );
 
     if (selectedServiceId) {
         const svc = services?.find((s) => s._id === selectedServiceId);
         return (
-            <div className="mx-auto max-w-2xl py-10 px-6 space-y-4">
+            <div className="mx-auto max-w-2xl space-y-4 px-6 py-10">
                 <div className="flex items-center gap-2">
                     <Button
                         variant="ghost"
                         size="sm"
                         onClick={() => setSelectedServiceId(null)}
                     >
-                        <ArrowLeftIcon className="size-4 mr-1" />
+                        <ArrowLeftIcon className="mr-1 size-4" />
                         サービス一覧に戻る
                     </Button>
                 </div>
                 <div>
-                    <h1 className="text-xl font-semibold">{svc?.title ?? "選択中"}</h1>
+                    <h1 className="text-xl font-semibold">
+                        {svc?.title ?? "選択中"}
+                    </h1>
                     {svc && (
-                        <p className="text-sm text-muted-foreground mt-0.5">
+                        <p className="text-muted-foreground mt-0.5 text-sm">
                             {svc.tenantName}
                         </p>
                     )}
@@ -81,11 +88,11 @@ export function ServiceSearchPage({ orgId }: Props) {
     }
 
     return (
-        <div className="mx-auto max-w-2xl py-10 px-6 space-y-4">
+        <div className="mx-auto max-w-2xl space-y-4 px-6 py-10">
             <div className="flex items-center gap-2">
                 <Button variant="ghost" size="sm" asChild>
                     <Link href={`/o/${orgId}`}>
-                        <ArrowLeftIcon className="size-4 mr-1" />
+                        <ArrowLeftIcon className="mr-1 size-4" />
                         トップへ戻る
                     </Link>
                 </Button>
@@ -93,13 +100,13 @@ export function ServiceSearchPage({ orgId }: Props) {
 
             <div>
                 <h1 className="text-xl font-semibold">サービスから探す</h1>
-                <p className="text-sm text-muted-foreground mt-0.5">
+                <p className="text-muted-foreground mt-0.5 text-sm">
                     サービスを選択すると予約可能な枠が表示されます
                 </p>
             </div>
 
             <div className="relative">
-                <SearchIcon className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+                <SearchIcon className="text-muted-foreground absolute top-1/2 left-3 size-4 -translate-y-1/2" />
                 <Input
                     type="search"
                     placeholder="サービス名・テナント名で検索"
@@ -110,12 +117,12 @@ export function ServiceSearchPage({ orgId }: Props) {
             </div>
 
             {filteredServices === undefined ? (
-                <div className="flex h-32 items-center justify-center rounded-md border bg-muted text-sm text-muted-foreground">
+                <div className="bg-muted text-muted-foreground flex h-32 items-center justify-center rounded-md border text-sm">
                     読み込み中...
                 </div>
             ) : filteredServices.length === 0 ? (
                 <Card>
-                    <CardContent className="py-8 text-center text-muted-foreground">
+                    <CardContent className="text-muted-foreground py-8 text-center">
                         該当するサービスがありません
                     </CardContent>
                 </Card>
@@ -124,18 +131,20 @@ export function ServiceSearchPage({ orgId }: Props) {
                     {filteredServices.map((svc) => (
                         <Card
                             key={svc._id}
-                            className="cursor-pointer transition-colors hover:bg-accent"
+                            className="hover:bg-accent cursor-pointer transition-colors"
                             onClick={() => setSelectedServiceId(svc._id)}
                         >
-                            <CardContent className="py-3 px-4">
+                            <CardContent className="px-4 py-3">
                                 <div className="flex items-center justify-between gap-3">
                                     <div className="min-w-0 space-y-0.5">
-                                        <div className="font-medium text-sm">{svc.title}</div>
-                                        <div className="text-xs text-muted-foreground">
+                                        <div className="text-sm font-medium">
+                                            {svc.title}
+                                        </div>
+                                        <div className="text-muted-foreground text-xs">
                                             {svc.tenantName}
                                         </div>
                                     </div>
-                                    <ShoppingBagIcon className="size-4 text-muted-foreground shrink-0" />
+                                    <ShoppingBagIcon className="text-muted-foreground size-4 shrink-0" />
                                 </div>
                             </CardContent>
                         </Card>

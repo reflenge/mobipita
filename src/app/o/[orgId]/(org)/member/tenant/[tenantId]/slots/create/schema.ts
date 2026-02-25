@@ -1,8 +1,5 @@
 import * as z from "zod";
-import {
-    getTodayLocalYYYYMMDD,
-    parseTimeToMinutes,
-} from "./dateUtils";
+import { getTodayLocalYYYYMMDD, parseTimeToMinutes } from "./dateUtils";
 
 // ─── 質問タイプ ────────────────────────────────────────────
 export const questionTypeEnum = z.enum([
@@ -34,7 +31,7 @@ function isTimeBefore(a: string, b: string): boolean {
 /** 2つの時間帯が重なるか判定（境界一致は重複としない） */
 function timeRangesOverlap(
     a: { start: string; end: string },
-    b: { start: string; end: string }
+    b: { start: string; end: string },
 ): boolean {
     const aStart = parseTimeToMinutes(a.start);
     const aEnd = parseTimeToMinutes(a.end);
@@ -72,7 +69,10 @@ export type CrossFieldError = { path: string; message: string };
  *   5. 場所チェック（時間帯の locationId も defaultLocationId も未指定ならエラー）
  */
 export function validateDateTimeSlots(
-    dateTimeSlots: Array<{ date: string; timeRanges: Array<{ start: string; end: string; locationId?: string }> }>,
+    dateTimeSlots: Array<{
+        date: string;
+        timeRanges: Array<{ start: string; end: string; locationId?: string }>;
+    }>,
     durationMinutes: number,
     defaultLocationId?: string,
 ): CrossFieldError[] {
@@ -160,7 +160,8 @@ export function validateDateTimeSlots(
             if (!hasOwnLocation && !hasDefault) {
                 errors.push({
                     path: `dateTimeSlots.${slotIndex}.timeRanges.${rangeIndex}.locationId`,
-                    message: "場所を指定してください（デフォルトの場所も未設定です）",
+                    message:
+                        "場所を指定してください（デフォルトの場所も未設定です）",
                 });
             }
         });
@@ -221,7 +222,7 @@ export const formSchema = z.object({
                     label: z.string().min(1, "ラベルを入力"),
                     type: questionTypeEnum,
                     required: z.boolean(),
-                })
+                }),
             ),
         }),
         reminders: z.object({
@@ -260,7 +261,12 @@ export const DEFAULT_SLOT_TEMPLATE: FormValues["slotTemplate"] = {
     dailyBookingLimit: 4,
     form: {
         questions: [
-            { id: "q_question1", label: "<p>質問1</p>", type: "textarea", required: false },
+            {
+                id: "q_question1",
+                label: "<p>質問1</p>",
+                type: "textarea",
+                required: false,
+            },
         ],
     },
     reminders: { email: { amountMinutes: 1440 } },

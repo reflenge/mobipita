@@ -1,37 +1,16 @@
-import { ShieldUser, Home, UserStar } from "lucide-react";
 import Image from "next/image";
 import {
     Sidebar,
     SidebarContent,
     SidebarFooter,
-    SidebarGroup,
-    SidebarGroupAction,
-    SidebarGroupContent,
-    SidebarGroupLabel,
     SidebarHeader,
-    SidebarInput,
-    SidebarInset,
     SidebarMenu,
-    SidebarMenuAction,
-    SidebarMenuBadge,
     SidebarMenuButton,
     SidebarMenuItem,
-    SidebarMenuSkeleton,
-    SidebarMenuSub,
-    SidebarMenuSubButton,
-    SidebarMenuSubItem,
-    SidebarProvider,
     SidebarRail,
-    SidebarSeparator,
-    useSidebar,
 } from "@/components/ui/sidebar";
 import { Link } from "@/components/link";
-import {
-    ClerkLoaded,
-    ClerkLoading,
-    OrganizationSwitcher,
-    UserButton,
-} from "@clerk/nextjs";
+import { UserButton } from "@clerk/nextjs";
 import AdminSidebar from "./admin-sidebar";
 import CustomerSidebar from "./customer-sidebar";
 import MemberSidebar from "./member-sidebar";

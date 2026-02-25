@@ -2,10 +2,7 @@
 
 import { useFieldArray } from "react-hook-form";
 import { Button } from "@/components/ui/button";
-import {
-    FieldDescription,
-    FieldLabel,
-} from "@/components/ui/field";
+import { FieldDescription, FieldLabel } from "@/components/ui/field";
 import type { FormValues } from "../schema";
 import type { UseFormRegister } from "react-hook-form";
 import type { Control } from "react-hook-form";
@@ -26,7 +23,7 @@ export function FormQuestionsSection({ control, register }: Props) {
 
     return (
         <div className="space-y-4">
-            <div className="flex items-center justify-between gap-2 flex-wrap">
+            <div className="flex flex-wrap items-center justify-between gap-2">
                 <div>
                     <FieldLabel>予約時に聞く質問</FieldLabel>
                     <FieldDescription>
@@ -52,7 +49,7 @@ export function FormQuestionsSection({ control, register }: Props) {
             {fields.map((fieldItem, index) => (
                 <div
                     key={fieldItem.id}
-                    className="rounded-lg border p-4 space-y-3"
+                    className="space-y-3 rounded-lg border p-4"
                 >
                     <div className="flex items-center justify-between gap-2">
                         <span className="text-sm font-medium">
@@ -74,7 +71,10 @@ export function FormQuestionsSection({ control, register }: Props) {
                     <QuestionLabelField control={control} index={index} />
                     <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                         <QuestionTypeField control={control} index={index} />
-                        <QuestionRequiredField control={control} index={index} />
+                        <QuestionRequiredField
+                            control={control}
+                            index={index}
+                        />
                     </div>
                 </div>
             ))}

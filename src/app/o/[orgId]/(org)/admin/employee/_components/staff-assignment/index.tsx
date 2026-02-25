@@ -88,9 +88,9 @@ export function StaffAssignment({ orgId, members }: StaffAssignmentProps) {
     }, [assignments]);
 
     /** ユーザーが画面上で変更した未保存の割当（userId → Set<tenantId>） */
-    const [selected, setSelected] = React.useState<
-        Record<string, Set<string>>
-    >(() => ({}));
+    const [selected, setSelected] = React.useState<Record<string, Set<string>>>(
+        () => ({}),
+    );
 
     /** ローカル変更があればそちらを、なければ DB の値を返す */
     const isSelected = (userId: string, tenantId: string) => {
@@ -245,8 +245,8 @@ export function StaffAssignment({ orgId, members }: StaffAssignmentProps) {
                 <Header />
                 <Card className="border-dashed">
                     <CardContent className="flex flex-col items-center gap-4 py-12 text-center">
-                        <div className="flex size-14 items-center justify-center rounded-full bg-muted">
-                            <UserPlus className="size-7 text-muted-foreground" />
+                        <div className="bg-muted flex size-14 items-center justify-center rounded-full">
+                            <UserPlus className="text-muted-foreground size-7" />
                         </div>
                         <div className="space-y-1">
                             <CardTitle className="text-lg">
@@ -254,7 +254,8 @@ export function StaffAssignment({ orgId, members }: StaffAssignmentProps) {
                             </CardTitle>
                             <CardDescription className="max-w-sm">
                                 組織に Admin / Member がまだいないようです。
-                                「従業員へ昇格する」で Member に昇格させてから振り分けてください。
+                                「従業員へ昇格する」で Member
+                                に昇格させてから振り分けてください。
                             </CardDescription>
                         </div>
                     </CardContent>
@@ -270,8 +271,8 @@ export function StaffAssignment({ orgId, members }: StaffAssignmentProps) {
                 <Header />
                 <Card className="border-dashed">
                     <CardContent className="flex flex-col items-center gap-4 py-12 text-center">
-                        <div className="flex size-14 items-center justify-center rounded-full bg-muted">
-                            <Store className="size-7 text-muted-foreground" />
+                        <div className="bg-muted flex size-14 items-center justify-center rounded-full">
+                            <Store className="text-muted-foreground size-7" />
                         </div>
                         <div className="space-y-1">
                             <CardTitle className="text-lg">
@@ -299,10 +300,10 @@ export function StaffAssignment({ orgId, members }: StaffAssignmentProps) {
                             <Users className="size-5 text-blue-600 dark:text-blue-400" />
                         </div>
                         <div>
-                            <p className="text-2xl font-bold leading-none">
+                            <p className="text-2xl leading-none font-bold">
                                 {members.length}
                             </p>
-                            <p className="text-xs text-muted-foreground">
+                            <p className="text-muted-foreground text-xs">
                                 従業員
                             </p>
                         </div>
@@ -314,10 +315,10 @@ export function StaffAssignment({ orgId, members }: StaffAssignmentProps) {
                             <Building2 className="size-5 text-violet-600 dark:text-violet-400" />
                         </div>
                         <div>
-                            <p className="text-2xl font-bold leading-none">
+                            <p className="text-2xl leading-none font-bold">
                                 {tenantList.length}
                             </p>
-                            <p className="text-xs text-muted-foreground">
+                            <p className="text-muted-foreground text-xs">
                                 テナント
                             </p>
                         </div>
@@ -327,7 +328,7 @@ export function StaffAssignment({ orgId, members }: StaffAssignmentProps) {
                     className={cn(
                         "col-span-2 sm:col-span-1",
                         dirtyUserIds.length > 0 &&
-                        "border-amber-300 dark:border-amber-700",
+                            "border-amber-300 dark:border-amber-700",
                     )}
                 >
                     <CardContent className="flex items-center gap-3 py-4">
@@ -346,10 +347,10 @@ export function StaffAssignment({ orgId, members }: StaffAssignmentProps) {
                             )}
                         </div>
                         <div className="min-w-0 flex-1">
-                            <p className="text-2xl font-bold leading-none">
+                            <p className="text-2xl leading-none font-bold">
                                 {dirtyUserIds.length}
                             </p>
-                            <p className="text-xs text-muted-foreground">
+                            <p className="text-muted-foreground text-xs">
                                 未保存
                             </p>
                         </div>
@@ -377,7 +378,7 @@ export function StaffAssignment({ orgId, members }: StaffAssignmentProps) {
             {/* 検索バー（5人以上で表示） */}
             {members.length > 4 && (
                 <div className="relative">
-                    <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+                    <Search className="text-muted-foreground absolute top-1/2 left-3 size-4 -translate-y-1/2" />
                     <Input
                         placeholder="名前またはメールで検索..."
                         value={searchQuery}
@@ -393,17 +394,17 @@ export function StaffAssignment({ orgId, members }: StaffAssignmentProps) {
                 {filteredMembers.length === 0 && searchQuery.trim() && (
                     <Card className="border-dashed">
                         <CardContent className="flex flex-col items-center gap-2 py-8 text-center">
-                            <Search className="size-8 text-muted-foreground/50" />
-                            <p className="text-sm text-muted-foreground">
-                                「{searchQuery}」に一致する従業員が見つかりません
+                            <Search className="text-muted-foreground/50 size-8" />
+                            <p className="text-muted-foreground text-sm">
+                                「{searchQuery}
+                                」に一致する従業員が見つかりません
                             </p>
                         </CardContent>
                     </Card>
                 )}
 
                 {filteredMembers.map((member) => {
-                    const roleLabel =
-                        roleLabelMap[member.role] ?? member.role;
+                    const roleLabel = roleLabelMap[member.role] ?? member.role;
                     const initials = (
                         member.displayName ||
                         member.identifier ||
@@ -421,7 +422,7 @@ export function StaffAssignment({ orgId, members }: StaffAssignmentProps) {
                             className={cn(
                                 "transition-colors",
                                 memberDirty &&
-                                "border-amber-300 dark:border-amber-700",
+                                    "border-amber-300 dark:border-amber-700",
                             )}
                         >
                             <CardHeader className="gap-0 pb-0">
@@ -443,7 +444,12 @@ export function StaffAssignment({ orgId, members }: StaffAssignmentProps) {
                                                         "名前なし"}
                                                 </CardTitle>
                                                 <Badge
-                                                    variant={member.role === "org:admin" ? "default" : "secondary"}
+                                                    variant={
+                                                        member.role ===
+                                                        "org:admin"
+                                                            ? "default"
+                                                            : "secondary"
+                                                    }
                                                     className="text-[10px] leading-none"
                                                 >
                                                     {roleLabel}
@@ -499,7 +505,7 @@ export function StaffAssignment({ orgId, members }: StaffAssignmentProps) {
                                                     "hover:bg-accent/50",
                                                     checked
                                                         ? "border-primary/30 bg-primary/5"
-                                                        : "border-transparent bg-muted/40",
+                                                        : "bg-muted/40 border-transparent",
                                                 )}
                                             >
                                                 <Switch
@@ -515,12 +521,12 @@ export function StaffAssignment({ orgId, members }: StaffAssignmentProps) {
                                                     <span className="block truncate text-sm font-medium">
                                                         {tenant.tenantName}
                                                     </span>
-                                                    <span className="block truncate text-xs text-muted-foreground">
+                                                    <span className="text-muted-foreground block truncate text-xs">
                                                         /{tenant.tenantSlug}
                                                     </span>
                                                 </div>
                                                 {checked && (
-                                                    <Check className="size-4 shrink-0 text-primary" />
+                                                    <Check className="text-primary size-4 shrink-0" />
                                                 )}
                                             </label>
                                         );
@@ -542,7 +548,7 @@ function Header() {
             <h2 className="text-2xl font-semibold tracking-tight">
                 テナントへの従業員割当
             </h2>
-            <p className="text-sm leading-relaxed text-muted-foreground">
+            <p className="text-muted-foreground text-sm leading-relaxed">
                 組織の Admin / Member
                 をテナントに割り当てます。1人を複数テナントに割り当て可能です。
             </p>

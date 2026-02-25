@@ -33,9 +33,7 @@ export function QuestionRequiredField({ control, index }: Props) {
                     <FieldDescription>この質問が必須か任意か</FieldDescription>
                     <Select
                         value={field.value ? "required" : "optional"}
-                        onValueChange={(v) =>
-                            field.onChange(v === "required")
-                        }
+                        onValueChange={(v) => field.onChange(v === "required")}
                     >
                         <SelectTrigger aria-invalid={fieldState.invalid}>
                             <SelectValue placeholder="選択" />

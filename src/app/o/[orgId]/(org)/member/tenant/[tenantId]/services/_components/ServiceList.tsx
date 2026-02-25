@@ -65,22 +65,27 @@ export function ServiceList({ orgId, tenantId }: ServiceListProps) {
                     key={service._id}
                     href={`/o/${orgId}/member/tenant/${tenantId}/services/${service._id}`}
                 >
-                    <Card className="transition hover:border-primary/50 hover:shadow-md">
+                    <Card className="hover:border-primary/50 transition hover:shadow-md">
                         <CardHeader className="gap-3">
                             <div className="flex items-center justify-between gap-3">
-                                <CardTitle className="text-lg line-clamp-2">
+                                <CardTitle className="line-clamp-2 text-lg">
                                     {service.title}
                                 </CardTitle>
                                 <Badge
                                     variant={
-                                        service.isActive ? "default" : "secondary"
+                                        service.isActive
+                                            ? "default"
+                                            : "secondary"
                                     }
                                 >
                                     {service.isActive ? "有効" : "無効"}
                                 </Badge>
                             </div>
                             <CardDescription>
-                                <TiptapViewer content={service.description} lines={4} />
+                                <TiptapViewer
+                                    content={service.description}
+                                    lines={4}
+                                />
                             </CardDescription>
                         </CardHeader>
                     </Card>

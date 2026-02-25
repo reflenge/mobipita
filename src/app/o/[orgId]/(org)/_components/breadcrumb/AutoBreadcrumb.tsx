@@ -40,7 +40,8 @@ export default function AutoBreadcrumb() {
     let currentPath = `/o/${orgId}`;
     for (const segment of segments) {
         currentPath += `/${segment}`;
-        const orgScopedPath = currentPath.replace(new RegExp(`^/o/${orgId}`), "") || "/";
+        const orgScopedPath =
+            currentPath.replace(new RegExp(`^/o/${orgId}`), "") || "/";
         breadcrumbSegments.push({
             path: currentPath,
             label: getSegmentLabel(segment),
@@ -56,7 +57,9 @@ export default function AutoBreadcrumb() {
     // dropdownmenuに入れるセグメント（home・一個前・今の場所以外）
     const dropdownSegments = breadcrumbSegments.filter(
         (_, index) =>
-            index !== homeIndex && index !== prevIndex && index !== currentIndex,
+            index !== homeIndex &&
+            index !== prevIndex &&
+            index !== currentIndex,
     );
 
     return (
@@ -82,7 +85,9 @@ export default function AutoBreadcrumb() {
                             {breadcrumbSegments[prevIndex].isLinkable ? (
                                 <BreadcrumbLink asChild>
                                     <Link
-                                        href={breadcrumbSegments[prevIndex].path}
+                                        href={
+                                            breadcrumbSegments[prevIndex].path
+                                        }
                                     >
                                         {truncateLabel(
                                             breadcrumbSegments[prevIndex].label,

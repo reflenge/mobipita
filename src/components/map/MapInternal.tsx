@@ -32,10 +32,10 @@ const markerIconUrl =
 const markerShadowUrl =
     typeof markerShadow === "string" ? markerShadow : markerShadow.src;
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 // 既存のデフォルトアイコン設定を削除してから、
 // 上で定義した URL を用いてマーカーの見た目を上書きする。
-delete (L.Icon.Default.prototype as any)._getIconUrl;
+// @ts-expect-error - Leaflet hack
+delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
     iconRetinaUrl: markerIcon2xUrl,
     iconUrl: markerIconUrl,
@@ -58,18 +58,6 @@ function ClickHandler({ onChange }: { onChange: Props["onChange"] }) {
     return null;
 }
 
-// 外部から渡された座標 value が変わったときに、地図の中心位置も追従させるためのコンポーネント
-function CenterUpdater({ value }: { value: Props["value"] }) {
-    const map = useMap();
-
-    if (value) {
-        // value が存在する場合、その座標を中心にズームレベルを維持したままビューを移動する
-        map.setView([value.lat, value.lng]);
-    }
-
-    return null;
-}
-
 function CurrentLocationButton({
     position,
     onChange,
@@ -88,7 +76,7 @@ function CurrentLocationButton({
             onAdd: function () {
                 const button = L.DomUtil.create(
                     "button",
-                    "leaflet-bar leaflet-control leaflet-control-custom"
+                    "leaflet-bar leaflet-control leaflet-control-custom",
                 ) as HTMLButtonElement;
                 button.type = "button";
                 button.className = "customButton";
@@ -118,7 +106,7 @@ function CurrentLocationButton({
                             },
                             (err) => {
                                 console.log(err);
-                            }
+                            },
                         );
                     } else {
                         console.log("ブラウザが対応していません");
@@ -158,7 +146,7 @@ function MapCenterDisplay({ position }: { position: ControlPosition }) {
             onAdd: function () {
                 const container = L.DomUtil.create(
                     "div",
-                    "leaflet-bar leaflet-control"
+                    "leaflet-bar leaflet-control",
                 ) as HTMLDivElement;
                 container.className = "centerCoordinate";
                 container.style.margin = "0";
@@ -168,7 +156,7 @@ function MapCenterDisplay({ position }: { position: ControlPosition }) {
                 updateText = () => {
                     const center = map.getCenter();
                     container.textContent = `${center.lat.toFixed(
-                        6
+                        6,
                     )}, ${center.lng.toFixed(6)}`;
                 };
 
@@ -204,40 +192,45 @@ export function LeafletMap({ value, onChange }: Props) {
     const [address, setAddress] = useState<string | null>(null);
     const [addressError, setAddressError] = useState<string | null>(null);
 
-    const handleMarkerRef = useCallback(
-        (node: L.Marker | null) => {
-            markerRef.current = node;
-            if (node) {
-                node.openPopup();
-            }
-        },
-        []
-    );
+    const handleMarkerRef = useCallback((node: L.Marker | null) => {
+        markerRef.current = node;
+        if (node) {
+            node.openPopup();
+        }
+    }, []);
 
     useEffect(() => {
-        if (!value) {
+        const controller = new AbortController();
+
+        const fetchAddress = async () => {
+            if (!value) {
+                setAddress(null);
+                setAddressError(null);
+                return;
+            }
+
             setAddress(null);
             setAddressError(null);
-            return;
-        }
 
-        const controller = new AbortController();
-        setAddress(null);
-        setAddressError(null);
-
-        reverseGeocodeFromLatLng(value.lat, value.lng, {
-            signal: controller.signal,
-        })
-            .then((result) => {
+            try {
+                const result = await reverseGeocodeFromLatLng(
+                    value.lat,
+                    value.lng,
+                    {
+                        signal: controller.signal,
+                    },
+                );
                 setAddress(result);
-            })
-            .catch((err: unknown) => {
+            } catch (err: unknown) {
                 if (err instanceof DOMException && err.name === "AbortError") {
                     return;
                 }
                 console.error(err);
                 setAddressError("住所取得に失敗しました");
-            });
+            }
+        };
+
+        void fetchAddress();
 
         return () => {
             controller.abort();
@@ -251,7 +244,7 @@ export function LeafletMap({ value, onChange }: Props) {
             zoom={13}
             minZoom={5}
             scrollWheelZoom={true}
-            className="w-full aspect-video rounded-md border"
+            className="aspect-video w-full rounded-md border"
         >
             {/* OpenStreetMap のタイル（地図タイル画像）を読み込むレイヤー */}
             <TileLayer
@@ -277,7 +270,7 @@ export function LeafletMap({ value, onChange }: Props) {
                     <Popup autoPan={false}>
                         {addressError
                             ? addressError
-                            : address ?? "住所取得中..."}
+                            : (address ?? "住所取得中...")}
                     </Popup>
                 </Marker>
             )}

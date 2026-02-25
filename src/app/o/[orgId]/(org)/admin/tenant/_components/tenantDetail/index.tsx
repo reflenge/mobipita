@@ -112,12 +112,12 @@ const TenantDetail = ({ orgId, tenantId }: TenantDetailProps) => {
                 </div>
                 <CardDescription className="flex flex-wrap items-center gap-2">
                     <Badge variant="secondary">{type}</Badge>
-                    <span className="text-xs text-muted-foreground">
+                    <span className="text-muted-foreground text-xs">
                         /{tenant.tenantSlug}
                     </span>
                 </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-4 text-sm text-muted-foreground">
+            <CardContent className="text-muted-foreground space-y-4 text-sm">
                 <div className="flex items-center justify-between">
                     <span>テナント ID</span>
                     <span className="text-foreground">{tenant._id}</span>

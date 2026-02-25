@@ -36,8 +36,7 @@ export function RescheduleDeadlineInputField({ control }: Props) {
                         aria-invalid={fieldState.invalid}
                     />
                     <FieldDescription>
-                        日時変更（リスケ）できる期限。120 =
-                        開始2時間前まで
+                        日時変更（リスケ）できる期限。120 = 開始2時間前まで
                     </FieldDescription>
                     {fieldState.invalid && (
                         <FieldError errors={[fieldState.error]} />

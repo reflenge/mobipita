@@ -32,10 +32,7 @@ export function TenantTypeField() {
                     <FieldLabel htmlFor={`${FORM_ID}-tenant-type`}>
                         テナント種別
                     </FieldLabel>
-                    <Select
-                        value={field.value}
-                        onValueChange={field.onChange}
-                    >
+                    <Select value={field.value} onValueChange={field.onChange}>
                         <SelectTrigger
                             id={`${FORM_ID}-tenant-type`}
                             aria-invalid={fieldState.invalid}

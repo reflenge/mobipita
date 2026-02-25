@@ -38,16 +38,15 @@ function haversineKm(
     const a =
         Math.sin(dLat / 2) ** 2 +
         Math.cos((lat1 * Math.PI) / 180) *
-        Math.cos((lat2 * Math.PI) / 180) *
-        Math.sin(dLng / 2) ** 2;
+            Math.cos((lat2 * Math.PI) / 180) *
+            Math.sin(dLng / 2) ** 2;
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     return R * c;
 }
 
-function filterByKeyword<T extends { name: string; tenantName: string; semiAddress: string }>(
-    items: T[],
-    keyword: string,
-): T[] {
+function filterByKeyword<
+    T extends { name: string; tenantName: string; semiAddress: string },
+>(items: T[], keyword: string): T[] {
     const q = keyword.trim().toLowerCase();
     if (!q) return items;
     return items.filter(
@@ -61,9 +60,14 @@ function filterByKeyword<T extends { name: string; tenantName: string; semiAddre
 type StoreSearchProps = { orgId: string };
 
 export function StoreSearch({ orgId }: StoreSearchProps) {
-    const [basePoint, setBasePoint] = useState<{ lat: number; lng: number } | null>(null);
+    const [basePoint, setBasePoint] = useState<{
+        lat: number;
+        lng: number;
+    } | null>(null);
     const [keyword, setKeyword] = useState("");
-    const [selectedLocationId, setSelectedLocationId] = useState<string | null>(null);
+    const [selectedLocationId, setSelectedLocationId] = useState<string | null>(
+        null,
+    );
 
     const locations = useQuery(api.locations.listLocationsByOrg, {
         clerkOrgId: orgId,
@@ -73,7 +77,10 @@ export function StoreSearch({ orgId }: StoreSearchProps) {
     const slots = useQuery(
         api.slots.listAvailableByOrg,
         selectedLocationId
-            ? { clerkOrgId: orgId, locationId: selectedLocationId as Id<"Locations"> }
+            ? {
+                  clerkOrgId: orgId,
+                  locationId: selectedLocationId as Id<"Locations">,
+              }
             : "skip",
     );
 
@@ -85,7 +92,7 @@ export function StoreSearch({ orgId }: StoreSearchProps) {
                     lat: pos.coords.latitude,
                     lng: pos.coords.longitude,
                 }),
-            () => { },
+            () => {},
         );
     }, []);
 
@@ -94,7 +101,12 @@ export function StoreSearch({ orgId }: StoreSearchProps) {
         return [...locations]
             .map((loc) => ({
                 ...loc,
-                distanceKm: haversineKm(basePoint.lat, basePoint.lng, loc.lat, loc.lng),
+                distanceKm: haversineKm(
+                    basePoint.lat,
+                    basePoint.lng,
+                    loc.lat,
+                    loc.lng,
+                ),
             }))
             .sort((a, b) => a.distanceKm - b.distanceKm);
     }, [locations, basePoint]);
@@ -127,14 +139,16 @@ export function StoreSearch({ orgId }: StoreSearchProps) {
                         size="sm"
                         onClick={() => setSelectedLocationId(null)}
                     >
-                        <ArrowLeftIcon className="size-4 mr-1" />
+                        <ArrowLeftIcon className="mr-1 size-4" />
                         場所一覧に戻る
                     </Button>
                 </div>
                 <div>
-                    <h1 className="text-xl font-semibold">{loc?.name ?? "選択中"}</h1>
+                    <h1 className="text-xl font-semibold">
+                        {loc?.name ?? "選択中"}
+                    </h1>
                     {loc && (
-                        <p className="text-sm text-muted-foreground mt-0.5">
+                        <p className="text-muted-foreground mt-0.5 text-sm">
                             {loc.tenantName} · {loc.semiAddress}
                         </p>
                     )}
@@ -154,7 +168,7 @@ export function StoreSearch({ orgId }: StoreSearchProps) {
 
             <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
                 <div className="relative flex-1">
-                    <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+                    <Search className="text-muted-foreground absolute top-1/2 left-3 size-4 -translate-y-1/2" />
                     <Input
                         type="search"
                         placeholder="店舗名・テナント名・住所で検索"
@@ -164,7 +178,11 @@ export function StoreSearch({ orgId }: StoreSearchProps) {
                         aria-label="検索"
                     />
                 </div>
-                <Button type="button" onClick={useCurrentLocation} className="shrink-0">
+                <Button
+                    type="button"
+                    onClick={useCurrentLocation}
+                    className="shrink-0"
+                >
                     <LocateFixed className="mr-2 size-4" />
                     現在地から探す
                 </Button>
@@ -173,7 +191,7 @@ export function StoreSearch({ orgId }: StoreSearchProps) {
             <Card>
                 <CardHeader>
                     <CardTitle className="text-base">店舗マップ</CardTitle>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-muted-foreground text-sm">
                         青＝固定店舗、オレンジ＝移動店舗
                     </p>
                 </CardHeader>
@@ -183,10 +201,10 @@ export function StoreSearch({ orgId }: StoreSearchProps) {
                             markers={mapMarkers}
                             center={basePoint ?? undefined}
                             zoom={13}
-                            className="w-full aspect-video"
+                            className="aspect-video w-full"
                         />
                     ) : (
-                        <div className="flex w-full aspect-video items-center justify-center rounded-md border bg-muted text-sm text-muted-foreground">
+                        <div className="bg-muted text-muted-foreground flex aspect-video w-full items-center justify-center rounded-md border text-sm">
                             表示する店舗がありません
                         </div>
                     )}
@@ -199,7 +217,7 @@ export function StoreSearch({ orgId }: StoreSearchProps) {
                         <CardTitle className="text-base">
                             近い順リスト
                             {filteredList && (
-                                <span className="ml-2 font-normal text-muted-foreground">
+                                <span className="text-muted-foreground ml-2 font-normal">
                                     （{filteredList.length}件）
                                 </span>
                             )}
@@ -209,19 +227,26 @@ export function StoreSearch({ orgId }: StoreSearchProps) {
                         {filteredList && filteredList.length > 0 ? (
                             <ul className="space-y-3">
                                 {filteredList.map((loc) => (
-                                    <li key={loc._id} className="rounded-lg border p-3">
-                                        <div className="text-lg font-semibold">{loc.name}</div>
-                                        <div className="mt-0.5 text-sm text-muted-foreground">
+                                    <li
+                                        key={loc._id}
+                                        className="rounded-lg border p-3"
+                                    >
+                                        <div className="text-lg font-semibold">
+                                            {loc.name}
+                                        </div>
+                                        <div className="text-muted-foreground mt-0.5 text-sm">
                                             {loc.tenantName}
                                         </div>
-                                        <div className="mt-1 text-sm text-muted-foreground">
+                                        <div className="text-muted-foreground mt-1 text-sm">
                                             {loc.semiAddress}
                                         </div>
                                         <div className="mt-1 flex items-center justify-between">
-                                            <span className="text-xs text-muted-foreground">
-                                                {loc.type === "fixed" ? "固定店舗" : "移動店舗"}
+                                            <span className="text-muted-foreground text-xs">
+                                                {loc.type === "fixed"
+                                                    ? "固定店舗"
+                                                    : "移動店舗"}
                                                 {" · "}
-                                                <span className="font-medium text-foreground">
+                                                <span className="text-foreground font-medium">
                                                     {loc.distanceKm < 1
                                                         ? `${(loc.distanceKm * 1000).toFixed(0)} m`
                                                         : `${loc.distanceKm.toFixed(2)} km`}
@@ -230,9 +255,13 @@ export function StoreSearch({ orgId }: StoreSearchProps) {
                                             <Button
                                                 size="sm"
                                                 variant="outline"
-                                                onClick={() => setSelectedLocationId(loc._id)}
+                                                onClick={() =>
+                                                    setSelectedLocationId(
+                                                        loc._id,
+                                                    )
+                                                }
                                             >
-                                                <CalendarPlus className="size-3.5 mr-1" />
+                                                <CalendarPlus className="mr-1 size-3.5" />
                                                 予約枠を見る
                                             </Button>
                                         </div>
@@ -240,7 +269,7 @@ export function StoreSearch({ orgId }: StoreSearchProps) {
                                 ))}
                             </ul>
                         ) : (
-                            <p className="text-sm text-muted-foreground">
+                            <p className="text-muted-foreground text-sm">
                                 {keyword.trim()
                                     ? "検索条件に一致する店舗はありません"
                                     : "該当する店舗はありません"}
@@ -251,13 +280,13 @@ export function StoreSearch({ orgId }: StoreSearchProps) {
             )}
 
             {!basePoint && (
-                <p className="text-sm text-muted-foreground">
+                <p className="text-muted-foreground text-sm">
                     「現在地から探す」を押すと、近い順の店舗一覧が表示されます。
                 </p>
             )}
 
             {locations && locations.length === 0 && (
-                <p className="text-sm text-muted-foreground">
+                <p className="text-muted-foreground text-sm">
                     この組織に登録されている店舗はありません。
                 </p>
             )}

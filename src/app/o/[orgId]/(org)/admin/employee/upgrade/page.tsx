@@ -25,8 +25,7 @@ import OrganizationProfileImage from "../_components/_assets/OrganizationProfile
 const STEPS = [
     {
         title: "組織を選択する",
-        description:
-            "以下の組織切り替えから、対象の組織を選んでください。",
+        description: "以下の組織切り替えから、対象の組織を選んでください。",
     },
     {
         title: "「組織の管理」を開く",
@@ -47,7 +46,7 @@ const STEPS = [
 
 export default function UpgradePage() {
     return (
-        <div className="mx-auto container flex flex-col gap-10 px-6 py-10">
+        <div className="container mx-auto flex flex-col gap-10 px-6 py-10">
             {/* ヘッダー */}
             <section className="space-y-4">
                 <h1 className="text-2xl font-semibold tracking-tight">
@@ -73,7 +72,7 @@ export default function UpgradePage() {
                 <Card className="border-dashed opacity-60">
                     <CardHeader className="gap-1 pb-3">
                         <CardTitle className="flex items-center gap-2 text-base">
-                            <UserX className="size-4 text-muted-foreground" />
+                            <UserX className="text-muted-foreground size-4" />
                             Customer
                         </CardTitle>
                     </CardHeader>
@@ -111,7 +110,7 @@ export default function UpgradePage() {
             <section className="space-y-6">
                 <h2 className="text-lg font-semibold">昇格の手順</h2>
 
-                <ol className="relative space-y-6 border-l-2 border-muted pl-8">
+                <ol className="border-muted relative space-y-6 border-l-2 pl-8">
                     {/* Step 1 */}
                     <li className="relative">
                         <StepNumber n={1} />
@@ -164,7 +163,7 @@ export default function UpgradePage() {
                                     alt="組織切り替えと「組織の管理」ボタンの位置"
                                     width={400}
                                     height={200}
-                                    className="rounded-md border bg-muted/30"
+                                    className="bg-muted/30 rounded-md border"
                                 />
                             </CardContent>
                         </Card>
@@ -188,7 +187,7 @@ export default function UpgradePage() {
                                     alt="組織管理画面の「メンバー」タブの位置"
                                     width={400}
                                     height={200}
-                                    className="rounded-md border bg-muted/30"
+                                    className="bg-muted/30 rounded-md border"
                                 />
                             </CardContent>
                         </Card>
@@ -214,7 +213,7 @@ export default function UpgradePage() {
                                     >
                                         Customer
                                     </Badge>
-                                    <ChevronRight className="size-4 text-muted-foreground" />
+                                    <ChevronRight className="text-muted-foreground size-4" />
                                     <Badge variant="secondary">Member</Badge>
                                     <span className="text-muted-foreground">
                                         または
@@ -248,7 +247,7 @@ export default function UpgradePage() {
                         </strong>
                         でメンバーをテナントに割り当ててください。
                     </p>
-                    <ArrowRight className="size-4 text-muted-foreground" />
+                    <ArrowRight className="text-muted-foreground size-4" />
                 </CardContent>
             </Card>
         </div>
@@ -257,7 +256,7 @@ export default function UpgradePage() {
 
 function StepNumber({ n }: { n: number }) {
     return (
-        <span className="absolute -left-[calc(2rem+1px)] flex size-8 items-center justify-center rounded-full border-2 border-primary bg-background text-sm font-bold text-primary">
+        <span className="border-primary bg-background text-primary absolute -left-[calc(2rem+1px)] flex size-8 items-center justify-center rounded-full border-2 text-sm font-bold">
             {n}
         </span>
     );

@@ -33,7 +33,7 @@ export function QuestionLabelField({ control, index }: Props) {
                         onBlur={field.onBlur}
                         id={`form-slot-question-label-${index}`}
                         aria-invalid={fieldState.invalid}
-                        className="min-h-24 max-h-48 overflow-y-auto w-full"
+                        className="max-h-48 min-h-24 w-full overflow-y-auto"
                     />
                     {fieldState.invalid && (
                         <FieldError errors={[fieldState.error]} />

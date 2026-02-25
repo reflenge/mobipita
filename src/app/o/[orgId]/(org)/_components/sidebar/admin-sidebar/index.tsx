@@ -1,34 +1,16 @@
 import { Link } from "@/components/link";
 import {
-    Sidebar,
-    SidebarContent,
-    SidebarFooter,
     SidebarGroup,
-    SidebarGroupAction,
     SidebarGroupContent,
     SidebarGroupLabel,
-    SidebarHeader,
-    SidebarInput,
-    SidebarInset,
     SidebarMenu,
-    SidebarMenuAction,
-    SidebarMenuBadge,
     SidebarMenuButton,
     SidebarMenuItem,
-    SidebarMenuSkeleton,
     SidebarMenuSub,
     SidebarMenuSubButton,
     SidebarMenuSubItem,
-    SidebarProvider,
-    SidebarRail,
     SidebarSeparator,
-    useSidebar,
 } from "@/components/ui/sidebar";
-import {
-    Collapsible,
-    CollapsibleContent,
-    CollapsibleTrigger,
-} from "@/components/ui/collapsible";
 import {
     ShieldUser,
     Store,

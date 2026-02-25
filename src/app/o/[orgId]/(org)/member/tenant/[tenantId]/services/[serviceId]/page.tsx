@@ -8,11 +8,11 @@ type PageProps = {
 export default async function ServiceDetailPage({ params }: PageProps) {
     const { orgId, tenantId, serviceId } = await params;
     return (
-        <div className="mx-auto container px-6 py-10 space-y-6">
+        <div className="container mx-auto space-y-6 px-6 py-10">
             <div className="flex items-center gap-4">
                 <Link
                     href={`/o/${orgId}/member/tenant/${tenantId}/services`}
-                    className="text-sm text-muted-foreground hover:text-foreground"
+                    className="text-muted-foreground hover:text-foreground text-sm"
                 >
                     ← サービス一覧
                 </Link>

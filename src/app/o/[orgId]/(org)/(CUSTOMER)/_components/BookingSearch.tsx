@@ -56,10 +56,10 @@ const SEARCH_ROUTES = [
 
 export function BookingSearch({ orgId }: Props) {
     return (
-        <div className="mx-auto max-w-2xl py-10 px-6 space-y-6">
+        <div className="mx-auto max-w-2xl space-y-6 px-6 py-10">
             <div>
                 <h1 className="text-2xl font-semibold">予約</h1>
-                <p className="text-sm text-muted-foreground mt-1">
+                <p className="text-muted-foreground mt-1 text-sm">
                     検索方法を選んで、予約枠を探しましょう
                 </p>
             </div>
@@ -73,20 +73,24 @@ export function BookingSearch({ orgId }: Props) {
                             href={route.href(orgId)}
                             className="block"
                         >
-                            <Card className="transition-all hover:shadow-md hover:border-foreground/20 group">
-                                <CardContent className="flex items-center gap-4 py-5 px-5">
-                                    <div className={`rounded-xl p-3 ${route.bg}`}>
-                                        <Icon className={`size-6 ${route.color}`} />
+                            <Card className="hover:border-foreground/20 group transition-all hover:shadow-md">
+                                <CardContent className="flex items-center gap-4 px-5 py-5">
+                                    <div
+                                        className={`rounded-xl p-3 ${route.bg}`}
+                                    >
+                                        <Icon
+                                            className={`size-6 ${route.color}`}
+                                        />
                                     </div>
-                                    <div className="flex-1 min-w-0">
-                                        <div className="font-semibold text-base">
+                                    <div className="min-w-0 flex-1">
+                                        <div className="text-base font-semibold">
                                             {route.title}
                                         </div>
-                                        <div className="text-sm text-muted-foreground mt-0.5">
+                                        <div className="text-muted-foreground mt-0.5 text-sm">
                                             {route.description}
                                         </div>
                                     </div>
-                                    <ChevronRightIcon className="size-5 text-muted-foreground group-hover:text-foreground transition-colors shrink-0" />
+                                    <ChevronRightIcon className="text-muted-foreground group-hover:text-foreground size-5 shrink-0 transition-colors" />
                                 </CardContent>
                             </Card>
                         </Link>

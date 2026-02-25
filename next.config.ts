@@ -16,7 +16,7 @@ const nextConfig: NextConfig = {
     compiler: {
         // コンソールログを削除（本番のみ）
         removeConsole: process.env.NODE_ENV === "production",
-    }
+    },
 };
 
 export default nextConfig;

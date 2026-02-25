@@ -6,7 +6,5 @@ type PageProps = {
 
 export default async function MemberSlotCreatePage({ params }: PageProps) {
     const { orgId, tenantId } = await params;
-    return (
-        <CreateService orgId={orgId} tenantId={tenantId} />
-    );
+    return <CreateService orgId={orgId} tenantId={tenantId} />;
 }

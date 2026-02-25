@@ -32,10 +32,7 @@ export function TenantStoreTypeField() {
                     <FieldLabel htmlFor={`${FORM_ID}-store-type`}>
                         店舗形態
                     </FieldLabel>
-                    <Select
-                        value={field.value}
-                        onValueChange={field.onChange}
-                    >
+                    <Select value={field.value} onValueChange={field.onChange}>
                         <SelectTrigger
                             id={`${FORM_ID}-store-type`}
                             aria-invalid={fieldState.invalid}

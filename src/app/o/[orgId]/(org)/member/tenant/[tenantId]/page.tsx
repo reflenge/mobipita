@@ -6,7 +6,5 @@ type PageProps = {
 
 export default async function MemberTenantPage({ params }: PageProps) {
     const { orgId, tenantId } = await params;
-    return (
-        <MemberTenantContent orgId={orgId} tenantId={tenantId} />
-    );
+    return <MemberTenantContent orgId={orgId} tenantId={tenantId} />;
 }

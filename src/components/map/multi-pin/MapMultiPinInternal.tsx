@@ -15,7 +15,7 @@ type Props = {
     className: string;
 };
 
-function createDivIcon(color: string, _label: string): L.DivIcon {
+function createDivIcon(color: string): L.DivIcon {
     return L.divIcon({
         className: "custom-pin",
         html: `<div style="
@@ -69,15 +69,15 @@ export function MapMultiPinInternal({
             L.DivIcon
         >;
         (["fixed", "mobile"] as const).forEach((type) => {
-            cache[type] = createDivIcon(pinColors[type], pinLabels[type]);
+            cache[type] = createDivIcon(pinColors[type]);
         });
         return cache;
-    }, [pinColors, pinLabels]);
+    }, [pinColors]);
 
     if (markers.length === 0) {
         return (
             <div
-                className={`flex h-64 items-center justify-center rounded-md border bg-muted text-sm text-muted-foreground ${className}`}
+                className={`bg-muted text-muted-foreground flex h-64 items-center justify-center rounded-md border text-sm ${className}`}
             >
                 表示する場所がありません
             </div>
@@ -90,7 +90,7 @@ export function MapMultiPinInternal({
             zoom={zoom}
             minZoom={5}
             scrollWheelZoom
-            className={`w-full aspect-video rounded-md border ${className}`}
+            className={`aspect-video w-full rounded-md border ${className}`}
         >
             <TileLayer
                 attribution='<a href="https://maps.gsi.go.jp/development/ichiran.html" target="_blank" rel="noopener noreferrer">地理院タイル</a>'
@@ -110,7 +110,7 @@ export function MapMultiPinInternal({
                             {m.name ?? pinLabels[m.type]}
                         </span>
                         {m.name && (
-                            <span className="ml-1 text-muted-foreground text-xs">
+                            <span className="text-muted-foreground ml-1 text-xs">
                                 ({pinLabels[m.type]})
                             </span>
                         )}

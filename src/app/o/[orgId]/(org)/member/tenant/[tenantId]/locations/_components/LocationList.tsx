@@ -72,7 +72,7 @@ export function LocationList({ orgId, tenantId }: LocationListProps) {
                 return (
                     <Card
                         key={location._id}
-                        className="transition hover:border-primary/50 hover:shadow-md"
+                        className="hover:border-primary/50 transition hover:shadow-md"
                     >
                         <CardHeader className="gap-3">
                             <div className="flex items-center justify-between gap-3">
@@ -90,16 +90,16 @@ export function LocationList({ orgId, tenantId }: LocationListProps) {
                                 {location.semiAddress}
                             </CardDescription>
                         </CardHeader>
-                        <CardContent className="space-y-2 text-sm text-muted-foreground">
+                        <CardContent className="text-muted-foreground space-y-2 text-sm">
                             <div className="flex items-center justify-between">
                                 <span>緯度</span>
-                                <span className="font-mono text-foreground">
+                                <span className="text-foreground font-mono">
                                     {location.lat}
                                 </span>
                             </div>
                             <div className="flex items-center justify-between">
                                 <span>経度</span>
-                                <span className="font-mono text-foreground">
+                                <span className="text-foreground font-mono">
                                     {location.lng}
                                 </span>
                             </div>
@@ -107,18 +107,21 @@ export function LocationList({ orgId, tenantId }: LocationListProps) {
                                 href={mapsUrl}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="block pt-2 text-primary underline hover:no-underline"
+                                className="text-primary block pt-2 underline hover:no-underline"
                             >
                                 Google Mapsで開く
                             </a>
                             {location.details && (
-                                <div className="pt-2 text-muted-foreground">
-                                    <TiptapViewer content={location.details} lines={2} />
+                                <div className="text-muted-foreground pt-2">
+                                    <TiptapViewer
+                                        content={location.details}
+                                        lines={2}
+                                    />
                                 </div>
                             )}
                             <Link
                                 href={detailHref}
-                                className="inline-block pt-2 text-primary text-sm font-medium hover:underline"
+                                className="text-primary inline-block pt-2 text-sm font-medium hover:underline"
                             >
                                 詳細を見る →
                             </Link>

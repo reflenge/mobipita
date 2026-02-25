@@ -14,12 +14,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Link } from "@/components/link";
-import {
-    CalendarIcon,
-    ClockIcon,
-    MapPinIcon,
-    UsersIcon,
-} from "lucide-react";
+import { CalendarIcon, ClockIcon, MapPinIcon, UsersIcon } from "lucide-react";
 
 export type SlotResult = {
     _id: string;
@@ -85,7 +80,7 @@ export function SlotResultList({
 
     if (slots === undefined) {
         return (
-            <div className="flex h-32 items-center justify-center rounded-md border bg-muted text-sm text-muted-foreground">
+            <div className="bg-muted text-muted-foreground flex h-32 items-center justify-center rounded-md border text-sm">
                 読み込み中...
             </div>
         );
@@ -94,7 +89,7 @@ export function SlotResultList({
     if (grouped.length === 0) {
         return (
             <Card>
-                <CardContent className="py-8 text-center text-muted-foreground">
+                <CardContent className="text-muted-foreground py-8 text-center">
                     {emptyMessage}
                 </CardContent>
             </Card>
@@ -109,7 +104,7 @@ export function SlotResultList({
                     <Card key={dateStr.slice(0, 10)}>
                         <CardHeader className="pb-3">
                             <CardTitle className="flex items-center gap-2 text-base">
-                                <CalendarIcon className="size-4 text-muted-foreground" />
+                                <CalendarIcon className="text-muted-foreground size-4" />
                                 {formatDate(dateStr)}
                             </CardTitle>
                         </CardHeader>
@@ -118,35 +113,42 @@ export function SlotResultList({
                                 <div key={slot._id}>
                                     {i > 0 && <Separator className="my-2" />}
                                     <div className="flex items-center justify-between gap-3">
-                                        <div className="space-y-1 min-w-0 flex-1">
+                                        <div className="min-w-0 flex-1 space-y-1">
                                             <div className="flex items-center gap-2 text-sm font-medium">
-                                                <ClockIcon className="size-3.5 text-muted-foreground shrink-0" />
-                                                {formatTime(slot.startAt)} 〜 {formatTime(slot.endAt)}
+                                                <ClockIcon className="text-muted-foreground size-3.5 shrink-0" />
+                                                {formatTime(slot.startAt)} 〜{" "}
+                                                {formatTime(slot.endAt)}
                                             </div>
-                                            <div className="text-sm text-muted-foreground truncate">
+                                            <div className="text-muted-foreground truncate text-sm">
                                                 {slot.serviceName}
                                                 <span className="mx-1">·</span>
                                                 {slot.tenantName}
                                             </div>
-                                            <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                                            <div className="text-muted-foreground flex items-center gap-3 text-xs">
                                                 <span className="flex items-center gap-1">
                                                     <MapPinIcon className="size-3" />
                                                     {slot.locationName}
                                                 </span>
                                                 <span className="flex items-center gap-1">
                                                     <UsersIcon className="size-3" />
-                                                    残り {slot.remaining}/{slot.capacity}
+                                                    残り {slot.remaining}/
+                                                    {slot.capacity}
                                                 </span>
                                             </div>
                                         </div>
-                                        <div className="shrink-0 flex items-center gap-2">
+                                        <div className="flex shrink-0 items-center gap-2">
                                             {slot.remaining <= 2 && (
-                                                <Badge variant="destructive" className="text-[10px]">
+                                                <Badge
+                                                    variant="destructive"
+                                                    className="text-[10px]"
+                                                >
                                                     残りわずか
                                                 </Badge>
                                             )}
                                             <Button asChild size="sm">
-                                                <Link href={`/o/${orgId}/tenant/${slot.tenantId}/book/${slot._id}`}>
+                                                <Link
+                                                    href={`/o/${orgId}/tenant/${slot.tenantId}/book/${slot._id}`}
+                                                >
                                                     予約する
                                                 </Link>
                                             </Button>

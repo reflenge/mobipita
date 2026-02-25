@@ -13,8 +13,7 @@ type ClerkAuthContext = {
 /**
  * 認証失敗時のデフォルトメッセージ。
  */
-const defaultAuthErrorMessage =
-    "認証されていないため、操作できません。";
+const defaultAuthErrorMessage = "認証されていないため、操作できません。";
 /**
  * userId を取り出せないときのデフォルトメッセージ。
  */

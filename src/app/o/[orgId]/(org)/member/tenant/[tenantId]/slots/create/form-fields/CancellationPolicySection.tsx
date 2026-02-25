@@ -1,9 +1,6 @@
 "use client";
 
-import {
-    FieldDescription,
-    FieldLabel,
-} from "@/components/ui/field";
+import { FieldDescription, FieldLabel } from "@/components/ui/field";
 import { CancelDeadlineInputField } from "./CancelDeadlineInputField";
 import { RescheduleDeadlineInputField } from "./RescheduleDeadlineInputField";
 import { AllowCustomerCancelField } from "./AllowCustomerCancelField";

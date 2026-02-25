@@ -230,7 +230,7 @@ export function ServiceDetail({
                                             onBlur={field.onBlur}
                                             maxLength={1000}
                                             aria-invalid={fieldState.invalid}
-                                            className="min-h-48 max-h-96 overflow-y-auto w-full"
+                                            className="max-h-96 min-h-48 w-full overflow-y-auto"
                                         />
                                         <FieldDescription>
                                             装飾込みのHTMLで20文字以上1000文字以内で入力してください。
@@ -298,15 +298,13 @@ export function ServiceDetail({
     return (
         <Card>
             <CardHeader className="gap-3">
-                <div className="flex items-center justify-between gap-3 flex-wrap">
-                    <div className="flex items-center gap-3 flex-wrap">
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                    <div className="flex flex-wrap items-center gap-3">
                         <CardTitle className="text-2xl">
                             {service.title}
                         </CardTitle>
                         <Badge
-                            variant={
-                                service.isActive ? "default" : "secondary"
-                            }
+                            variant={service.isActive ? "default" : "secondary"}
                         >
                             {service.isActive ? "有効" : "無効"}
                         </Badge>
@@ -335,7 +333,7 @@ export function ServiceDetail({
             </CardHeader>
             <CardContent className="space-y-4">
                 <div>
-                    <h3 className="text-sm font-medium text-muted-foreground mb-2">
+                    <h3 className="text-muted-foreground mb-2 text-sm font-medium">
                         説明
                     </h3>
                     <TiptapViewer content={service.description} />

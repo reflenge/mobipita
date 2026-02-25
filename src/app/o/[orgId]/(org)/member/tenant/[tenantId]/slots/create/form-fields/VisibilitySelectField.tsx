@@ -28,9 +28,7 @@ export function VisibilitySelectField({ control }: Props) {
             control={control}
             render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel htmlFor="form-slot-visibility">
-                        表示
-                    </FieldLabel>
+                    <FieldLabel htmlFor="form-slot-visibility">表示</FieldLabel>
                     <Select value={field.value} onValueChange={field.onChange}>
                         <SelectTrigger
                             id="form-slot-visibility"
@@ -47,9 +45,8 @@ export function VisibilitySelectField({ control }: Props) {
                         </SelectContent>
                     </Select>
                     <FieldDescription>
-                        公開=一覧に表示 /
-                        非公開リスト=リンクを知っている人のみ /
-                        非公開=一覧に表示しない
+                        公開=一覧に表示 / 非公開リスト=リンクを知っている人のみ
+                        / 非公開=一覧に表示しない
                     </FieldDescription>
                     {fieldState.invalid && (
                         <FieldError errors={[fieldState.error]} />

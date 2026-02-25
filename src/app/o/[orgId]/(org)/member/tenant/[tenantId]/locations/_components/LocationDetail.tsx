@@ -56,9 +56,7 @@ const formSchema = z.object({
             .string()
             .min(1, "場所名を入力してください")
             .max(100, "場所名は100文字以内で入力してください"),
-        autoAddress: z
-            .string()
-            .max(255, "住所は255文字以内で入力してください"),
+        autoAddress: z.string().max(255, "住所は255文字以内で入力してください"),
         semiAddress: z
             .string()
             .min(1, "住所を入力してください")
@@ -157,7 +155,7 @@ export function LocationDetail({
                         shouldValidate: true,
                     });
                 })
-                .catch(() => { });
+                .catch(() => {});
         },
         [form],
     );
@@ -284,7 +282,9 @@ export function LocationDetail({
                                             onValueChange={field.onChange}
                                         >
                                             <SelectTrigger
-                                                aria-invalid={fieldState.invalid}
+                                                aria-invalid={
+                                                    fieldState.invalid
+                                                }
                                                 className="w-full max-w-xs"
                                             >
                                                 <SelectValue placeholder="種別を選択" />
@@ -311,7 +311,9 @@ export function LocationDetail({
                                 control={form.control}
                                 render={({ field, fieldState }) => (
                                     <Field data-invalid={fieldState.invalid}>
-                                        <FieldLabel>店舗名（場所名）</FieldLabel>
+                                        <FieldLabel>
+                                            店舗名（場所名）
+                                        </FieldLabel>
                                         <Input
                                             {...field}
                                             aria-invalid={fieldState.invalid}
@@ -331,7 +333,9 @@ export function LocationDetail({
                                 control={form.control}
                                 render={({ field, fieldState }) => (
                                     <Field data-invalid={fieldState.invalid}>
-                                        <FieldLabel>住所（自動取得）</FieldLabel>
+                                        <FieldLabel>
+                                            住所（自動取得）
+                                        </FieldLabel>
                                         <Input
                                             value={field.value}
                                             readOnly
@@ -369,7 +373,7 @@ export function LocationDetail({
                             />
                             <Field>
                                 <FieldLabel>地図で位置を選択</FieldLabel>
-                                <p className="text-sm text-muted-foreground mb-2">
+                                <p className="text-muted-foreground mb-2 text-sm">
                                     地図をクリックすると座標が設定され、住所が自動で入ります。
                                 </p>
                                 <MapPinLocateSelectProvider
@@ -426,8 +430,8 @@ export function LocationDetail({
     return (
         <Card>
             <CardHeader className="gap-3">
-                <div className="flex items-center justify-between gap-3 flex-wrap">
-                    <div className="flex items-center gap-3 flex-wrap">
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                    <div className="flex flex-wrap items-center gap-3">
                         <CardTitle className="text-2xl">
                             {location.name}
                         </CardTitle>
@@ -458,7 +462,7 @@ export function LocationDetail({
             </CardHeader>
             <CardContent className="space-y-4">
                 <div>
-                    <h3 className="text-sm font-medium text-muted-foreground mb-2">
+                    <h3 className="text-muted-foreground mb-2 text-sm font-medium">
                         地図
                     </h3>
                     <MapSinglePin
@@ -477,12 +481,12 @@ export function LocationDetail({
                     href={mapsUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="block text-primary underline hover:no-underline text-sm"
+                    className="text-primary block text-sm underline hover:no-underline"
                 >
                     Google Mapsで開く
                 </a>
                 {location.details && (
-                    <div className="text-muted-foreground pt-2 border-t">
+                    <div className="text-muted-foreground border-t pt-2">
                         <TiptapViewer content={location.details} />
                     </div>
                 )}

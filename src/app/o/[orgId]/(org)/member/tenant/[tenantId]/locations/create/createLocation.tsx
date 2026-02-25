@@ -36,15 +36,21 @@ const formSchema = z.object({
     locations: z.object({
         tenantId: z.string(),
         type: z.enum(["fixed", "mobile"]),
-        name: z.string().min(1, "場所名を入力してください").max(100, "場所名は100文字以内で入力してください"),
+        name: z
+            .string()
+            .min(1, "場所名を入力してください")
+            .max(100, "場所名は100文字以内で入力してください"),
         autoAddress: z.string().max(255, "住所は255文字以内で入力してください"),
-        semiAddress: z.string().min(1, "住所を入力してください").max(255, "住所は255文字以内で入力してください"),
+        semiAddress: z
+            .string()
+            .min(1, "住所を入力してください")
+            .max(255, "住所は255文字以内で入力してください"),
         geo: z.object({
             lat: z.number(),
             lng: z.number(),
         }),
         details: z.string().max(1000, "詳細は1000文字以内で入力してください"),
-    })
+    }),
 });
 
 const DEFAULT_GEO = { lat: 35.6812, lng: 139.7671 } as const; // 東京
@@ -93,7 +99,7 @@ export function CreateLocation({ orgId, tenantId }: Props) {
                 })
                 .catch(() => {});
         },
-        [form]
+        [form],
     );
 
     function onSubmit(data: z.infer<typeof formSchema>) {
@@ -113,7 +119,9 @@ export function CreateLocation({ orgId, tenantId }: Props) {
                 router.push(`/o/${orgId}/member/tenant/${tenantId}/locations`);
             } catch (error) {
                 toast.error(
-                    error instanceof Error ? error.message : "場所の作成に失敗しました"
+                    error instanceof Error
+                        ? error.message
+                        : "場所の作成に失敗しました",
                 );
             }
         });
@@ -124,10 +132,10 @@ export function CreateLocation({ orgId, tenantId }: Props) {
     }
 
     return (
-        <div className="mx-auto container px-6 py-10 space-y-6">
+        <div className="container mx-auto space-y-6 px-6 py-10">
             <div>
                 <div className="text-xl">場所作成</div>
-                <p className="text-sm text-muted-foreground">
+                <p className="text-muted-foreground text-sm">
                     {tenant.tenantName} {tenant._id} の場所を新規作成します
                 </p>
             </div>
@@ -253,7 +261,7 @@ export function CreateLocation({ orgId, tenantId }: Props) {
                     {/* 地図で座標（geo）を選択 */}
                     <Field>
                         <FieldLabel>地図で位置を選択</FieldLabel>
-                        <p className="text-sm text-muted-foreground mb-2">
+                        <p className="text-muted-foreground mb-2 text-sm">
                             地図をクリックすると座標が設定され、住所が自動で入ります。
                         </p>
                         <MapPinLocateSelectProvider
@@ -280,7 +288,7 @@ export function CreateLocation({ orgId, tenantId }: Props) {
                                     maxLength={1000}
                                     id="form-location-create-details"
                                     aria-invalid={fieldState.invalid}
-                                    className="min-h-32 max-h-96 overflow-y-auto w-full"
+                                    className="max-h-96 min-h-32 w-full overflow-y-auto"
                                 />
                                 {fieldState.invalid && (
                                     <FieldError errors={[fieldState.error]} />

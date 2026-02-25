@@ -1,25 +1,8 @@
-import { OrganizationProfile, OrganizationSwitcher } from "@clerk/nextjs";
-import { clerkClient } from "@clerk/nextjs/server";
+import { OrganizationSwitcher } from "@clerk/nextjs";
 
-type OrganizationPageProps = {
-    params: Promise<{
-        orgId: string;
-    }>;
-};
-
-export default async function OrganizationPage({
-    params,
-}: OrganizationPageProps) {
-    const { orgId } = await params;
-    const client = await clerkClient();
-    const organization = await client.organizations
-        .getOrganization({ organizationId: orgId })
-        .catch(() => null);
-    const organizationId = organization?.id ?? orgId;
-    const organizationName = organization?.name ?? "不明";
-
+export default async function OrganizationPage() {
     return (
-        <div className="mx-auto container px-6 py-10">
+        <div className="container mx-auto px-6 py-10">
             <div>admin top page</div>
             <section>
                 <div>組織の管理は このボタンから</div>

@@ -21,7 +21,7 @@ export function MemberTenantContent({ orgId, tenantId }: Props) {
 
     if (tenant === undefined) {
         return (
-            <div className="mx-auto container px-6 py-10">
+            <div className="container mx-auto px-6 py-10">
                 <Card>
                     <CardHeader className="gap-3">
                         <Skeleton className="h-6 w-48" />
@@ -34,7 +34,7 @@ export function MemberTenantContent({ orgId, tenantId }: Props) {
 
     if (!tenant) {
         return (
-            <div className="mx-auto container px-6 py-10">
+            <div className="container mx-auto px-6 py-10">
                 <Card className="border-dashed">
                     <CardHeader>
                         <CardTitle>テナントが見つかりません</CardTitle>
@@ -52,11 +52,13 @@ export function MemberTenantContent({ orgId, tenantId }: Props) {
     }
 
     return (
-        <div className="mx-auto container px-6 py-10">
+        <div className="container mx-auto px-6 py-10">
             <Card>
                 <CardHeader>
-                    <CardTitle className="text-xl">{tenant.tenantName}</CardTitle>
-                    <p className="text-sm text-muted-foreground">
+                    <CardTitle className="text-xl">
+                        {tenant.tenantName}
+                    </CardTitle>
+                    <p className="text-muted-foreground text-sm">
                         /{tenant.tenantSlug}
                     </p>
                 </CardHeader>

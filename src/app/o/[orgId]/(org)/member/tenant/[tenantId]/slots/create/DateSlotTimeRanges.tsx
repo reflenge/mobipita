@@ -22,11 +22,7 @@ import {
 import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
 import { ja as jaDayPicker } from "react-day-picker/locale";
-import {
-    JST_LOCALE,
-    parseDateYYYYMMDD,
-    formatDateJST,
-} from "./dateUtils";
+import { JST_LOCALE, parseDateYYYYMMDD, formatDateJST } from "./dateUtils";
 import type { FormValues, CrossFieldError } from "./schema";
 
 type Location = { _id: string; name: string };
@@ -82,10 +78,13 @@ export function DateSlotTimeRanges({
                 <Controller
                     name={`dateTimeSlots.${dateIndex}.date`}
                     control={control}
-                    render={({ field: dateField, fieldState: dateFieldState }) => {
+                    render={({
+                        field: dateField,
+                        fieldState: dateFieldState,
+                    }) => {
                         const dateObj = parseDateYYYYMMDD(dateField.value);
                         const dateCrossError = crossFieldErrors.find(
-                            (e) => e.path === `dateTimeSlots.${dateIndex}.date`
+                            (e) => e.path === `dateTimeSlots.${dateIndex}.date`,
                         );
                         return (
                             <div className="flex flex-col gap-0.5">
@@ -95,10 +94,16 @@ export function DateSlotTimeRanges({
                                 >
                                     <PopoverTrigger asChild>
                                         <Button
-                                            variant={dateFieldState.invalid || dateCrossError ? "destructive" : "outline"}
+                                            variant={
+                                                dateFieldState.invalid ||
+                                                dateCrossError
+                                                    ? "destructive"
+                                                    : "outline"
+                                            }
                                             className={cn(
                                                 "w-40 justify-between font-normal",
-                                                !dateField.value && "text-muted-foreground"
+                                                !dateField.value &&
+                                                    "text-muted-foreground",
                                             )}
                                             aria-label="日付を選択"
                                         >
@@ -110,14 +115,23 @@ export function DateSlotTimeRanges({
                                             <ChevronDownIcon className="size-4 shrink-0 opacity-50" />
                                         </Button>
                                     </PopoverTrigger>
-                                    <PopoverContent className="w-auto p-0" align="start">
+                                    <PopoverContent
+                                        className="w-auto p-0"
+                                        align="start"
+                                    >
                                         <Calendar
                                             mode="single"
                                             selected={dateObj}
                                             onSelect={(date) => {
                                                 if (date) {
                                                     dateField.onChange(
-                                                        format(date, "yyyy-MM-dd", { locale: JST_LOCALE })
+                                                        format(
+                                                            date,
+                                                            "yyyy-MM-dd",
+                                                            {
+                                                                locale: JST_LOCALE,
+                                                            },
+                                                        ),
                                                     );
                                                     setDatePickerOpen(false);
                                                 }
@@ -128,10 +142,16 @@ export function DateSlotTimeRanges({
                                     </PopoverContent>
                                 </Popover>
                                 {dateFieldState.invalid && (
-                                    <FieldError errors={[dateFieldState.error]} />
+                                    <FieldError
+                                        errors={[dateFieldState.error]}
+                                    />
                                 )}
                                 {!dateFieldState.invalid && dateCrossError && (
-                                    <FieldError errors={[{ message: dateCrossError.message }]} />
+                                    <FieldError
+                                        errors={[
+                                            { message: dateCrossError.message },
+                                        ]}
+                                    />
                                 )}
                             </div>
                         );
@@ -189,7 +209,9 @@ export function DateSlotTimeRanges({
                         control={control}
                         render={({ field: endField, fieldState }) => {
                             const endCrossErrors = crossFieldErrors.filter(
-                                (e) => e.path === `dateTimeSlots.${dateIndex}.timeRanges.${timeIndex}.end`
+                                (e) =>
+                                    e.path ===
+                                    `dateTimeSlots.${dateIndex}.timeRanges.${timeIndex}.end`,
                             );
                             return (
                                 <div className="flex flex-col gap-0.5">
@@ -198,14 +220,26 @@ export function DateSlotTimeRanges({
                                         type="time"
                                         className="w-28"
                                         aria-label="終了時刻"
-                                        aria-invalid={fieldState.invalid || endCrossErrors.length > 0}
+                                        aria-invalid={
+                                            fieldState.invalid ||
+                                            endCrossErrors.length > 0
+                                        }
                                     />
                                     {fieldState.invalid && (
-                                        <FieldError errors={[fieldState.error]} />
+                                        <FieldError
+                                            errors={[fieldState.error]}
+                                        />
                                     )}
-                                    {!fieldState.invalid && endCrossErrors.length > 0 && (
-                                        <FieldError errors={endCrossErrors.map((e) => ({ message: e.message }))} />
-                                    )}
+                                    {!fieldState.invalid &&
+                                        endCrossErrors.length > 0 && (
+                                            <FieldError
+                                                errors={endCrossErrors.map(
+                                                    (e) => ({
+                                                        message: e.message,
+                                                    }),
+                                                )}
+                                            />
+                                        )}
                                 </div>
                             );
                         }}
@@ -216,18 +250,30 @@ export function DateSlotTimeRanges({
                         control={control}
                         render={({ field: locField }) => {
                             const locCrossErrors = crossFieldErrors.filter(
-                                (e) => e.path === `dateTimeSlots.${dateIndex}.timeRanges.${timeIndex}.locationId`
+                                (e) =>
+                                    e.path ===
+                                    `dateTimeSlots.${dateIndex}.timeRanges.${timeIndex}.locationId`,
                             );
                             return (
                                 <div className="flex flex-col gap-0.5">
                                     <Select
                                         value={locField.value || "__default__"}
-                                        onValueChange={(v) => locField.onChange(v === "__default__" ? "" : v)}
+                                        onValueChange={(v) =>
+                                            locField.onChange(
+                                                v === "__default__" ? "" : v,
+                                            )
+                                        }
                                     >
                                         <SelectTrigger
-                                            className={cn("w-36", locCrossErrors.length > 0 && "border-destructive")}
+                                            className={cn(
+                                                "w-36",
+                                                locCrossErrors.length > 0 &&
+                                                    "border-destructive",
+                                            )}
                                             aria-label="場所を選択"
-                                            aria-invalid={locCrossErrors.length > 0}
+                                            aria-invalid={
+                                                locCrossErrors.length > 0
+                                            }
                                         >
                                             <SelectValue placeholder="デフォルト" />
                                         </SelectTrigger>
@@ -236,14 +282,21 @@ export function DateSlotTimeRanges({
                                                 デフォルト
                                             </SelectItem>
                                             {locations.map((loc) => (
-                                                <SelectItem key={loc._id} value={loc._id}>
+                                                <SelectItem
+                                                    key={loc._id}
+                                                    value={loc._id}
+                                                >
                                                     {loc.name}
                                                 </SelectItem>
                                             ))}
                                         </SelectContent>
                                     </Select>
                                     {locCrossErrors.length > 0 && (
-                                        <FieldError errors={locCrossErrors.map((e) => ({ message: e.message }))} />
+                                        <FieldError
+                                            errors={locCrossErrors.map((e) => ({
+                                                message: e.message,
+                                            }))}
+                                        />
                                     )}
                                 </div>
                             );

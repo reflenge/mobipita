@@ -13,12 +13,16 @@ import { type DateClickArg } from "@fullcalendar/interaction";
 import interactionPlugin from "@fullcalendar/interaction";
 import jaLocale from "@fullcalendar/core/locales/ja";
 import { toast } from "sonner";
-import type { EventInput, EventClickArg, EventContentArg } from "@fullcalendar/core";
+import type {
+    EventInput,
+    EventClickArg,
+    EventContentArg,
+} from "@fullcalendar/core";
 
 /** createSlot の useMemo で生成され、カレンダーに渡されるイベント1件の型 */
 export type SlotEvent = {
     title: string;
-    start: string;   // ISO 8601（例: "2026-02-22T09:00:00"）
+    start: string; // ISO 8601（例: "2026-02-22T09:00:00"）
     end: string;
     backgroundColor?: string;
     borderColor?: string;
@@ -44,7 +48,13 @@ const SlotCalender = ({ events = [], tenantId }: SlotCalenderProps) => {
     );
     const existingSlots = useQuery(
         api.slots.listByTenant,
-        tenantId ? { tenantId: tenantId as Id<"Tenants">, limit: 500, from: fromDate } : "skip",
+        tenantId
+            ? {
+                  tenantId: tenantId as Id<"Tenants">,
+                  limit: 500,
+                  from: fromDate,
+              }
+            : "skip",
     );
 
     const existingEvents = useMemo((): EventInput[] => {
@@ -90,7 +100,13 @@ const SlotCalender = ({ events = [], tenantId }: SlotCalenderProps) => {
     };
 
     const formatEventTime = (date: Date | null) =>
-        date ? date.toLocaleTimeString("ja-JP", { hour: "2-digit", minute: "2-digit", hour12: false }) : "";
+        date
+            ? date.toLocaleTimeString("ja-JP", {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                  hour12: false,
+              })
+            : "";
 
     const handleEventClick = (info: EventClickArg) => {
         const ev = info.event;
@@ -98,15 +114,19 @@ const SlotCalender = ({ events = [], tenantId }: SlotCalenderProps) => {
         const timeStr = `${formatEventTime(ev.start)}〜${formatEventTime(ev.end)}`;
 
         if (ext.existing) {
-            const status = STATUS_LABEL[ext.slotStatus as string] ?? ext.slotStatus;
-            const vis = VISIBILITY_LABEL[ext.visibility as string] ?? ext.visibility;
+            const status =
+                STATUS_LABEL[ext.slotStatus as string] ?? ext.slotStatus;
+            const vis =
+                VISIBILITY_LABEL[ext.visibility as string] ?? ext.visibility;
             toast.info(`📋 保存済み枠`, {
                 description: [
                     `${ev.title}`,
                     `${timeStr}`,
                     ext.locationName && `📍 ${ext.locationName}`,
                     `定員 ${ext.capacity}名 ／ ${status} ／ ${vis}`,
-                ].filter(Boolean).join("\n"),
+                ]
+                    .filter(Boolean)
+                    .join("\n"),
                 duration: 4000,
             });
         } else {
@@ -114,22 +134,30 @@ const SlotCalender = ({ events = [], tenantId }: SlotCalenderProps) => {
                 description: [
                     timeStr,
                     ext.locationName && `📍 ${ext.locationName}`,
-                ].filter(Boolean).join("\n"),
+                ]
+                    .filter(Boolean)
+                    .join("\n"),
                 duration: 3000,
             });
         }
     };
 
     const renderEventContent = (arg: EventContentArg) => {
-        const isExisting = arg.event.extendedProps?.existing as boolean | undefined;
-        const locName = arg.event.extendedProps?.locationName as string | undefined;
+        const isExisting = arg.event.extendedProps?.existing as
+            | boolean
+            | undefined;
+        const locName = arg.event.extendedProps?.locationName as
+            | string
+            | undefined;
 
         if (isExisting) {
             return (
                 <div className="overflow-hidden px-0.5 leading-tight opacity-50">
-                    <div className="text-[10px] font-medium">{arg.event.title}</div>
+                    <div className="text-[10px] font-medium">
+                        {arg.event.title}
+                    </div>
                     {locName && (
-                        <div className="text-[9px] truncate">{locName}</div>
+                        <div className="truncate text-[9px]">{locName}</div>
                     )}
                 </div>
             );
@@ -139,7 +167,9 @@ const SlotCalender = ({ events = [], tenantId }: SlotCalenderProps) => {
             <div className="overflow-hidden px-0.5 leading-tight">
                 <div className="font-medium">{arg.event.title}</div>
                 {locName && (
-                    <div className="text-[10px] opacity-80 truncate">{locName}</div>
+                    <div className="truncate text-[10px] opacity-80">
+                        {locName}
+                    </div>
                 )}
             </div>
         );
