@@ -6,6 +6,9 @@ import {
     tenantType,
     tenantStatus,
     storeType,
+    slotStatus,
+    slotVisibility,
+    bookingStatus,
 } from "./values";
 
 export default defineSchema({
@@ -89,4 +92,87 @@ export default defineSchema({
         .index("by_org", ["clerkOrgId"])
         // 同一テナント・同一ユーザーの重複を防ぐ。
         .index("by_tenant_user", ["tenantId", "clerkUserId"]),
+    // テナントの場所（店舗・拠点）。
+    Locations: defineTable({
+        // 所属テナント。
+        tenantId: v.id("Tenants"),
+        // 種別（固定店舗 / 移動店舗）。
+        type: storeType,
+        // 場所名。
+        name: v.string(),
+        // 住所（地図クリックによる自動取得、編集不可）。
+        autoAddress: v.string(),
+        // 住所（ユーザー手入力の正式住所）。
+        semiAddress: v.string(),
+        // 緯度。
+        lat: v.number(),
+        // 経度。
+        lng: v.number(),
+        // 詳細・備考。
+        details: v.string(),
+    })
+        .index("by_tenant", ["tenantId"]),
+    // 予約枠。日時ごとに1レコード。テンプレ内容は policySnapshot（JSON 文字列）に固定。
+    Slots: defineTable({
+        // 所属テナント。
+        tenantId: v.id("Tenants"),
+        // 紐づくサービス。
+        serviceId: v.id("Services"),
+        // 紐づく場所。
+        locationId: v.id("Locations"),
+        // 枠の開始日時（ISO 8601）。
+        startAt: v.string(),
+        // 枠の終了日時（ISO 8601）。
+        endAt: v.string(),
+        // 受付状態。
+        slotStatus: slotStatus,
+        // 公開範囲。
+        visibility: slotVisibility,
+        // 同時予約可能数。
+        capacity: v.number(),
+        // 作成者の Clerk userId。
+        createdByUserId: v.string(),
+        // テンプレ全項目のスナップショット（JSON.stringify）。
+        // スキーマを緻密に定義せず柔軟に保持する。
+        policySnapshot: v.string(),
+        // 場所のスナップショット（JSON.stringify）。
+        locationSnapshot: v.string(),
+    })
+        .index("by_tenant", ["tenantId"])
+        .index("by_tenant_service", ["tenantId", "serviceId"])
+        .index("by_tenant_startAt", ["tenantId", "startAt"]),
+    // 顧客の予約。slotId に紐づき、capacity の範囲内で成立する。
+    Bookings: defineTable({
+        // 所属テナント。
+        tenantId: v.id("Tenants"),
+        // 紐づく予約枠。
+        slotId: v.id("Slots"),
+        // 予約ステータス。
+        status: bookingStatus,
+        // 予約者の Clerk userId。
+        clerkUserId: v.string(),
+        // フォーム回答（JSON.stringify of Record<string, string>）。
+        answers: v.string(),
+        // キャンセルポリシーのスナップショット（JSON.stringify）。
+        policySnapshot: v.string(),
+    })
+        .index("by_slot", ["slotId"])
+        .index("by_user", ["clerkUserId"])
+        .index("by_tenant", ["tenantId"])
+        .index("by_slot_status", ["slotId", "status"]),
+    // テナントが提供するサービス。
+    Services: defineTable({
+        // 所属テナント。
+        tenantId: v.id("Tenants"),
+        // 作成者の Clerk userId。
+        createdByUserId: v.string(),
+        // サービス名。
+        title: v.string(),
+        // 説明（HTML 可）。
+        description: v.string(),
+        // 有効/無効。
+        isActive: v.boolean(),
+    })
+        .index("by_tenant", ["tenantId"])
+        .index("by_tenant_active", ["tenantId", "isActive"]),
 });

@@ -1,0 +1,86 @@
+# CUSTOMER（顧客向け予約画面）仕様書
+
+本ドキュメントは、`src/app/o/[orgId]/(org)/(CUSTOMER)` ディレクトリ配下の実装をリバース・エンジニアリングし、顧客（サービス利用者）向けの画面構成、ルーティング、コンポーネント構造、状態管理、およびビジネスロジックをまとめた仕様書です。
+
+## 1. 概要
+本ディレクトリは、顧客が特定の組織（`orgId`）に対してサービス予約を行うための予約ポータルサイトを提供します。検索、予約手続き、自身の予約履歴の管理機能が含まれています。
+
+バックエンドおよびデータベースの通信には `Convex` (`convex/react` の `useQuery`, `useMutation`) が利用されており、リアルタイムなデータ取得と更新が行われています。
+
+## 2. ディレクトリ構造とルーティング
+
+すべての画面は `/o/[orgId]` の配下に属しています。
+
+| ルーティング | ディレクトリ名 | 役割 / 画面内容 | キーコンポーネント |
+|---|---|---|---|
+| `/o/[orgId]` | `/` | **トップページ**<br/>予約の検索方法（場所、日付、サービス）を選択するメニュー画面 | `BookingSearch.tsx` |
+| `/o/[orgId]/reserve/location` | `/reserve/location` | **場所から探す**<br/>固定店舗・移動店舗をリストやマップで表示し、現在地からの距離順ソートやキーワード検索を行う | `StoreSearch.tsx` |
+| `/o/[orgId]/reserve/date` | `/reserve/date` | **日付から探す**<br/>日付を選択し、その日に予約可能な枠を一覧表示する | `DateSearchPage.tsx` |
+| `/o/[orgId]/reserve/service` | `/reserve/service` | **サービスから探す**<br/>サービス名・テナント名で検索し、選択したサービスの予約可能枠を表示する | `ServiceSearchPage.tsx` |
+| `/o/[orgId]/tenant/[tenantId]` | `/tenant/[tenantId]` | **テナント詳細 / 予約枠一覧**<br/>指定したテナントの情報を取得し、そのテナントが提供する予約可能枠を日付ごとにグループ化して表示する | `TenantSlots.tsx` |
+| `/o/[orgId]/tenant/.../book/[slotId]` | `/tenant/.../book/[slotId]` | **予約フォーム**<br/>選択した枠（スロット）に対する予約情報を入力・確定する画面。スロットに設定された動的な質問項目を表示する | `BookingForm.tsx` |
+| `/o/[orgId]/bookings` | `/bookings` | **マイ予約（予約履歴）**<br/>自身の予約一覧とステータス（確定、キャンセル等）を表示し、予約のキャンセル手続きを行う | `MyBookingsList.tsx` |
+
+---
+
+## 3. 主要コンポーネントとロジック仕様
+
+### 3.1 `SlotResultList` (共有コンポーネント)
+- **ファイル:** `_components/SlotResultList.tsx`
+- **役割:** 検索結果として取得した予約枠（Slot）のリストを描画する共通UIコンポーネント。
+- **仕様:**
+  - 枠の開始日（`startAt`）でグループ化し、日付の昇順でセクションを分けて表示。
+  - 各枠には「時間」「サービス名」「テナント名」「場所名」「空き枠数（残り/定員）」を表示。
+  - 残り枠数が2以下の場合は「残りわずか」という警告バッジ（`destructive`）を表示。
+  - 「予約する」ボタンで `book/[slotId]` へ遷移。
+
+### 3.2 場所から探す (`StoreSearch`)
+- **役割:** ロケーション（店舗・拠点）ベースの予約検索。
+- **仕様:**
+  - `locations.listLocationsByOrg` APIで場所一覧を取得。
+  - **キーワード検索:** 店舗名（`name`）、テナント名（`tenantName`）、住所（`semiAddress`）の部分一致フィルタリング機能。
+  - **現在地検索（GPS）:** `navigator.geolocation` を使用して現在地の緯度経度を取得。
+  - **距離計算:** ハーベサイン関数（`haversineKm`）を使用して現在地と各店舗間の直線距離（km）を算出し、近い順にソートする。1km未満の場合はメートル（m）表記に変換。
+  - **マップ表示:** 地図コンポーネント（`MapMultiPin`）に店舗のピンをプロット。
+  - 場所を選択すると、その `locationId` で `slots.listAvailableByOrg` APIを叩き、`SlotResultList` を表示。
+
+### 3.3 予約フォーム (`BookingForm`)
+- **役割:** 顧客が予約を確定するための情報入力画面。
+- **仕様:**
+  - `bookings.getSlotForBooking` APIで対象の予約枠（Slot）詳細を取得。
+  - 予約枠が「公開中（`open`）」かつ「残り枠数が1以上」の場合のみフォームを表示する（それ以外は「予約できません」と表示）。
+  - **動的フォーム生成:** 枠データに含まれる `questions` 配列（管理者により動的に設定された質問）を展開。タイプ（`text`, `tel`, `email`, `textarea`）に応じてUIを分岐。
+  - **バリデーション:** `question.required` が `true` の項目に対して、送信前に空チェックを実施し、未入力の場合は `sonner` によるトーストエラーを表示。
+  - **送信処理:** `bookings.create` Mutation を呼び出し。引数として `slotId` と入力された回答（`answers` をJSON文字列化）を送信。成功後は `/bookings`（マイ予約）へリダイレクト。
+
+### 3.4 マイ予約 (`MyBookingsList`)
+- **役割:** 顧客の予約一覧とキャンセル機能。
+- **仕様:**
+  - `bookings.listMyBookings` APIで自身の予約を取得。
+  - **ステータス表示:** 予約のステータスに応じてバッジの色とラベルを変える。
+    - `pending`: 仮確定（グレー枠設定）
+    - `confirmed`: 確定（デフォルト色）
+    - `canceled`: キャンセル済み（セカンダリ色、カード全体を半透明＆取消線）
+    - `no_show`: 未出席（エラー色）
+  - **キャンセル処理:** 
+    - `booking.canCancel` が `true` の場合のみ「予約をキャンセル」ボタンを表示。
+    - 確認ダイアログ（`confirm`）を経て `bookings.cancel` Mutation を実行し、キャンセルを確定させる。
+
+---
+
+## 4. 共通処理・データフォーマット
+
+### 4.1 日付・時刻のフォーマット
+各コンポーネント内に共通のフォーマット関数が定義されており、ISO 8601 の日時文字列を日本向けの表示形式に変換しています。
+- `formatDate`: `YYYY年M月D日(曜日)`
+- `formatTime`: `HH:MM`
+
+### 4.2 API連携 (Convex)
+システムは Convex クライアントを使用してバックエンドと直接通信しています。
+主なAPIエンドポイント:
+- `api.slots.listAvailableByOrg`: 組織内の予約可能な枠一覧を取得（オプションで `date`, `locationId`, `serviceId` による絞り込み）。
+- `api.slots.listAvailableByTenant`: 特定テナントの予約枠一覧。
+- `api.locations.listLocationsByOrg`: 組織内のロケーション一覧。
+- `api.services.listByOrg`: 組織内のサービス一覧。
+- `api.bookings.create`: 予約作成処理。
+- `api.bookings.cancel`: 予約キャンセル処理。

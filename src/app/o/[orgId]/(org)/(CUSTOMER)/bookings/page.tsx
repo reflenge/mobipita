@@ -1,0 +1,16 @@
+/**
+ * 顧客向け予約画面：マイ予約（予約履歴）ページ（サーバーコンポーネント）
+ *
+ * アクセスURL: /o/[orgId]/bookings
+ * 役割: 顧客自身の予約一覧を表示する MyBookingsList コンポーネントのエントリーポイント。
+ */
+import { MyBookingsList } from "./_components/MyBookingsList";
+
+type Props = {
+    params: Promise<{ orgId: string }>;
+};
+
+export default async function MyBookingsPage({ params }: Props) {
+    const { orgId } = await params;
+    return <MyBookingsList orgId={orgId} />;
+}

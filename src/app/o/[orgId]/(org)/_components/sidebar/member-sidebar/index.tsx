@@ -8,31 +8,36 @@ import {
     SidebarMenuItem,
     SidebarSeparator,
 } from "@/components/ui/sidebar";
-import { UserStar } from "lucide-react";
-import { MemberTenantList } from "./MemberTenantList";
+import { Store, UserStar } from "lucide-react";
 
 type MemberSidebarProps = {
     org: { id: string };
-    userId: string;
 };
 
-export default function MemberSidebar({ org, userId }: MemberSidebarProps) {
+export default function MemberSidebar({ org }: MemberSidebarProps) {
     return (
         <>
             <SidebarSeparator />
             <SidebarGroup>
-                <SidebarGroupLabel>Member</SidebarGroupLabel>
+                <SidebarGroupLabel>従業員</SidebarGroupLabel>
                 <SidebarGroupContent>
                     <SidebarMenu>
                         <SidebarMenuItem>
                             <SidebarMenuButton asChild>
                                 <Link href={`/o/${org.id}/member`}>
                                     <UserStar />
-                                    <span>Member</span>
+                                    <span>従業員</span>
                                 </Link>
                             </SidebarMenuButton>
                         </SidebarMenuItem>
-                        <MemberTenantList orgId={org.id} userId={userId} />
+                        <SidebarMenuItem>
+                            <SidebarMenuButton asChild>
+                                <Link href={`/o/${org.id}/member/tenant`}>
+                                    <Store />
+                                    <span>テナント</span>
+                                </Link>
+                            </SidebarMenuButton>
+                        </SidebarMenuItem>
                     </SidebarMenu>
                 </SidebarGroupContent>
             </SidebarGroup>

@@ -12,6 +12,11 @@ const nextConfig: NextConfig = {
         // Clerk の画像を許可するリモートパターン
         remotePatterns: [new URL("https://img.clerk.com/**")],
     },
+    //
+    compiler: {
+        // コンソールログを削除（本番のみ）
+        removeConsole: process.env.NODE_ENV === "production",
+    }
 };
 
 export default nextConfig;

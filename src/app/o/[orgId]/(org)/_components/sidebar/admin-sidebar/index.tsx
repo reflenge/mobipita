@@ -43,14 +43,14 @@ const AdminSidebar = ({ org }: { org: { id: string } }) => {
         <>
             <SidebarSeparator />
             <SidebarGroup>
-                <SidebarGroupLabel>Admin</SidebarGroupLabel>
+                <SidebarGroupLabel>管理者</SidebarGroupLabel>
                 <SidebarGroupContent>
                     <SidebarMenu>
                         <SidebarMenuItem>
                             <SidebarMenuButton asChild>
                                 <Link href={`/o/${org.id}/admin`}>
                                     <ShieldUser />
-                                    <span>Admin</span>
+                                    <span>管理者</span>
                                 </Link>
                             </SidebarMenuButton>
                         </SidebarMenuItem>
@@ -59,55 +59,75 @@ const AdminSidebar = ({ org }: { org: { id: string } }) => {
                             <SidebarMenuButton asChild>
                                 <Link href={`/o/${org.id}/admin/tenant`}>
                                     <Store />
-                                    <span>Tenant</span>
+                                    <span>テナント</span>
                                 </Link>
                             </SidebarMenuButton>
                             <SidebarMenuSub>
                                 <SidebarMenuSubItem>
-                                    <SidebarMenuButton asChild>
+                                    <SidebarMenuSubButton asChild>
                                         <Link
                                             href={`/o/${org.id}/admin/tenant/create`}
                                         >
                                             <PackagePlus />
                                             <span>作成</span>
                                         </Link>
-                                    </SidebarMenuButton>
+                                    </SidebarMenuSubButton>
                                 </SidebarMenuSubItem>
                             </SidebarMenuSub>
                             <SidebarMenuSub>
                                 <SidebarMenuSubItem>
-                                    <SidebarMenuButton asChild>
+                                    <SidebarMenuSubButton asChild>
                                         <Link
                                             href={`/o/${org.id}/admin/tenant/list`}
                                         >
                                             <BookCopy />
                                             <span>一覧</span>
                                         </Link>
-                                    </SidebarMenuButton>
+                                    </SidebarMenuSubButton>
+                                </SidebarMenuSubItem>
+                            </SidebarMenuSub>
+                        </SidebarMenuItem>
+                        <SidebarMenuItem>
+                            <SidebarMenuButton asChild>
+                                <Link href={`/o/${org.id}/admin/employee`}>
+                                    <UsersRound />
+                                    <span>従業員</span>
+                                </Link>
+                            </SidebarMenuButton>
+                            <SidebarMenuSub>
+                                <SidebarMenuSubItem>
+                                    <SidebarMenuSubButton asChild>
+                                        <Link
+                                            href={`/o/${org.id}/admin/employee`}
+                                        >
+                                            <BookCopy />
+                                            <span>一覧</span>
+                                        </Link>
+                                    </SidebarMenuSubButton>
                                 </SidebarMenuSubItem>
                             </SidebarMenuSub>
                             <SidebarMenuSub>
                                 <SidebarMenuSubItem>
-                                    <SidebarMenuButton asChild>
+                                    <SidebarMenuSubButton asChild>
                                         <Link
-                                            href={`/o/${org.id}/admin/tenant/employee-assignments/upgrade`}
+                                            href={`/o/${org.id}/admin/employee/upgrade`}
                                         >
                                             <UserPlus />
                                             <span>従業員へ昇格</span>
                                         </Link>
-                                    </SidebarMenuButton>
+                                    </SidebarMenuSubButton>
                                 </SidebarMenuSubItem>
                             </SidebarMenuSub>
                             <SidebarMenuSub>
                                 <SidebarMenuSubItem>
-                                    <SidebarMenuButton asChild>
+                                    <SidebarMenuSubButton asChild>
                                         <Link
-                                            href={`/o/${org.id}/admin/tenant/employee-assignments/assignment`}
+                                            href={`/o/${org.id}/admin/employee/assignment`}
                                         >
-                                            <UsersRound />
+                                            <Store />
                                             <span>各テナントへ振り分け</span>
                                         </Link>
-                                    </SidebarMenuButton>
+                                    </SidebarMenuSubButton>
                                 </SidebarMenuSubItem>
                             </SidebarMenuSub>
                         </SidebarMenuItem>
