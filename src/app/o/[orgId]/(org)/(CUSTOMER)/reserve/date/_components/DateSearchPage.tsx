@@ -1,5 +1,12 @@
 "use client";
 
+/**
+ * DateSearchPage コンポーネント (日付から探す)
+ *
+ * 役割: Date Picker (input type="date") を提供し、選択された日付に基づいて
+ * 該当日のすべての予約可能枠（Slot）を検索し、SlotResultList 経由で一覧表示する。
+ * state として選択中日付（selectedDate）を管理し、API (slots.listAvailableByOrg) に渡す。
+ */
 import { useState } from "react";
 import { useQuery } from "convex/react";
 import { api } from "@/../convex/_generated/api";

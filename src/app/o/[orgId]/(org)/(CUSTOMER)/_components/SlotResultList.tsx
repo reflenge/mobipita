@@ -1,5 +1,13 @@
 "use client";
 
+/**
+ * SlotResultList コンポーネント (予約可能枠一覧)
+ *
+ * 役割: 各検索画面（場所、日付、サービス）で取得した予約可能な枠 (Slot) リストを受け取り、
+ * 日付ごとにグループ化してカード形式で一覧表示する共有UIコンポーネント。
+ * 残り枠数が少ない場合の警告バッジ表示や、各枠に対応する予約フォーム画面（book/[slotId]）
+ * への遷移ボタンを提供する。
+ */
 import { useMemo } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";

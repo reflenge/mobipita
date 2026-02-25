@@ -1,5 +1,17 @@
 "use client";
 
+/**
+ * BookingForm コンポーネント (予約フォーム)
+ *
+ * 役割: 選択された特定の予約枠 (slotId) に対する予約手続きを行う。
+ * 枠の設定情報から動的な質問項目 (questions) をUIとして生成し、顧客からの回答を収集する。
+ *
+ * 主な機能:
+ * - 枠の空き状況とステータス（open かつ 残り枠 > 0）の確認
+ * - 動的フォームの描画（type: text, tel, email, textarea の出し分け）
+ * - 必須項目の入力チェック（フロントエンドバリデーション）
+ * - `api.bookings.create` への予約確定リクエストと、成功時のマイ予約一覧へのリダイレクト
+ */
 import { useCallback, useState } from "react";
 import { useMutation, useQuery } from "convex/react";
 import { api } from "@/../convex/_generated/api";

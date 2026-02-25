@@ -1,5 +1,17 @@
 "use client";
 
+/**
+ * MyBookingsList コンポーネント (マイ予約一覧)
+ *
+ * 役割: 顧客自身の予約履歴を取得 (api.bookings.listMyBookings) し、一覧表示する。
+ * 各予約カードにステータス（仮確定、確定、キャンセル済み、未出席）のバッジを表示し、
+ * キャンセル可能な予約（canCancel = true）には「予約をキャンセル」ボタンを提供する。
+ *
+ * 主な機能:
+ * - 予約一覧の表示（ステータスに応じたスタイリングの切り替え）
+ * - 予約のキャンセル処理 (api.bookings.cancel) およびキャンセル中のローディング状態管理
+ * - 確認ダイアログによる誤操作防止
+ */
 import { useCallback, useState } from "react";
 import { useMutation, useQuery } from "convex/react";
 import { api } from "@/../convex/_generated/api";

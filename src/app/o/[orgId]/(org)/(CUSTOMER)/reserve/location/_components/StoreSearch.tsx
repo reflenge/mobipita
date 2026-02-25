@@ -1,5 +1,16 @@
 "use client";
 
+/**
+ * StoreSearch コンポーネント (場所から探す)
+ *
+ * 役割: マップやキーワード・現在地（GPS機能）を用いてロケーション（店舗や移動拠点）を検索し、
+ * 選択した該当場所で予約可能な枠一覧を表示する。
+ * 主な機能:
+ * - キーワード検索 (店舗名、テナント名、住所での絞り込み)
+ * - サブコンポーネント MapMultiPin による店舗位置のマップ表示
+ * - 現在地からの直線距離によるソート表示（ハヴァーサイン公式による距離計算 `haversineKm`）
+ * - 特定の場所選択後、それに紐づく予約枠一覧（SlotResultList）の表示
+ */
 import { useCallback, useMemo, useState } from "react";
 import { useQuery } from "convex/react";
 import { api } from "@/../convex/_generated/api";
@@ -27,8 +38,8 @@ function haversineKm(
     const a =
         Math.sin(dLat / 2) ** 2 +
         Math.cos((lat1 * Math.PI) / 180) *
-            Math.cos((lat2 * Math.PI) / 180) *
-            Math.sin(dLng / 2) ** 2;
+        Math.cos((lat2 * Math.PI) / 180) *
+        Math.sin(dLng / 2) ** 2;
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     return R * c;
 }
@@ -74,7 +85,7 @@ export function StoreSearch({ orgId }: StoreSearchProps) {
                     lat: pos.coords.latitude,
                     lng: pos.coords.longitude,
                 }),
-            () => {},
+            () => { },
         );
     }, []);
 

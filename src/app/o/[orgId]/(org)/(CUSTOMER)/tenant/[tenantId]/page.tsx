@@ -1,3 +1,10 @@
+/**
+ * 顧客向け予約画面：テナント詳細 / 予約枠一覧（サーバーコンポーネント）
+ *
+ * アクセスURL: /o/[orgId]/tenant/[tenantId]
+ * 役割: 指定されたテナント (tenantId) の予約枠一覧を表示する TenantSlots コンポーネントの
+ * エントリーポイント。
+ */
 import { TenantSlots } from "./_components/TenantSlots";
 
 type Props = {

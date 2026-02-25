@@ -1,5 +1,12 @@
 "use client";
 
+/**
+ * TenantSlots コンポーネント (テナント別予約枠一覧)
+ *
+ * 役割: 特定のテナント (tenantId) の情報を取得し、そのテナントが提供するすべての
+ * 予約可能枠 (Slot) を日付ごとにグループ化して、カード形式のリストで一覧表示する。
+ * 各スロットの「予約する」ボタンから、対象枠の予約フォーム（book/[slotId]）へ遷移する。
+ */
 import { useMemo } from "react";
 import { useQuery } from "convex/react";
 import { api } from "@/../convex/_generated/api";

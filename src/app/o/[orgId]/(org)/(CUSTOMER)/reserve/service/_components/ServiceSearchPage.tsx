@@ -1,5 +1,12 @@
 "use client";
 
+/**
+ * ServiceSearchPage コンポーネント (サービスから探す)
+ *
+ * 役割: キーワード（サービス名やテナント名）でサービス一覧を絞り込み表示し、
+ * ユーザーが特定のサービスを選択した際に、そのサービスに紐づく予約可能枠を
+ * 一覧で表示する (SlotResultListを利用)。
+ */
 import { useMemo, useState } from "react";
 import { useQuery } from "convex/react";
 import { api } from "@/../convex/_generated/api";
