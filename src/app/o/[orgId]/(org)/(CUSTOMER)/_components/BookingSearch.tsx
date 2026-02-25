@@ -14,13 +14,22 @@ import {
     MapPinIcon,
     ShoppingBagIcon,
     ChevronRightIcon,
+    StoreIcon,
 } from "lucide-react";
 
 type Props = { orgId: string };
 
 const SEARCH_ROUTES = [
     {
-        href: (orgId: string) => `/o/${orgId}/search`,
+        href: (orgId: string) => `/o/${orgId}/reserve/tenant`,
+        icon: StoreIcon,
+        title: "テナントから探す",
+        description: "店舗や出店者を選んで、予約可能な枠を表示します",
+        color: "text-orange-500",
+        bg: "bg-orange-50 dark:bg-orange-950/30",
+    },
+    {
+        href: (orgId: string) => `/o/${orgId}/reserve/location`,
         icon: MapPinIcon,
         title: "場所から探す",
         description: "店舗や拠点を選んで、予約可能な枠を表示します",
