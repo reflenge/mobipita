@@ -65,6 +65,7 @@ export type CrossFieldError = { path: string; message: string };
  *
  * チェック順序:
  *   1. 過去日付チェック
+ *   1.5. 日付の重複チェック（同じ日付が複数スロットにある場合）
  *   2. 終了時刻 > 開始時刻
  *   3. 時間帯の長さ >= 枠の長さ（durationMinutes）
  *   4. 同一日付内の時間帯重複
@@ -78,6 +79,13 @@ export function validateDateTimeSlots(
     const errors: CrossFieldError[] = [];
     const today = getTodayLocalYYYYMMDD();
 
+    // 日付の出現回数を事前集計（重複チェック用）
+    const dateCounts = new Map<string, number>();
+    for (const slot of dateTimeSlots) {
+        const d = slot?.date;
+        if (d) dateCounts.set(d, (dateCounts.get(d) ?? 0) + 1);
+    }
+
     dateTimeSlots.forEach((slot, slotIndex) => {
         const timeRanges = slot?.timeRanges ?? [];
         if (!Array.isArray(timeRanges) || timeRanges.length === 0) return;
@@ -88,6 +96,14 @@ export function validateDateTimeSlots(
             errors.push({
                 path: `dateTimeSlots.${slotIndex}.date`,
                 message: "過去の日付は指定できません",
+            });
+        }
+
+        // 1.5. 日付の重複チェック
+        if (dateStr && (dateCounts.get(dateStr) ?? 0) > 1) {
+            errors.push({
+                path: `dateTimeSlots.${slotIndex}.date`,
+                message: "同じ日付が複数指定されています",
             });
         }
 

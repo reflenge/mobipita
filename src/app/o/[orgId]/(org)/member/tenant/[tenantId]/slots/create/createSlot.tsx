@@ -432,7 +432,7 @@ export function CreateSlot({ orgId, tenantId }: Props) {
                     </Field>
                 </form>
                 <div>
-                    <SlotCalender events={calendarEvents} />
+                    <SlotCalender events={calendarEvents} tenantId={tenantId} />
                 </div>
             </div>
         </div>

@@ -67,15 +67,20 @@ export const listByTenant = query({
     args: {
         tenantId: v.id("Tenants"),
         limit: v.optional(v.number()),
+        from: v.optional(v.string()),
     },
     handler: async (ctx, args) => {
         await requireClerkIdentity(ctx);
         const limit = typeof args.limit === "number" ? args.limit : 200;
-        const slots = await ctx.db
+        let slots = await ctx.db
             .query("Slots")
             .withIndex("by_tenant", (q) => q.eq("tenantId", args.tenantId))
             .order("desc")
             .take(limit);
+
+        if (args.from) {
+            slots = slots.filter((s) => s.startAt >= args.from!);
+        }
 
         const serviceCache = new Map<string, string>();
         const locationCache = new Map<string, string>();

@@ -95,7 +95,7 @@ export function DateSlotTimeRanges({
                                 >
                                     <PopoverTrigger asChild>
                                         <Button
-                                            variant="outline"
+                                            variant={dateFieldState.invalid || dateCrossError ? "destructive" : "outline"}
                                             className={cn(
                                                 "w-40 justify-between font-normal",
                                                 !dateField.value && "text-muted-foreground"
