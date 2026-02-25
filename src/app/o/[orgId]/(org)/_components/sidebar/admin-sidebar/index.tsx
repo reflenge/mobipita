@@ -64,26 +64,26 @@ const AdminSidebar = ({ org }: { org: { id: string } }) => {
                             </SidebarMenuButton>
                             <SidebarMenuSub>
                                 <SidebarMenuSubItem>
-                                    <SidebarMenuButton asChild>
+                                    <SidebarMenuSubButton asChild>
                                         <Link
                                             href={`/o/${org.id}/admin/tenant/create`}
                                         >
                                             <PackagePlus />
                                             <span>作成</span>
                                         </Link>
-                                    </SidebarMenuButton>
+                                    </SidebarMenuSubButton>
                                 </SidebarMenuSubItem>
                             </SidebarMenuSub>
                             <SidebarMenuSub>
                                 <SidebarMenuSubItem>
-                                    <SidebarMenuButton asChild>
+                                    <SidebarMenuSubButton asChild>
                                         <Link
                                             href={`/o/${org.id}/admin/tenant/list`}
                                         >
                                             <BookCopy />
                                             <span>一覧</span>
                                         </Link>
-                                    </SidebarMenuButton>
+                                    </SidebarMenuSubButton>
                                 </SidebarMenuSubItem>
                             </SidebarMenuSub>
                         </SidebarMenuItem>
@@ -96,38 +96,38 @@ const AdminSidebar = ({ org }: { org: { id: string } }) => {
                             </SidebarMenuButton>
                             <SidebarMenuSub>
                                 <SidebarMenuSubItem>
-                                    <SidebarMenuButton asChild>
+                                    <SidebarMenuSubButton asChild>
                                         <Link
                                             href={`/o/${org.id}/admin/employee`}
                                         >
                                             <BookCopy />
                                             <span>一覧</span>
                                         </Link>
-                                    </SidebarMenuButton>
+                                    </SidebarMenuSubButton>
                                 </SidebarMenuSubItem>
                             </SidebarMenuSub>
                             <SidebarMenuSub>
                                 <SidebarMenuSubItem>
-                                    <SidebarMenuButton asChild>
+                                    <SidebarMenuSubButton asChild>
                                         <Link
                                             href={`/o/${org.id}/admin/employee/upgrade`}
                                         >
                                             <UserPlus />
                                             <span>従業員へ昇格</span>
                                         </Link>
-                                    </SidebarMenuButton>
+                                    </SidebarMenuSubButton>
                                 </SidebarMenuSubItem>
                             </SidebarMenuSub>
                             <SidebarMenuSub>
                                 <SidebarMenuSubItem>
-                                    <SidebarMenuButton asChild>
+                                    <SidebarMenuSubButton asChild>
                                         <Link
                                             href={`/o/${org.id}/admin/employee/assignment`}
                                         >
                                             <Store />
                                             <span>各テナントへ振り分け</span>
                                         </Link>
-                                    </SidebarMenuButton>
+                                    </SidebarMenuSubButton>
                                 </SidebarMenuSubItem>
                             </SidebarMenuSub>
                         </SidebarMenuItem>

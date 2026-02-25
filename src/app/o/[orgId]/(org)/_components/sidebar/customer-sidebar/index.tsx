@@ -6,8 +6,11 @@ import {
     SidebarMenu,
     SidebarMenuButton,
     SidebarMenuItem,
+    SidebarMenuSub,
+    SidebarMenuSubButton,
+    SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
-import { CalendarCheck, CalendarIcon, Home, MapPinIcon, ShoppingBagIcon, StoreIcon } from "lucide-react";
+import { CalendarCheck, CalendarIcon, Home, MapPinIcon, ShoppingBagIcon, StoreIcon, SearchIcon } from "lucide-react";
 
 const CustomerSidebar = ({ org }: { org: { id: string } }) => {
     return (
@@ -24,36 +27,44 @@ const CustomerSidebar = ({ org }: { org: { id: string } }) => {
                         </SidebarMenuButton>
                     </SidebarMenuItem>
                     <SidebarMenuItem>
-                        <SidebarMenuButton asChild>
-                            <Link href={`/o/${org.id}/reserve/tenant`}>
-                                <StoreIcon />
-                                <span>テナントから探す</span>
-                            </Link>
+                        <SidebarMenuButton>
+                            <SearchIcon />
+                            <span>探す</span>
                         </SidebarMenuButton>
-                    </SidebarMenuItem>
-                    <SidebarMenuItem>
-                        <SidebarMenuButton asChild>
-                            <Link href={`/o/${org.id}/reserve/location`}>
-                                <MapPinIcon />
-                                <span>場所から探す</span>
-                            </Link>
-                        </SidebarMenuButton>
-                    </SidebarMenuItem>
-                    <SidebarMenuItem>
-                        <SidebarMenuButton asChild>
-                            <Link href={`/o/${org.id}/reserve/date`}>
-                                <CalendarIcon />
-                                <span>日付から探す</span>
-                            </Link>
-                        </SidebarMenuButton>
-                    </SidebarMenuItem>
-                    <SidebarMenuItem>
-                        <SidebarMenuButton asChild>
-                            <Link href={`/o/${org.id}/reserve/service`}>
-                                <ShoppingBagIcon />
-                                <span>サービスから探す</span>
-                            </Link>
-                        </SidebarMenuButton>
+                        <SidebarMenuSub>
+                            <SidebarMenuSubItem>
+                                <SidebarMenuSubButton asChild>
+                                    <Link href={`/o/${org.id}/reserve/tenant`}>
+                                        <StoreIcon />
+                                        <span>テナントから探す</span>
+                                    </Link>
+                                </SidebarMenuSubButton>
+                            </SidebarMenuSubItem>
+                            <SidebarMenuSubItem>
+                                <SidebarMenuSubButton asChild>
+                                    <Link href={`/o/${org.id}/reserve/location`}>
+                                        <MapPinIcon />
+                                        <span>場所から探す</span>
+                                    </Link>
+                                </SidebarMenuSubButton>
+                            </SidebarMenuSubItem>
+                            <SidebarMenuSubItem>
+                                <SidebarMenuSubButton asChild>
+                                    <Link href={`/o/${org.id}/reserve/date`}>
+                                        <CalendarIcon />
+                                        <span>日付から探す</span>
+                                    </Link>
+                                </SidebarMenuSubButton>
+                            </SidebarMenuSubItem>
+                            <SidebarMenuSubItem>
+                                <SidebarMenuSubButton asChild>
+                                    <Link href={`/o/${org.id}/reserve/service`}>
+                                        <ShoppingBagIcon />
+                                        <span>サービスから探す</span>
+                                    </Link>
+                                </SidebarMenuSubButton>
+                            </SidebarMenuSubItem>
+                        </SidebarMenuSub>
                     </SidebarMenuItem>
                     <SidebarMenuItem>
                         <SidebarMenuButton asChild>
