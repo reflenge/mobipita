@@ -82,24 +82,55 @@ export const listByTenant = query({
             slots = slots.filter((s) => s.startAt >= args.from!);
         }
 
-        const serviceCache = new Map<string, string>();
-        const locationCache = new Map<string, string>();
+        const serviceCache = new Map<string, { title: string; deleted: boolean }>();
+        const locationCache = new Map<string, { name: string; deleted: boolean }>();
 
         const results = [];
         for (const slot of slots) {
-            let serviceName = serviceCache.get(slot.serviceId);
-            if (serviceName === undefined) {
+            let svcInfo = serviceCache.get(slot.serviceId);
+            if (!svcInfo) {
                 const svc = await ctx.db.get(slot.serviceId);
-                serviceName = svc?.title ?? "不明";
-                serviceCache.set(slot.serviceId, serviceName);
+                svcInfo = svc
+                    ? { title: svc.title, deleted: false }
+                    : { title: "不明", deleted: true };
+                serviceCache.set(slot.serviceId, svcInfo);
             }
-            let locationName = locationCache.get(slot.locationId);
-            if (locationName === undefined) {
+            let locInfo = locationCache.get(slot.locationId);
+            if (!locInfo) {
                 const loc = await ctx.db.get(slot.locationId);
-                locationName = loc?.name ?? "不明";
-                locationCache.set(slot.locationId, locationName);
+                locInfo = loc
+                    ? { name: loc.name, deleted: false }
+                    : { name: "不明", deleted: true };
+                locationCache.set(slot.locationId, locInfo);
             }
-            results.push({ ...slot, serviceName, locationName });
+
+            let snapshotLocationName: string | undefined;
+            try {
+                const parsed = JSON.parse(slot.locationSnapshot);
+                snapshotLocationName = parsed?.name;
+            } catch { /* ignore */ }
+
+            let snapshotServiceName: string | undefined;
+            try {
+                const parsed = JSON.parse(slot.policySnapshot);
+                snapshotServiceName = parsed?.serviceName;
+            } catch { /* ignore */ }
+
+            const locationChanged =
+                !locInfo.deleted &&
+                snapshotLocationName !== undefined &&
+                snapshotLocationName !== locInfo.name;
+
+            results.push({
+                ...slot,
+                serviceName: svcInfo.title,
+                serviceDeleted: svcInfo.deleted,
+                snapshotServiceName,
+                locationName: locInfo.name,
+                locationDeleted: locInfo.deleted,
+                locationChanged,
+                snapshotLocationName,
+            });
         }
         return results;
     },

@@ -11,7 +11,7 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import jaLocale from "@fullcalendar/core/locales/ja";
 import type { EventClickArg, EventContentArg, EventInput } from "@fullcalendar/core";
-import { SlotDetailDialog } from "./SlotDetailDialog";
+import { SlotDetailDialog, type SlotData } from "./SlotDetailDialog";
 
 const STATUS_COLOR: Record<string, string> = {
     open: "#2563eb",
@@ -35,16 +35,10 @@ export function SlotListCalendar({ orgId, tenantId }: Props) {
         limit: 500,
     });
 
-    const [selectedSlot, setSelectedSlot] = useState<(typeof enrichedSlots)[number] | null>(null);
+    const [selectedSlot, setSelectedSlot] = useState<SlotData | null>(null);
     const [dialogOpen, setDialogOpen] = useState(false);
 
-    // DB のスロットを FullCalendar イベントに変換
-    type EnrichedSlot = NonNullable<typeof slots>[number] & {
-        policy: Record<string, unknown>;
-        location: Record<string, unknown>;
-    };
-
-    const enrichedSlots: EnrichedSlot[] = useMemo(
+    const enrichedSlots: SlotData[] = useMemo(
         () =>
             (slots ?? []).map((s) => ({
                 ...s,

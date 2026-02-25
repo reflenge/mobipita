@@ -237,8 +237,11 @@ export function CreateSlot({ orgId, tenantId }: Props) {
             const toTimeStr = (mins: number) =>
                 `${pad(Math.floor(mins / 60))}:${pad(mins % 60)}`;
 
-            // policySnapshot: slotTemplate 全体を JSON 文字列で保存
-            const policySnapshot = JSON.stringify(slotTemplate);
+            const selectedService = activeServices.find((s) => s._id === slotTemplate.serviceId);
+            const policySnapshot = JSON.stringify({
+                ...slotTemplate,
+                serviceName: selectedService?.title ?? "",
+            });
 
             // 場所情報のスナップショットを構築するヘルパー
             const locationMap = new Map(
