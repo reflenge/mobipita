@@ -8,6 +8,7 @@ import {
     storeType,
     slotStatus,
     slotVisibility,
+    bookingStatus,
 } from "./values";
 
 export default defineSchema({
@@ -140,6 +141,25 @@ export default defineSchema({
         .index("by_tenant", ["tenantId"])
         .index("by_tenant_service", ["tenantId", "serviceId"])
         .index("by_tenant_startAt", ["tenantId", "startAt"]),
+    // 顧客の予約。slotId に紐づき、capacity の範囲内で成立する。
+    Bookings: defineTable({
+        // 所属テナント。
+        tenantId: v.id("Tenants"),
+        // 紐づく予約枠。
+        slotId: v.id("Slots"),
+        // 予約ステータス。
+        status: bookingStatus,
+        // 予約者の Clerk userId。
+        clerkUserId: v.string(),
+        // フォーム回答（JSON.stringify of Record<string, string>）。
+        answers: v.string(),
+        // キャンセルポリシーのスナップショット（JSON.stringify）。
+        policySnapshot: v.string(),
+    })
+        .index("by_slot", ["slotId"])
+        .index("by_user", ["clerkUserId"])
+        .index("by_tenant", ["tenantId"])
+        .index("by_slot_status", ["slotId", "status"]),
     // テナントが提供するサービス。
     Services: defineTable({
         // 所属テナント。

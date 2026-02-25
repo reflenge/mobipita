@@ -8,6 +8,7 @@
  * @module
  */
 
+import type * as bookings from "../bookings.js";
 import type * as files from "../files.js";
 import type * as lib_clerkAuth from "../lib/clerkAuth.js";
 import type * as locations from "../locations.js";
@@ -24,6 +25,7 @@ import type {
 } from "convex/server";
 
 declare const fullApi: ApiFromModules<{
+  bookings: typeof bookings;
   files: typeof files;
   "lib/clerkAuth": typeof lib_clerkAuth;
   locations: typeof locations;

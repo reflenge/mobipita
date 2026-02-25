@@ -22,6 +22,52 @@ export const listByTenant = query({
 });
 
 /**
+ * 組織に所属する全サービス一覧を取得する（顧客向け検索用）。
+ */
+export const listByOrg = query({
+    args: {
+        clerkOrgId: v.string(),
+    },
+    handler: async (ctx, args) => {
+        await requireClerkIdentity(ctx);
+        const tenants = await ctx.db
+            .query("Tenants")
+            .withIndex("by_clerkOrgId", (q) =>
+                q.eq("clerkOrgId", args.clerkOrgId),
+            )
+            .collect();
+
+        const results: Array<{
+            _id: import("./_generated/dataModel").Id<"Services">;
+            tenantId: import("./_generated/dataModel").Id<"Tenants">;
+            tenantName: string;
+            title: string;
+            description: string;
+            isActive: boolean;
+        }> = [];
+        for (const tenant of tenants) {
+            const services = await ctx.db
+                .query("Services")
+                .withIndex("by_tenant_active", (q) =>
+                    q.eq("tenantId", tenant._id).eq("isActive", true),
+                )
+                .collect();
+            for (const svc of services) {
+                results.push({
+                    _id: svc._id,
+                    tenantId: svc.tenantId,
+                    tenantName: tenant.tenantName,
+                    title: svc.title,
+                    description: svc.description,
+                    isActive: svc.isActive,
+                });
+            }
+        }
+        return results;
+    },
+});
+
+/**
  * 組織スコープ内でサービスを1件取得する（詳細表示用）。
  */
 export const getByIdInOrg = query({

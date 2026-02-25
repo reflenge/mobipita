@@ -9,14 +9,17 @@ import type { MarkerItem } from "@/components/map";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { LocateFixed, Search } from "lucide-react";
+import {
+    SlotResultList,
+    type SlotResult,
+} from "@/app/o/[orgId]/(org)/(CUSTOMER)/_components/SlotResultList";
+import { ArrowLeftIcon, CalendarPlus, LocateFixed, Search } from "lucide-react";
 
-/** 2点間の距離を km で返す（Haversine） */
 function haversineKm(
     lat1: number,
     lng1: number,
     lat2: number,
-    lng2: number
+    lng2: number,
 ): number {
     const R = 6371;
     const dLat = ((lat2 - lat1) * Math.PI) / 180;
@@ -30,23 +33,9 @@ function haversineKm(
     return R * c;
 }
 
-type LocationWithDistance = {
-    _id: Id<"Locations">;
-    tenantId: Id<"Tenants">;
-    tenantName: string;
-    type: "fixed" | "mobile";
-    name: string;
-    autoAddress: string;
-    semiAddress: string;
-    lat: number;
-    lng: number;
-    details: string;
-    distanceKm: number;
-};
-
 function filterByKeyword<T extends { name: string; tenantName: string; semiAddress: string }>(
     items: T[],
-    keyword: string
+    keyword: string,
 ): T[] {
     const q = keyword.trim().toLowerCase();
     if (!q) return items;
@@ -54,23 +43,28 @@ function filterByKeyword<T extends { name: string; tenantName: string; semiAddre
         (loc) =>
             loc.name.toLowerCase().includes(q) ||
             loc.tenantName.toLowerCase().includes(q) ||
-            loc.semiAddress.toLowerCase().includes(q)
+            loc.semiAddress.toLowerCase().includes(q),
     );
 }
 
 type StoreSearchProps = { orgId: string };
 
 export function StoreSearch({ orgId }: StoreSearchProps) {
-    const [basePoint, setBasePoint] = useState<{
-        lat: number;
-        lng: number;
-    } | null>(null);
+    const [basePoint, setBasePoint] = useState<{ lat: number; lng: number } | null>(null);
     const [keyword, setKeyword] = useState("");
+    const [selectedLocationId, setSelectedLocationId] = useState<string | null>(null);
 
     const locations = useQuery(api.locations.listLocationsByOrg, {
         clerkOrgId: orgId,
         limit: 500,
     });
+
+    const slots = useQuery(
+        api.slots.listAvailableByOrg,
+        selectedLocationId
+            ? { clerkOrgId: orgId, locationId: selectedLocationId as Id<"Locations"> }
+            : "skip",
+    );
 
     const useCurrentLocation = useCallback(() => {
         if (!navigator.geolocation) return;
@@ -80,7 +74,7 @@ export function StoreSearch({ orgId }: StoreSearchProps) {
                     lat: pos.coords.latitude,
                     lng: pos.coords.longitude,
                 }),
-            () => {}
+            () => {},
         );
     }, []);
 
@@ -89,12 +83,7 @@ export function StoreSearch({ orgId }: StoreSearchProps) {
         return [...locations]
             .map((loc) => ({
                 ...loc,
-                distanceKm: haversineKm(
-                    basePoint.lat,
-                    basePoint.lng,
-                    loc.lat,
-                    loc.lng
-                ),
+                distanceKm: haversineKm(basePoint.lat, basePoint.lng, loc.lat, loc.lng),
             }))
             .sort((a, b) => a.distanceKm - b.distanceKm);
     }, [locations, basePoint]);
@@ -112,16 +101,46 @@ export function StoreSearch({ orgId }: StoreSearchProps) {
                 type: loc.type,
                 name: loc.name,
             })),
-        [locations]
+        [locations],
     );
 
     const hasLocations = locations && locations.length > 0;
 
+    if (selectedLocationId) {
+        const loc = locations?.find((l) => l._id === selectedLocationId);
+        return (
+            <div className="mx-auto max-w-4xl space-y-4">
+                <div className="flex items-center gap-2">
+                    <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setSelectedLocationId(null)}
+                    >
+                        <ArrowLeftIcon className="size-4 mr-1" />
+                        場所一覧に戻る
+                    </Button>
+                </div>
+                <div>
+                    <h1 className="text-xl font-semibold">{loc?.name ?? "選択中"}</h1>
+                    {loc && (
+                        <p className="text-sm text-muted-foreground mt-0.5">
+                            {loc.tenantName} · {loc.semiAddress}
+                        </p>
+                    )}
+                </div>
+                <SlotResultList
+                    slots={slots as SlotResult[] | undefined}
+                    orgId={orgId}
+                    emptyMessage="この場所では予約可能な枠がありません"
+                />
+            </div>
+        );
+    }
+
     return (
         <div className="mx-auto max-w-4xl space-y-6">
-            <h1 className="text-2xl font-semibold">店舗検索</h1>
+            <h1 className="text-2xl font-semibold">場所から探す</h1>
 
-            {/* フリー入力検索ボックス + 現在地から探すボタン */}
             <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
                 <div className="relative flex-1">
                     <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
@@ -134,17 +153,12 @@ export function StoreSearch({ orgId }: StoreSearchProps) {
                         aria-label="検索"
                     />
                 </div>
-                <Button
-                    type="button"
-                    onClick={useCurrentLocation}
-                    className="shrink-0"
-                >
+                <Button type="button" onClick={useCurrentLocation} className="shrink-0">
                     <LocateFixed className="mr-2 size-4" />
                     現在地から探す
                 </Button>
             </div>
 
-            {/* 店舗マーカー付き地図 */}
             <Card>
                 <CardHeader>
                     <CardTitle className="text-base">店舗マップ</CardTitle>
@@ -168,7 +182,6 @@ export function StoreSearch({ orgId }: StoreSearchProps) {
                 </CardContent>
             </Card>
 
-            {/* 近い順リスト */}
             {basePoint && (
                 <Card>
                     <CardHeader>
@@ -185,29 +198,32 @@ export function StoreSearch({ orgId }: StoreSearchProps) {
                         {filteredList && filteredList.length > 0 ? (
                             <ul className="space-y-3">
                                 {filteredList.map((loc) => (
-                                    <li
-                                        key={loc._id}
-                                        className="rounded-lg border p-3"
-                                    >
-                                        <div className="text-lg font-semibold">
-                                            {loc.name}
-                                        </div>
+                                    <li key={loc._id} className="rounded-lg border p-3">
+                                        <div className="text-lg font-semibold">{loc.name}</div>
                                         <div className="mt-0.5 text-sm text-muted-foreground">
                                             {loc.tenantName}
                                         </div>
                                         <div className="mt-1 text-sm text-muted-foreground">
                                             {loc.semiAddress}
                                         </div>
-                                        <div className="mt-1 text-xs text-muted-foreground">
-                                            {loc.type === "fixed"
-                                                ? "固定店舗"
-                                                : "移動店舗"}
-                                            {" · "}
-                                            <span className="font-medium text-foreground">
-                                                {loc.distanceKm < 1
-                                                    ? `${(loc.distanceKm * 1000).toFixed(0)} m`
-                                                    : `${loc.distanceKm.toFixed(2)} km`}
+                                        <div className="mt-1 flex items-center justify-between">
+                                            <span className="text-xs text-muted-foreground">
+                                                {loc.type === "fixed" ? "固定店舗" : "移動店舗"}
+                                                {" · "}
+                                                <span className="font-medium text-foreground">
+                                                    {loc.distanceKm < 1
+                                                        ? `${(loc.distanceKm * 1000).toFixed(0)} m`
+                                                        : `${loc.distanceKm.toFixed(2)} km`}
+                                                </span>
                                             </span>
+                                            <Button
+                                                size="sm"
+                                                variant="outline"
+                                                onClick={() => setSelectedLocationId(loc._id)}
+                                            >
+                                                <CalendarPlus className="size-3.5 mr-1" />
+                                                予約枠を見る
+                                            </Button>
                                         </div>
                                     </li>
                                 ))}

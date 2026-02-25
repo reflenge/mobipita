@@ -38,3 +38,11 @@ export const slotVisibility = v.union(
     v.literal("unlisted"),
     v.literal("private"),
 );
+
+/** 予約のステータス */
+export const bookingStatus = v.union(
+    v.literal("pending"),
+    v.literal("confirmed"),
+    v.literal("canceled"),
+    v.literal("no_show"),
+);
