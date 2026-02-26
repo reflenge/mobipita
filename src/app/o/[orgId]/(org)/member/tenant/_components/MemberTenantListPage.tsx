@@ -148,6 +148,8 @@ export function MemberTenantListPage({ orgId }: Props) {
                                         <Image
                                             src={logoUrl}
                                             alt=""
+                                            width={36}
+                                            height={36}
                                             className="ring-border size-9 shrink-0 rounded-full object-cover ring-2"
                                         />
                                     ) : (

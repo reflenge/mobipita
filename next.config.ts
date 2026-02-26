@@ -10,7 +10,7 @@ const nextConfig: NextConfig = {
     // 外部画像の設定
     images: {
         // Clerk の画像を許可するリモートパターン
-        remotePatterns: [new URL("https://img.clerk.com/**")],
+        remotePatterns: [new URL("https://img.clerk.com/**"), new URL("https://charming-buffalo-538.convex.cloud/**")],
     },
     //
     compiler: {
