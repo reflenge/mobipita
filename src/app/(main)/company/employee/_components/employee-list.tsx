@@ -52,17 +52,13 @@ const ROLE_CONFIG: Record<
         icon: React.ElementType;
     }
 > = {
-    reflenge: { label: "Reflenge", variant: "default", icon: ShieldCheck },
-    beyondKampo: {
-        label: "BEYOND KAMPO",
-        variant: "default",
-        icon: ShieldCheck,
-    },
+    admin: { label: "管理者", variant: "default", icon: ShieldCheck },
+    company: { label: "会社", variant: "default", icon: ShieldCheck },
     staff: { label: "スタッフ", variant: "secondary", icon: Briefcase },
     customer: { label: "カスタマー", variant: "outline", icon: UserX },
 };
 
-type RoleFilter = "all" | "reflenge" | "beyondKampo" | "staff" | "customer";
+type RoleFilter = "all" | "admin" | "company" | "staff" | "customer";
 
 /**
  * 従業員一覧コンポーネント
@@ -117,9 +113,9 @@ export function EmployeeList({ employees }: EmployeeListProps) {
     /** フィルタ・検索を適用したメンバー一覧 */
     const filteredEmployees = React.useMemo(() => {
         let list = employees;
-        if (roleFilter === "beyondKampo") {
+        if (roleFilter === "company") {
             list = list.filter(
-                (e) => e.role === "reflenge" || e.role === "beyondKampo",
+                (e) => e.role === "admin" || e.role === "company",
             );
         } else if (roleFilter !== "all") {
             list = list.filter((e) => e.role === roleFilter);
@@ -153,13 +149,13 @@ export function EmployeeList({ employees }: EmployeeListProps) {
                 </div>
                 <div className="flex gap-2">
                     <Button variant="outline" size="sm" asChild>
-                        <Link href="/admin/employee/upgrade">
+                        <Link href="/company/employee/upgrade">
                             <UserPlus className="size-4" />
                             従業員へ昇格
                         </Link>
                     </Button>
                     <Button size="sm" asChild>
-                        <Link href="/admin/employee/assignment">
+                        <Link href="/company/employee/assignment">
                             <Store className="size-4" />
                             テナント割当
                         </Link>
@@ -181,14 +177,14 @@ export function EmployeeList({ employees }: EmployeeListProps) {
                     icon={ShieldCheck}
                     iconClassName="bg-amber-100 text-amber-600 dark:bg-amber-950 dark:text-amber-400"
                     value={
-                        (roleCounts["reflenge"] ?? 0) +
-                        (roleCounts["beyondKampo"] ?? 0)
+                        (roleCounts["admin"] ?? 0) +
+                        (roleCounts["company"] ?? 0)
                     }
                     label="管理者"
-                    active={roleFilter === "beyondKampo"}
+                    active={roleFilter === "company"}
                     onClick={() =>
                         setRoleFilter((p) =>
-                            p === "beyondKampo" ? "all" : "beyondKampo",
+                            p === "company" ? "all" : "company",
                         )
                     }
                 />
@@ -342,7 +338,7 @@ export function EmployeeList({ employees }: EmployeeListProps) {
                                     {/* 詳細アイコン (テナント割当画面へ) */}
                                     {emp.role !== "customer" && (
                                         <Link
-                                            href="/admin/employee/assignment"
+                                            href="/company/employee/assignment"
                                             className="text-muted-foreground hover:text-foreground"
                                         >
                                             <ArrowRight className="size-4" />

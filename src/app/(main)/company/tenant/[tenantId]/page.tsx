@@ -22,7 +22,7 @@ export default async function TenantDetailPage({ params }: PageProps) {
                     </div>
                 </div>
                 <Button asChild variant="outline">
-                    <Link href="/admin/tenant">一覧へ戻る</Link>
+                    <Link href="/company/tenant">一覧へ戻る</Link>
                 </Button>
             </div>
             <Separator />

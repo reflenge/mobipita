@@ -10,10 +10,10 @@ import {
 } from "@/components/ui/sidebar";
 import { Link } from "@/components/link";
 import { UserButton } from "@clerk/nextjs";
-import AdminSidebar from "./admin-sidebar";
 import CustomerSidebar from "./customer-sidebar";
 import StaffSidebar from "./staff-sidebar";
-import ReflengeSidebar from "./reflenge-sidebar";
+import CompanySidebar from "./company-sidebar";
+import AdminSidebar from "./admin-sidebar";
 import type { AppRole } from "@/lib/roles";
 import { hasMinRole } from "@/lib/roles";
 
@@ -44,8 +44,8 @@ export function AppSidebar({ user }: AppSidebarProps) {
             <SidebarContent>
                 <CustomerSidebar />
                 {hasMinRole(user.role, "staff") && <StaffSidebar />}
-                {hasMinRole(user.role, "beyondKampo") && <AdminSidebar />}
-                {hasMinRole(user.role, "reflenge") && <ReflengeSidebar />}
+                {hasMinRole(user.role, "company") && <CompanySidebar />}
+                {hasMinRole(user.role, "admin") && <AdminSidebar />}
             </SidebarContent>
             <SidebarFooter>
                 <UserButton />

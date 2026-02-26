@@ -15,8 +15,8 @@ export default async function AssignmentPage() {
                 ((u.publicMetadata as Record<string, unknown>)
                     ?.role as string) ?? "customer";
             return (
-                role === "reflenge" ||
-                role === "beyondKampo" ||
+                role === "admin" ||
+                role === "company" ||
                 role === "staff"
             );
         })

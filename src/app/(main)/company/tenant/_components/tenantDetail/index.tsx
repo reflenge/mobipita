@@ -74,7 +74,7 @@ const TenantDetail = ({ tenantId }: TenantDetailProps) => {
                 </CardHeader>
                 <CardContent>
                     <Button asChild variant="outline">
-                        <Link href="/admin/tenant">一覧へ戻る</Link>
+                        <Link href="/company/tenant">一覧へ戻る</Link>
                     </Button>
                 </CardContent>
             </Card>

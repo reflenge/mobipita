@@ -16,7 +16,7 @@ export async function updateUserRole(targetUserId: string, newRole: AppRole) {
 
     const operatorRole = getRoleFromClaims(sessionClaims);
 
-    if (!hasMinRole(operatorRole, "beyondKampo")) {
+    if (!hasMinRole(operatorRole, "company")) {
         throw new Error("管理者権限が必要です");
     }
 

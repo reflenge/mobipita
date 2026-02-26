@@ -10,7 +10,7 @@ export default async function AdminLayout({
     const { sessionClaims } = await auth();
     const role = getRoleFromClaims(sessionClaims);
 
-    if (!hasMinRole(role, "admin")) {
+    if (!hasMinRole(role, "company")) {
         redirect("/home");
     }
 

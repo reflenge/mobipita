@@ -27,19 +27,19 @@ import {
 } from "lucide-react";
 
 const ROLE_ICON: Record<AppRole, React.ElementType> = {
-    reflenge: Crown,
-    beyondKampo: ShieldCheck,
+    admin: Crown,
+    company: ShieldCheck,
     staff: Briefcase,
     customer: UserX,
 };
 
 const ROLE_BADGE_VARIANT: Record<AppRole, "default" | "secondary" | "outline"> =
-    {
-        reflenge: "default",
-        beyondKampo: "default",
-        staff: "secondary",
-        customer: "outline",
-    };
+{
+    admin: "default",
+    company: "default",
+    staff: "secondary",
+    customer: "outline",
+};
 
 type RoleManagerProps = {
     users: UserForUpgrade[];
@@ -91,9 +91,9 @@ export function RoleManager({
                 </h1>
                 <p className="text-muted-foreground text-sm leading-relaxed">
                     ユーザーのロールを変更できます。
-                    {operatorRole === "reflenge"
-                        ? "Reflenge 権限で全ロールを割り当てられます。"
-                        : "BEYOND KAMPO 以下のロールを割り当てられます。"}
+                    {operatorRole === "admin"
+                        ? "管理者権限で全ロールを割り当てられます。"
+                        : "会社以下のロールを割り当てられます。"}
                 </p>
             </div>
 
@@ -169,7 +169,7 @@ export function RoleManager({
                                         <Badge
                                             variant={
                                                 ROLE_BADGE_VARIANT[
-                                                    user.currentRole
+                                                user.currentRole
                                                 ] ?? "outline"
                                             }
                                             className="gap-1 text-[10px] leading-none"
