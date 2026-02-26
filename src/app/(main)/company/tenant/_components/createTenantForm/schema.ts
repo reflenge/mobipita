@@ -25,7 +25,6 @@ export const storeTypeOptions = [
 
 /**
  * 店舗ステータス（長期の店舗ライフサイクル）の選択肢。
- * 店舗そのものが「事業として存在し、顧客を受け入れる体制か」を表す。
  */
 export const tenantStatusOptions = [
     {
@@ -52,27 +51,13 @@ export const tenantStatusOptions = [
 
 /** テナント作成フォームのバリデーションスキーマ（Zod） */
 export const formSchema = z.object({
-    /** テナント名（5〜32文字） */
     tenantName: z
         .string()
         .min(5, "テナント名は5文字以上で入力してください。")
         .max(32, "テナント名は32文字以内で入力してください。"),
-    /** テナントスラッグ（URL 用。英数字・ハイフン、先頭末尾は英字） */
-    tenantSlug: z
-        .string()
-        .min(5, "テナントスラッグは5文字以上で入力してください。")
-        .max(32, "テナントスラッグは32文字以内で入力してください。")
-        .regex(
-            /^[a-zA-Z][a-zA-Z0-9-]*[a-zA-Z]$/,
-            "テナントスラッグは英数字とハイフンのみで、先頭と末尾は英字にしてください。",
-        ),
-    /** テナント種別（直営 / テナント） */
     tenantType: z.enum(["direct", "tenant"]),
-    /** テナントの運用状態 */
     tenantStatus: z.enum(["preparing", "open", "paused", "closed"]),
-    /** 店舗形態（移動店舗 / 固定店舗） */
     storeType: z.enum(["mobile", "fixed"]),
-    /** テナントロゴ画像（任意。選択時は RHF + Zod でサイズ・形式を検証） */
     tenantLogo: z
         .instanceof(File)
         .optional()
@@ -91,22 +76,3 @@ export const formSchema = z.object({
 
 /** フォーム入力値の型（formSchema から推論） */
 export type CreateTenantFormValues = z.infer<typeof formSchema>;
-
-/**
- * テナントスラッグ用に UUID v4 から 32 文字の英数字文字列を生成する。
- * スキーマ（先頭・末尾が英字）を満たすよう必要なら先頭・末尾を 'a' に置き換える。
- */
-export function generateTenantSlug(): string {
-    if (typeof crypto !== "undefined" && crypto.randomUUID) {
-        let s = crypto.randomUUID().replace(/-/g, "");
-        if (!/^[a-zA-Z]/.test(s)) s = "a" + s.slice(1);
-        if (!/[a-zA-Z]$/.test(s)) s = s.slice(0, -1) + "a";
-        return s;
-    }
-    const hex = "0123456789abcdef";
-    let s = "";
-    for (let i = 0; i < 32; i++) s += hex[Math.floor(Math.random() * 16)];
-    if (!/^[a-zA-Z]/.test(s)) s = "a" + s.slice(1);
-    if (!/[a-zA-Z]$/.test(s)) s = s.slice(0, -1) + "a";
-    return s;
-}

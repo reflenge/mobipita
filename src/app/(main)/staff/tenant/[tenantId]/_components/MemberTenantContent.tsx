@@ -54,9 +54,6 @@ export function MemberTenantContent({ tenantId }: Props) {
                     <CardTitle className="text-xl">
                         {tenant.tenantName}
                     </CardTitle>
-                    <p className="text-muted-foreground text-sm">
-                        /{tenant.tenantSlug}
-                    </p>
                 </CardHeader>
             </Card>
         </div>

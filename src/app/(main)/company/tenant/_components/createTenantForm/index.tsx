@@ -6,19 +6,12 @@ import { FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { useMutation } from "convex/react";
-import { ConvexError } from "convex/values";
-
 import { FieldGroup } from "@/components/ui/field";
 import { api } from "@/../convex/_generated/api";
 import type { Id } from "@/../convex/_generated/dataModel";
 
-import {
-    formSchema,
-    type CreateTenantFormValues,
-    generateTenantSlug,
-} from "./schema";
+import { formSchema, type CreateTenantFormValues } from "./schema";
 import { TenantNameField } from "./TenantNameField";
-import { TenantSlugField } from "./TenantSlugField";
 import { TenantTypeField } from "./TenantTypeField";
 import { TenantStatusField } from "./TenantStatusField";
 import { TenantStoreTypeField } from "./TenantStoreTypeField";
@@ -45,7 +38,6 @@ export default function CreateTenantForm() {
         resolver: zodResolver(formSchema),
         defaultValues: {
             tenantName: "",
-            tenantSlug: generateTenantSlug(),
             tenantType: "tenant",
             tenantStatus: "preparing",
             storeType: "fixed",
@@ -57,7 +49,6 @@ export default function CreateTenantForm() {
     const handleReset = React.useCallback(() => {
         form.reset({
             tenantName: "",
-            tenantSlug: generateTenantSlug(),
             tenantType: "tenant",
             tenantStatus: "preparing",
             storeType: "fixed",
@@ -118,7 +109,6 @@ export default function CreateTenantForm() {
             try {
                 const tenantId = await createTenant({
                     tenantName: data.tenantName,
-                    tenantSlug: data.tenantSlug,
                     tenantType: data.tenantType,
                     tenantStatus: data.tenantStatus,
                     storeType: data.storeType,
@@ -143,31 +133,9 @@ export default function CreateTenantForm() {
                     }
                 }
 
-                router.push(`/admin/tenant/${tenantId}`);
+                router.push(`/company/tenant/${tenantId}`);
                 form.reset();
             } catch (error) {
-                // 構造化エラー（id / message）の場合は RHF のフィールドエラーに反映
-                if (error instanceof ConvexError) {
-                    const data = error.data as {
-                        id?: string;
-                        message?: string;
-                    };
-                    if (data?.id === "TENANT_SLUG_DUPLICATE") {
-                        form.setError("tenantSlug", {
-                            type: "manual",
-                            message:
-                                data.message ??
-                                "このスラッグは既に使用されています。「リセット」で新しいスラッグを採番してください。",
-                        });
-                        document
-                            .getElementById("form-rhf-demo-tenant-slug")
-                            ?.scrollIntoView({
-                                behavior: "smooth",
-                                block: "center",
-                            });
-                        return;
-                    }
-                }
                 const message =
                     error instanceof Error ? error.message : "Unknown error";
                 toast("テナント作成に失敗しました", {
@@ -189,7 +157,6 @@ export default function CreateTenantForm() {
                 >
                     <FieldGroup>
                         <TenantNameField />
-                        <TenantSlugField />
                         <TenantTypeField />
                         <TenantStatusField />
                         <TenantStoreTypeField />

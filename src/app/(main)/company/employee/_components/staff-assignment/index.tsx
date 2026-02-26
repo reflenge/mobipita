@@ -515,9 +515,6 @@ export function StaffAssignment({ members }: StaffAssignmentProps) {
                                                     <span className="block truncate text-sm font-medium">
                                                         {tenant.tenantName}
                                                     </span>
-                                                    <span className="text-muted-foreground block truncate text-xs">
-                                                        /{tenant.tenantSlug}
-                                                    </span>
                                                 </div>
                                                 {checked && (
                                                     <Check className="text-primary size-4 shrink-0" />

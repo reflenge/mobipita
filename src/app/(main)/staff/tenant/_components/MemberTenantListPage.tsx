@@ -154,9 +154,6 @@ export function MemberTenantListPage() {
                                         <h2 className="truncate text-lg font-semibold underline-offset-2 group-hover:underline">
                                             {tenant.tenantName}
                                         </h2>
-                                        <p className="text-muted-foreground text-xs">
-                                            /{tenant.tenantSlug}
-                                        </p>
                                     </div>
                                 </Link>
 

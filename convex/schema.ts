@@ -24,13 +24,11 @@ export default defineSchema({
     Tenants: defineTable({
         createdByUserId: v.string(),
         tenantName: v.string(),
-        tenantSlug: v.string(),
         tenantType: tenantType,
         tenantLogoFileId: v.optional(v.id("Files")),
         tenantStatus: tenantStatus,
         storeType: storeType,
     })
-        .index("by_slug", ["tenantSlug"])
         .index("by_status", ["tenantStatus"])
         .index("by_type", ["tenantType"])
         .index("by_status_type", ["tenantStatus", "tenantType"]),

@@ -110,9 +110,6 @@ const TenantList = () => {
                                 </div>
                                 <CardDescription className="flex flex-wrap items-center gap-2">
                                     <Badge variant="secondary">{type}</Badge>
-                                    <span className="text-muted-foreground text-xs">
-                                        /{tenant.tenantSlug}
-                                    </span>
                                 </CardDescription>
                             </CardHeader>
                             <CardContent className="text-muted-foreground space-y-3 text-sm">
