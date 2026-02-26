@@ -14,8 +14,17 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Input } from "@/components/ui/input";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 import { Link } from "@/components/link";
 import { cn } from "@/lib/utils";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
 import {
     Users,
     ShieldCheck,
@@ -26,6 +35,8 @@ import {
     ArrowRight,
     UserPlus,
     Store,
+    ChevronLeft,
+    ChevronRight,
 } from "lucide-react";
 
 /** Clerk からシリアライズした組織メンバー情報 */
@@ -76,6 +87,9 @@ export function EmployeeList({ employees }: EmployeeListProps) {
     // ---------- ローカル state ----------
     const [searchQuery, setSearchQuery] = React.useState("");
     const [roleFilter, setRoleFilter] = React.useState<RoleFilter>("all");
+    const [showCustomers, setShowCustomers] = React.useState(false);
+    const [pageSize, setPageSize] = React.useState(20);
+    const [currentPage, setCurrentPage] = React.useState(1);
 
     // ---------- 派生データ ----------
 
@@ -101,21 +115,27 @@ export function EmployeeList({ employees }: EmployeeListProps) {
         return map;
     }, [assignments]);
 
+    /** 表示対象のベースリスト（カスタマー表示トグルを反映） */
+    const baseEmployees = React.useMemo(() => {
+        if (showCustomers) return employees;
+        return employees.filter((e) => e.role !== "customer");
+    }, [employees, showCustomers]);
+
     /** ロール別の人数集計 */
     const roleCounts = React.useMemo(() => {
         const counts: Record<string, number> = {};
-        for (const e of employees) {
+        for (const e of baseEmployees) {
             counts[e.role] = (counts[e.role] ?? 0) + 1;
         }
         return counts;
-    }, [employees]);
+    }, [baseEmployees]);
 
     /** フィルタ・検索を適用したメンバー一覧 */
     const filteredEmployees = React.useMemo(() => {
-        let list = employees;
+        let list = baseEmployees;
         if (roleFilter === "company") {
             list = list.filter(
-                (e) => e.role === "admin" || e.role === "company",
+                (e) => e.role === "company",
             );
         } else if (roleFilter !== "all") {
             list = list.filter((e) => e.role === roleFilter);
@@ -129,7 +149,18 @@ export function EmployeeList({ employees }: EmployeeListProps) {
             );
         }
         return list;
-    }, [employees, roleFilter, searchQuery]);
+    }, [baseEmployees, roleFilter, searchQuery]);
+
+    React.useEffect(() => {
+        setCurrentPage(1);
+    }, [roleFilter, searchQuery, showCustomers, pageSize]);
+
+    const totalPages = Math.max(1, Math.ceil(filteredEmployees.length / pageSize));
+    const safePage = Math.min(currentPage, totalPages);
+    const pagedEmployees = filteredEmployees.slice(
+        (safePage - 1) * pageSize,
+        safePage * pageSize,
+    );
 
     const isLoading = tenants === undefined || assignments === undefined;
 
@@ -164,11 +195,11 @@ export function EmployeeList({ employees }: EmployeeListProps) {
             </div>
 
             {/* サマリーカード */}
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-5">
+            <div className={cn("grid grid-cols-2 gap-3", showCustomers ? "sm:grid-cols-4" : "sm:grid-cols-3")}>
                 <SummaryCard
                     icon={Users}
                     iconClassName="bg-slate-100 text-slate-600 dark:bg-slate-900 dark:text-slate-400"
-                    value={employees.length}
+                    value={baseEmployees.length}
                     label="全メンバー"
                     active={roleFilter === "all"}
                     onClick={() => setRoleFilter("all")}
@@ -176,11 +207,8 @@ export function EmployeeList({ employees }: EmployeeListProps) {
                 <SummaryCard
                     icon={ShieldCheck}
                     iconClassName="bg-amber-100 text-amber-600 dark:bg-amber-950 dark:text-amber-400"
-                    value={
-                        (roleCounts["admin"] ?? 0) +
-                        (roleCounts["company"] ?? 0)
-                    }
-                    label="管理者"
+                    value={roleCounts["company"] ?? 0}
+                    label="会社"
                     active={roleFilter === "company"}
                     onClick={() =>
                         setRoleFilter((p) =>
@@ -198,22 +226,44 @@ export function EmployeeList({ employees }: EmployeeListProps) {
                         setRoleFilter((p) => (p === "staff" ? "all" : "staff"))
                     }
                 />
-                <SummaryCard
-                    icon={UserX}
-                    iconClassName="bg-gray-100 text-gray-500 dark:bg-gray-900 dark:text-gray-400"
-                    value={roleCounts["customer"] ?? 0}
-                    label="カスタマー"
-                    active={roleFilter === "customer"}
-                    onClick={() =>
-                        setRoleFilter((p) =>
-                            p === "customer" ? "all" : "customer",
-                        )
-                    }
+                {showCustomers && (
+                    <SummaryCard
+                        icon={UserX}
+                        iconClassName="bg-gray-100 text-gray-500 dark:bg-gray-900 dark:text-gray-400"
+                        value={roleCounts["customer"] ?? 0}
+                        label="カスタマー"
+                        active={roleFilter === "customer"}
+                        onClick={() =>
+                            setRoleFilter((p) =>
+                                p === "customer" ? "all" : "customer",
+                            )
+                        }
+                    />
+                )}
+            </div>
+
+            {/* カスタマー表示トグル */}
+            <div className="flex items-center gap-3">
+                <Switch
+                    id="show-customers"
+                    checked={showCustomers}
+                    onCheckedChange={(checked) => {
+                        setShowCustomers(checked);
+                        if (!checked && roleFilter === "customer") {
+                            setRoleFilter("all");
+                        }
+                    }}
                 />
+                <Label
+                    htmlFor="show-customers"
+                    className="text-muted-foreground text-sm cursor-pointer select-none"
+                >
+                    カスタマーも表示する
+                </Label>
             </div>
 
             {/* 検索バー */}
-            {employees.length > 4 && (
+            {baseEmployees.length > 4 && (
                 <div className="relative">
                     <Search className="text-muted-foreground absolute top-1/2 left-3 size-4 -translate-y-1/2" />
                     <Input
@@ -253,7 +303,7 @@ export function EmployeeList({ employees }: EmployeeListProps) {
                 </Card>
             ) : (
                 <div className="space-y-2">
-                    {filteredEmployees.map((emp) => {
+                    {pagedEmployees.map((emp) => {
                         const config = ROLE_CONFIG[emp.role] ?? {
                             label: emp.role,
                             variant: "outline" as const,
@@ -364,6 +414,58 @@ export function EmployeeList({ employees }: EmployeeListProps) {
                             </Card>
                         );
                     })}
+                </div>
+            )}
+
+            {/* ページネーション */}
+            {filteredEmployees.length > 0 && (
+                <div className="flex flex-wrap items-center justify-between gap-4">
+                    <div className="flex items-center gap-2">
+                        <span className="text-muted-foreground text-sm">表示件数</span>
+                        <Select
+                            value={String(pageSize)}
+                            onValueChange={(v) => setPageSize(Number(v))}
+                        >
+                            <SelectTrigger className="max-w-[100px]">
+                                <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {[10, 20, 50, 100].map((n) => (
+                                    <SelectItem key={n} value={String(n)}>
+                                        {n}件
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                        <span className="text-muted-foreground text-sm">
+                            / {filteredEmployees.length}件中
+                        </span>
+                    </div>
+                    {totalPages > 1 && (
+                        <div className="flex items-center gap-1">
+                            <Button
+                                variant="outline"
+                                size="icon"
+                                className="size-8"
+                                disabled={safePage <= 1}
+                                onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                            >
+                                <ChevronLeft className="size-4" />
+                            </Button>
+                            <span className="text-muted-foreground px-2 text-sm tabular-nums">
+                                {safePage} / {totalPages}
+                            </span>
+                            <Button
+                                variant="outline"
+                                size="icon"
+                                className="size-8"
+                                disabled={safePage >= totalPages}
+                                onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                            >
+                                <ChevronRight className="size-4" />
+                            </Button>
+                        </div>
+                    )}
                 </div>
             )}
         </section>

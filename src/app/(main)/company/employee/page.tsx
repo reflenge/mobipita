@@ -9,7 +9,12 @@ export default async function EmployeePage() {
 
     const usersResponse = await client.users.getUserList({ limit: 100 });
 
-    const employees: EmployeeSummary[] = usersResponse.data.map((u) => {
+    const employees: EmployeeSummary[] = usersResponse.data.filter((u) => {
+        const role =
+            ((u.publicMetadata as Record<string, unknown>)?.role as string) ??
+            "customer";
+        return role !== "admin";
+    }).map((u) => {
         const role =
             ((u.publicMetadata as Record<string, unknown>)?.role as string) ??
             "customer";

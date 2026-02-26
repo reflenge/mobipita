@@ -15,7 +15,7 @@ export default async function UpgradePage() {
     if (!userId) return null;
 
     const operatorRole = getRoleFromClaims(sessionClaims);
-    const availableRoles = assignableRoles(operatorRole);
+    const availableRoles = assignableRoles("company");
 
     const client = await clerkClient();
     const usersResponse = await client.users.getUserList({ limit: 100 });

@@ -2,9 +2,9 @@ import { clerkClient } from "@clerk/nextjs/server";
 import {
     StaffAssignment,
     type MemberSummary,
-} from "../_components/staff-assignment";
+} from "../../company/employee/_components/staff-assignment";
 
-export default async function AssignmentPage() {
+export default async function AdminAssignmentPage() {
     const client = await clerkClient();
 
     const usersResponse = await client.users.getUserList({ limit: 100 });
@@ -14,7 +14,11 @@ export default async function AssignmentPage() {
             const role =
                 ((u.publicMetadata as Record<string, unknown>)
                     ?.role as string) ?? "customer";
-            return role === "company" || role === "staff";
+            return (
+                role === "admin" ||
+                role === "company" ||
+                role === "staff"
+            );
         })
         .map((u) => {
             const role =

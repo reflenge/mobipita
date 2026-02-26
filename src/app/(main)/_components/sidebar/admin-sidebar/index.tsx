@@ -8,9 +8,9 @@ import {
     SidebarMenuItem,
     SidebarSeparator,
 } from "@/components/ui/sidebar";
-import { Shield, Users } from "lucide-react";
+import { Shield, Users, Store } from "lucide-react";
 
-export default function ReflengeSidebar() {
+export default function AdminSidebar() {
     return (
         <>
             <SidebarSeparator />
@@ -31,6 +31,14 @@ export default function ReflengeSidebar() {
                                 <Link href="/admin/roles">
                                     <Users />
                                     <span>ロール管理</span>
+                                </Link>
+                            </SidebarMenuButton>
+                        </SidebarMenuItem>
+                        <SidebarMenuItem>
+                            <SidebarMenuButton asChild>
+                                <Link href="/admin/assignment">
+                                    <Store />
+                                    <span>テナント割当</span>
                                 </Link>
                             </SidebarMenuButton>
                         </SidebarMenuItem>

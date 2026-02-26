@@ -28,6 +28,10 @@ export async function updateUserRole(targetUserId: string, newRole: AppRole) {
         throw new Error("自分のロール以上には昇格できません");
     }
 
+    if (operatorRole !== "admin" && newRole === "admin") {
+        throw new Error("この権限では管理者ロールを割り当てできません");
+    }
+
     if (targetUserId === userId) {
         throw new Error("自分自身のロールは変更できません");
     }

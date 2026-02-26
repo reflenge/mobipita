@@ -47,8 +47,10 @@ type StaffAssignmentProps = {
 };
 
 const roleLabelMap: Record<string, string> = {
-    "org:admin": "Admin",
-    "org:member": "Member",
+    admin: "管理者",
+    company: "会社",
+    staff: "スタッフ",
+    customer: "カスタマー",
 };
 
 /**
@@ -247,9 +249,8 @@ export function StaffAssignment({ members }: StaffAssignmentProps) {
                                 従業員が見つかりません
                             </CardTitle>
                             <CardDescription className="max-w-sm">
-                                組織に Admin / Member がまだいないようです。
-                                「従業員へ昇格する」で Member
-                                に昇格させてから振り分けてください。
+                                スタッフ以上のメンバーがまだいないようです。
+                                「ロール変更」でスタッフに昇格させてから振り分けてください。
                             </CardDescription>
                         </div>
                     </CardContent>
@@ -440,7 +441,9 @@ export function StaffAssignment({ members }: StaffAssignmentProps) {
                                                 <Badge
                                                     variant={
                                                         member.role ===
-                                                        "org:admin"
+                                                        "admin" ||
+                                                        member.role ===
+                                                        "company"
                                                             ? "default"
                                                             : "secondary"
                                                     }
@@ -540,8 +543,7 @@ function Header() {
                 テナントへの従業員割当
             </h2>
             <p className="text-muted-foreground text-sm leading-relaxed">
-                組織の Admin / Member
-                をテナントに割り当てます。1人を複数テナントに割り当て可能です。
+                スタッフをテナントに割り当てます。1人を複数テナントに割り当て可能です。
             </p>
         </div>
     );
