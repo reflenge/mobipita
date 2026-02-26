@@ -17,7 +17,7 @@ import {
 import type { CreateTenantFormValues } from "./schema";
 import { tenantTypeOptions } from "./schema";
 
-const FORM_ID = "form-admin-tenant-create";
+const FORM_ID = "form-company-tenant-create";
 
 /** テナント種別選択フィールド（直営 / テナント） */
 export function TenantTypeField() {

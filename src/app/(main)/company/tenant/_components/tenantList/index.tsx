@@ -89,7 +89,7 @@ const TenantList = () => {
                 return (
                     <Link
                         key={tenant._id}
-                        href={`/admin/tenant/${tenant._id}`}
+                        href={`/company/tenant/${tenant._id}`}
                         className="group"
                     >
                         <Card className="transition hover:-translate-y-0.5 hover:shadow-lg">

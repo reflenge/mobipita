@@ -17,7 +17,7 @@ import {
 import type { CreateTenantFormValues } from "./schema";
 import { tenantStatusOptions } from "./schema";
 
-const FORM_ID = "form-admin-tenant-create";
+const FORM_ID = "form-company-tenant-create";
 
 /** 店舗ステータス選択フィールド（長期の店舗ライフサイクル） */
 export function TenantStatusField() {

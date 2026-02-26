@@ -47,9 +47,9 @@ export default function CompanySidebar() {
                             <SidebarMenuSub>
                                 <SidebarMenuSubItem>
                                     <SidebarMenuSubButton asChild>
-                                        <Link href="/company/tenant/create">
-                                            <PackagePlus />
-                                            <span>作成</span>
+                                        <Link href="/company/tenant/list">
+                                            <BookCopy />
+                                            <span>一覧</span>
                                         </Link>
                                     </SidebarMenuSubButton>
                                 </SidebarMenuSubItem>
@@ -57,9 +57,9 @@ export default function CompanySidebar() {
                             <SidebarMenuSub>
                                 <SidebarMenuSubItem>
                                     <SidebarMenuSubButton asChild>
-                                        <Link href="/company/tenant/list">
-                                            <BookCopy />
-                                            <span>一覧</span>
+                                        <Link href="/company/tenant/create">
+                                            <PackagePlus />
+                                            <span>作成</span>
                                         </Link>
                                     </SidebarMenuSubButton>
                                 </SidebarMenuSubItem>

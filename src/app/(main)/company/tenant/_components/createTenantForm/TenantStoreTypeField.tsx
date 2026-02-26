@@ -17,7 +17,7 @@ import {
 import type { CreateTenantFormValues } from "./schema";
 import { storeTypeOptions } from "./schema";
 
-const FORM_ID = "form-admin-tenant-create";
+const FORM_ID = "form-company-tenant-create";
 
 /** 店舗形態選択フィールド（移動店舗 / 固定店舗） */
 export function TenantStoreTypeField() {

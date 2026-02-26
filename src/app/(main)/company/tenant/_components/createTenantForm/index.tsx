@@ -19,7 +19,7 @@ import { TenantLogoField } from "./TenantLogoField";
 import { CreateTenantFormActions } from "./CreateTenantFormActions";
 
 /** フォーム要素の id に使う文字列（送信ボタンの form 属性と一致させる） */
-const FORM_ID = "form-admin-tenant-create";
+const FORM_ID = "form-company-tenant-create";
 
 /**
  * テナント作成フォーム本体。

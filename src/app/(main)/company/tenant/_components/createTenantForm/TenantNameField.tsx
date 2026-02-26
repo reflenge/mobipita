@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import type { CreateTenantFormValues } from "./schema";
 
 /** フォーム要素と紐づけるための ID プレフィックス */
-const FORM_ID = "form-admin-tenant-create";
+const FORM_ID = "form-company-tenant-create";
 
 /** テナント名入力フィールド（5〜32文字） */
 export function TenantNameField() {
