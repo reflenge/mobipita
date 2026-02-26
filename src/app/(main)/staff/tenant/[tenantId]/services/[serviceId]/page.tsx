@@ -17,10 +17,7 @@ export default async function ServiceDetailPage({ params }: PageProps) {
                     ← サービス一覧
                 </Link>
             </div>
-            <ServiceDetail
-                tenantId={tenantId}
-                serviceId={serviceId}
-            />
+            <ServiceDetail tenantId={tenantId} serviceId={serviceId} />
         </div>
     );
 }

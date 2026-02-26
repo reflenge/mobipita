@@ -20,10 +20,7 @@ export default async function LocationDetailPage({ params }: PageProps) {
                     ← 場所一覧
                 </Link>
             </div>
-            <LocationDetail
-                tenantId={tenantId}
-                locationId={locationId}
-            />
+            <LocationDetail tenantId={tenantId} locationId={locationId} />
         </div>
     );
 }

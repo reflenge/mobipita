@@ -24,8 +24,8 @@ export default async function UpgradePage() {
         .filter((u) => u.id !== userId)
         .map((u) => {
             const role =
-                ((u.publicMetadata as Record<string, unknown>)?.role as string) ??
-                "customer";
+                ((u.publicMetadata as Record<string, unknown>)
+                    ?.role as string) ?? "customer";
             const validRole = availableRoles.includes(role as AppRole)
                 ? (role as AppRole)
                 : (role as AppRole);

@@ -12,8 +12,8 @@ export default async function AssignmentPage() {
     const staffMembers: MemberSummary[] = usersResponse.data
         .filter((u) => {
             const role =
-                (u.publicMetadata as Record<string, unknown>)?.role as string ??
-                "customer";
+                ((u.publicMetadata as Record<string, unknown>)
+                    ?.role as string) ?? "customer";
             return (
                 role === "reflenge" ||
                 role === "beyondKampo" ||
@@ -22,14 +22,13 @@ export default async function AssignmentPage() {
         })
         .map((u) => {
             const role =
-                (u.publicMetadata as Record<string, unknown>)?.role as string ??
-                "customer";
+                ((u.publicMetadata as Record<string, unknown>)
+                    ?.role as string) ?? "customer";
             const firstName = u.firstName ?? "";
             const lastName = u.lastName ?? "";
             const displayName =
                 `${firstName} ${lastName}`.trim() ||
-                u.emailAddresses[0]?.emailAddress ??
-                "不明";
+                (u.emailAddresses[0]?.emailAddress ?? "不明");
             return {
                 userId: u.id,
                 role,

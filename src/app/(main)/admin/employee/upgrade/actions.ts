@@ -34,7 +34,10 @@ export async function updateUserRole(targetUserId: string, newRole: AppRole) {
 
     const client = await clerkClient();
     const targetUser = await client.users.getUser(targetUserId);
-    const currentMeta = (targetUser.publicMetadata ?? {}) as Record<string, unknown>;
+    const currentMeta = (targetUser.publicMetadata ?? {}) as Record<
+        string,
+        unknown
+    >;
 
     await client.users.updateUserMetadata(targetUserId, {
         publicMetadata: {

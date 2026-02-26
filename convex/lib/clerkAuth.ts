@@ -57,7 +57,12 @@ export const requireClerkUserId = async (
     return getClerkUserIdFromIdentity(identity);
 };
 
-const VALID_ROLES = new Set<string>(["reflenge", "beyondKampo", "staff", "customer"]);
+const VALID_ROLES = new Set<string>([
+    "reflenge",
+    "beyondKampo",
+    "staff",
+    "customer",
+]);
 
 /**
  * JWT の role クレームからロールを取得する。
@@ -86,7 +91,9 @@ export const requireMinRole = async (
     const identity = await requireClerkIdentity(ctx, errorMessage);
     const role = getRoleFromIdentity(identity);
     if (!hasMinRole(role, minRole)) {
-        throw new ConvexError(errorMessage ?? `${minRole} 以上の権限が必要です。`);
+        throw new ConvexError(
+            errorMessage ?? `${minRole} 以上の権限が必要です。`,
+        );
     }
     return identity;
 };

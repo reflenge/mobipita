@@ -13,9 +13,7 @@ export default async function MemberLocationsPage({ params }: PageProps) {
         <div className="container mx-auto space-y-8 px-6 py-10">
             <div className="flex items-center justify-between">
                 <h1 className="text-xl font-semibold">場所一覧</h1>
-                <Link
-                    href={`/staff/tenant/${tenantId}/locations/create`}
-                >
+                <Link href={`/staff/tenant/${tenantId}/locations/create`}>
                     <Button>場所を作成</Button>
                 </Link>
             </div>

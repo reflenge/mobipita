@@ -74,10 +74,7 @@ type LocationDetailProps = {
     locationId: string;
 };
 
-export function LocationDetail({
-    tenantId,
-    locationId,
-}: LocationDetailProps) {
+export function LocationDetail({ tenantId, locationId }: LocationDetailProps) {
     const [isEditing, setIsEditing] = useState(false);
     const location = useQuery(api.locations.getById, {
         locationId: locationId as Id<"Locations">,
@@ -232,9 +229,7 @@ export function LocationDetail({
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
-                    <Link
-                        href={`/staff/tenant/${tenantId}/locations`}
-                    >
+                    <Link href={`/staff/tenant/${tenantId}/locations`}>
                         <Button variant="outline">場所一覧へ</Button>
                     </Link>
                 </CardContent>

@@ -14,11 +14,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
-import {
-    type AppRole,
-    ROLE_LABELS,
-    hasMinRole,
-} from "@/lib/roles";
+import { type AppRole, ROLE_LABELS, hasMinRole } from "@/lib/roles";
 import { updateUserRole } from "../actions";
 import type { UserForUpgrade } from "../page";
 import {
@@ -37,12 +33,13 @@ const ROLE_ICON: Record<AppRole, React.ElementType> = {
     customer: UserX,
 };
 
-const ROLE_BADGE_VARIANT: Record<AppRole, "default" | "secondary" | "outline"> = {
-    reflenge: "default",
-    beyondKampo: "default",
-    staff: "secondary",
-    customer: "outline",
-};
+const ROLE_BADGE_VARIANT: Record<AppRole, "default" | "secondary" | "outline"> =
+    {
+        reflenge: "default",
+        beyondKampo: "default",
+        staff: "secondary",
+        customer: "outline",
+    };
 
 type RoleManagerProps = {
     users: UserForUpgrade[];
@@ -50,10 +47,16 @@ type RoleManagerProps = {
     availableRoles: AppRole[];
 };
 
-export function RoleManager({ users, operatorRole, availableRoles }: RoleManagerProps) {
+export function RoleManager({
+    users,
+    operatorRole,
+    availableRoles,
+}: RoleManagerProps) {
     const router = useRouter();
     const [searchQuery, setSearchQuery] = React.useState("");
-    const [pendingUserId, setPendingUserId] = React.useState<string | null>(null);
+    const [pendingUserId, setPendingUserId] = React.useState<string | null>(
+        null,
+    );
 
     const filtered = React.useMemo(() => {
         if (!searchQuery.trim()) return users;
@@ -72,7 +75,9 @@ export function RoleManager({ users, operatorRole, availableRoles }: RoleManager
             toast.success("ロールを変更しました（再ログインで反映されます）");
             router.refresh();
         } catch (err) {
-            toast.error(err instanceof Error ? err.message : "ロール変更に失敗しました");
+            toast.error(
+                err instanceof Error ? err.message : "ロール変更に失敗しました",
+            );
         } finally {
             setPendingUserId(null);
         }
@@ -127,9 +132,16 @@ export function RoleManager({ users, operatorRole, availableRoles }: RoleManager
                 {filtered.map((user) => {
                     const Icon = ROLE_ICON[user.currentRole] ?? UserX;
                     const isPending = pendingUserId === user.userId;
-                    const canChangeThisUser = hasMinRole(operatorRole, user.currentRole);
+                    const canChangeThisUser = hasMinRole(
+                        operatorRole,
+                        user.currentRole,
+                    );
 
-                    const initials = (user.displayName || user.identifier || "?")
+                    const initials = (
+                        user.displayName ||
+                        user.identifier ||
+                        "?"
+                    )
                         .slice(0, 2)
                         .toUpperCase();
 
@@ -155,11 +167,16 @@ export function RoleManager({ users, operatorRole, availableRoles }: RoleManager
                                             {user.displayName}
                                         </span>
                                         <Badge
-                                            variant={ROLE_BADGE_VARIANT[user.currentRole] ?? "outline"}
+                                            variant={
+                                                ROLE_BADGE_VARIANT[
+                                                    user.currentRole
+                                                ] ?? "outline"
+                                            }
                                             className="gap-1 text-[10px] leading-none"
                                         >
                                             <Icon className="size-3" />
-                                            {ROLE_LABELS[user.currentRole] ?? user.currentRole}
+                                            {ROLE_LABELS[user.currentRole] ??
+                                                user.currentRole}
                                         </Badge>
                                     </div>
                                     <p className="text-muted-foreground truncate text-xs">
@@ -174,9 +191,14 @@ export function RoleManager({ users, operatorRole, availableRoles }: RoleManager
                                     <Select
                                         value={user.currentRole}
                                         onValueChange={(v) =>
-                                            handleRoleChange(user.userId, v as AppRole)
+                                            handleRoleChange(
+                                                user.userId,
+                                                v as AppRole,
+                                            )
                                         }
-                                        disabled={isPending || !canChangeThisUser}
+                                        disabled={
+                                            isPending || !canChangeThisUser
+                                        }
                                     >
                                         <SelectTrigger className="w-[160px]">
                                             <SelectValue />
@@ -185,7 +207,10 @@ export function RoleManager({ users, operatorRole, availableRoles }: RoleManager
                                             {availableRoles.map((role) => {
                                                 const RIcon = ROLE_ICON[role];
                                                 return (
-                                                    <SelectItem key={role} value={role}>
+                                                    <SelectItem
+                                                        key={role}
+                                                        value={role}
+                                                    >
                                                         <span className="flex items-center gap-2">
                                                             <RIcon className="size-3" />
                                                             {ROLE_LABELS[role]}

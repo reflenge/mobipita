@@ -53,7 +53,11 @@ const ROLE_CONFIG: Record<
     }
 > = {
     reflenge: { label: "Reflenge", variant: "default", icon: ShieldCheck },
-    beyondKampo: { label: "BEYOND KAMPO", variant: "default", icon: ShieldCheck },
+    beyondKampo: {
+        label: "BEYOND KAMPO",
+        variant: "default",
+        icon: ShieldCheck,
+    },
     staff: { label: "スタッフ", variant: "secondary", icon: Briefcase },
     customer: { label: "カスタマー", variant: "outline", icon: UserX },
 };
@@ -176,7 +180,10 @@ export function EmployeeList({ employees }: EmployeeListProps) {
                 <SummaryCard
                     icon={ShieldCheck}
                     iconClassName="bg-amber-100 text-amber-600 dark:bg-amber-950 dark:text-amber-400"
-                    value={(roleCounts["reflenge"] ?? 0) + (roleCounts["beyondKampo"] ?? 0)}
+                    value={
+                        (roleCounts["reflenge"] ?? 0) +
+                        (roleCounts["beyondKampo"] ?? 0)
+                    }
                     label="管理者"
                     active={roleFilter === "beyondKampo"}
                     onClick={() =>
@@ -192,9 +199,7 @@ export function EmployeeList({ employees }: EmployeeListProps) {
                     label="スタッフ"
                     active={roleFilter === "staff"}
                     onClick={() =>
-                        setRoleFilter((p) =>
-                            p === "staff" ? "all" : "staff",
-                        )
+                        setRoleFilter((p) => (p === "staff" ? "all" : "staff"))
                     }
                 />
                 <SummaryCard

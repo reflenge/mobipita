@@ -25,10 +25,7 @@ export function MemberTenantListPage() {
         api.tenantMemberAssignments.listByMember,
         userId ? { clerkUserId: userId } : "skip",
     );
-    const allTenants = useQuery(
-        api.tenants.list,
-        { limit: 100 },
-    );
+    const allTenants = useQuery(api.tenants.list, { limit: 100 });
 
     const myTenants = useMemo(() => {
         if (!allTenants || !assignedTenantIds) return [];

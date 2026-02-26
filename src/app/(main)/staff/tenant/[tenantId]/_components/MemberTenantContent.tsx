@@ -39,9 +39,7 @@ export function MemberTenantContent({ tenantId }: Props) {
                     </CardHeader>
                     <CardContent>
                         <Button asChild variant="outline">
-                            <Link href="/staff">
-                                Member トップへ
-                            </Link>
+                            <Link href="/staff">Member トップへ</Link>
                         </Button>
                     </CardContent>
                 </Card>

@@ -74,9 +74,7 @@ export function TenantSearchPage() {
                         <Card
                             key={t._id}
                             className="hover:bg-accent group cursor-pointer transition-colors"
-                            onClick={() =>
-                                router.push(`/tenant/${t._id}`)
-                            }
+                            onClick={() => router.push(`/tenant/${t._id}`)}
                         >
                             <CardContent className="px-5 py-4">
                                 <div className="flex items-center justify-between gap-3">

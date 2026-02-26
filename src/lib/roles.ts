@@ -21,7 +21,12 @@ export const ROLE_LABELS: Record<AppRole, string> = {
 };
 
 /** 強い順に並んだ全ロール */
-export const ALL_ROLES: AppRole[] = ["reflenge", "beyondKampo", "staff", "customer"];
+export const ALL_ROLES: AppRole[] = [
+    "reflenge",
+    "beyondKampo",
+    "staff",
+    "customer",
+];
 
 const VALID_ROLES = new Set<string>(Object.keys(ROLE_LEVEL));
 

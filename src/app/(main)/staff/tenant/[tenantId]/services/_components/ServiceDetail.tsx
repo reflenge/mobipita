@@ -53,10 +53,7 @@ type ServiceDetailProps = {
     serviceId: string;
 };
 
-export function ServiceDetail({
-    tenantId,
-    serviceId,
-}: ServiceDetailProps) {
+export function ServiceDetail({ tenantId, serviceId }: ServiceDetailProps) {
     const [isEditing, setIsEditing] = useState(false);
     const service = useQuery(api.services.getById, {
         serviceId: serviceId as Id<"Services">,
@@ -159,9 +156,7 @@ export function ServiceDetail({
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
-                    <Link
-                        href={`/staff/tenant/${tenantId}/services`}
-                    >
+                    <Link href={`/staff/tenant/${tenantId}/services`}>
                         <Button variant="outline">サービス一覧へ</Button>
                     </Link>
                 </CardContent>
