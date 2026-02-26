@@ -4,11 +4,6 @@ import { requireClerkIdentity, requireClerkUserId } from "./lib/clerkAuth";
 import { slotStatus, slotVisibility } from "./values";
 import type { Id } from "./_generated/dataModel";
 
-/**
- * 予約枠を一括作成する。
- * フォームの dateTimeSlots を展開して個々の枠を生成し、
- * policySnapshot（slotTemplate 全体）と locationSnapshot は JSON.stringify で保存する。
- */
 export const createBatch = mutation({
     args: {
         tenantId: v.id("Tenants"),
@@ -62,10 +57,6 @@ export const createBatch = mutation({
     },
 });
 
-/**
- * テナントの予約枠一覧を取得する。
- * サービス名・場所名を結合して返す。
- */
 export const listByTenant = query({
     args: {
         tenantId: v.id("Tenants"),
@@ -149,10 +140,6 @@ export const listByTenant = query({
     },
 });
 
-/**
- * 顧客向け: テナントの予約可能スロット一覧を取得する。
- * open & public & 未来 & 受付期間内 & 残枠ありのスロットのみ返す。
- */
 export const listAvailableByTenant = query({
     args: {
         tenantId: v.id("Tenants"),
@@ -256,12 +243,10 @@ export const listAvailableByTenant = query({
 });
 
 /**
- * 顧客向け: 組織横断で予約可能スロットを検索する。
- * 任意のフィルタ（日付・場所・サービス）を組み合わせ可能。
+ * 全テナント横断で予約可能スロットを検索する。
  */
-export const listAvailableByOrg = query({
+export const listAvailable = query({
     args: {
-        clerkOrgId: v.string(),
         date: v.optional(v.string()),
         locationId: v.optional(v.id("Locations")),
         serviceId: v.optional(v.id("Services")),
@@ -270,12 +255,7 @@ export const listAvailableByOrg = query({
         await requireClerkIdentity(ctx);
         const now = new Date();
 
-        const tenants = await ctx.db
-            .query("Tenants")
-            .withIndex("by_clerkOrgId", (q) =>
-                q.eq("clerkOrgId", args.clerkOrgId),
-            )
-            .collect();
+        const tenants = await ctx.db.query("Tenants").collect();
         const tenantMap = new Map(tenants.map((t) => [t._id, t.tenantName]));
 
         type SlotDoc = Awaited<ReturnType<typeof ctx.db.get<"Slots">>> & {};

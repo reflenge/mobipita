@@ -4,46 +4,29 @@ import { ConvexError } from "convex/values";
 import { requireClerkIdentity, requireClerkUserId } from "./lib/clerkAuth";
 import { tenantType, tenantStatus, storeType } from "./values";
 
-// 組織単位でテナント一覧を取得する。
-export const listByOrg = query({
+export const list = query({
     args: {
-        clerkOrgId: v.string(),
         limit: v.optional(v.number()),
     },
     handler: async (ctx, args) => {
-        // 認証必須。
         await requireClerkIdentity(ctx);
         const limit = typeof args.limit === "number" ? args.limit : 50;
-        return ctx.db
-            .query("Tenants")
-            .withIndex("by_clerkOrgId", (q) =>
-                q.eq("clerkOrgId", args.clerkOrgId),
-            )
-            .order("desc")
-            .take(limit);
+        return ctx.db.query("Tenants").order("desc").take(limit);
     },
 });
 
-// 組織スコープ内のテナントを取得する。
-export const getByIdInOrg = query({
+export const getById = query({
     args: {
-        clerkOrgId: v.string(),
         tenantId: v.id("Tenants"),
     },
     handler: async (ctx, args) => {
-        // 認証必須。
         await requireClerkIdentity(ctx);
-        const tenant = await ctx.db.get(args.tenantId);
-        if (!tenant || tenant.clerkOrgId !== args.clerkOrgId) {
-            return null;
-        }
-        return tenant;
+        return await ctx.db.get(args.tenantId);
     },
 });
 
 export const create = mutation({
     args: {
-        clerkOrgId: v.string(),
         tenantName: v.string(),
         tenantSlug: v.string(),
         tenantType: tenantType,
@@ -54,14 +37,9 @@ export const create = mutation({
     handler: async (ctx, args) => {
         const createdByUserId = await requireClerkUserId(ctx);
 
-        // 同一組織内でスラッグの重複を禁止する。
         const existing = await ctx.db
             .query("Tenants")
-            .withIndex("by_clerkOrgId_tenantSlug", (q) =>
-                q
-                    .eq("clerkOrgId", args.clerkOrgId)
-                    .eq("tenantSlug", args.tenantSlug),
-            )
+            .withIndex("by_slug", (q) => q.eq("tenantSlug", args.tenantSlug))
             .first();
         if (existing) {
             throw new ConvexError({
@@ -72,8 +50,7 @@ export const create = mutation({
         }
 
         const tenantId = await ctx.db.insert("Tenants", {
-            clerkOrgId: args.clerkOrgId,
-            createdByUserId: createdByUserId,
+            createdByUserId,
             tenantName: args.tenantName,
             tenantSlug: args.tenantSlug,
             tenantType: args.tenantType,

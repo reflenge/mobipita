@@ -3,18 +3,13 @@ import { v } from "convex/values";
 import { requireClerkIdentity, requireClerkUserId } from "./lib/clerkAuth";
 
 /**
- * 組織内の全割当を取得する（従業員振り分け画面用）。
+ * 全割当を取得する（従業員振り分け画面用）。
  */
-export const listByOrg = query({
-    args: {
-        clerkOrgId: v.string(),
-    },
-    handler: async (ctx, args) => {
+export const listAll = query({
+    args: {},
+    handler: async (ctx) => {
         await requireClerkIdentity(ctx);
-        return ctx.db
-            .query("TenantMemberAssignments")
-            .withIndex("by_org", (q) => q.eq("clerkOrgId", args.clerkOrgId))
-            .collect();
+        return ctx.db.query("TenantMemberAssignments").collect();
     },
 });
 
@@ -23,7 +18,6 @@ export const listByOrg = query({
  */
 export const listByTenant = query({
     args: {
-        clerkOrgId: v.string(),
         tenantId: v.id("Tenants"),
     },
     handler: async (ctx, args) => {
@@ -32,9 +26,7 @@ export const listByTenant = query({
             .query("TenantMemberAssignments")
             .withIndex("by_tenant", (q) => q.eq("tenantId", args.tenantId))
             .collect();
-        return list
-            .filter((a) => a.clerkOrgId === args.clerkOrgId)
-            .map((a) => a.clerkUserId);
+        return list.map((a) => a.clerkUserId);
     },
 });
 
@@ -43,18 +35,13 @@ export const listByTenant = query({
  */
 export const listByMember = query({
     args: {
-        clerkOrgId: v.string(),
         clerkUserId: v.string(),
     },
     handler: async (ctx, args) => {
         await requireClerkIdentity(ctx);
         const list = await ctx.db
             .query("TenantMemberAssignments")
-            .withIndex("by_org_user", (q) =>
-                q
-                    .eq("clerkOrgId", args.clerkOrgId)
-                    .eq("clerkUserId", args.clerkUserId),
-            )
+            .withIndex("by_user", (q) => q.eq("clerkUserId", args.clerkUserId))
             .collect();
         return list.map((a) => a.tenantId);
     },
@@ -65,15 +52,14 @@ export const listByMember = query({
  */
 export const assign = mutation({
     args: {
-        clerkOrgId: v.string(),
         tenantId: v.id("Tenants"),
         clerkUserId: v.string(),
     },
     handler: async (ctx, args) => {
         await requireClerkUserId(ctx);
         const tenant = await ctx.db.get(args.tenantId);
-        if (!tenant || tenant.clerkOrgId !== args.clerkOrgId) {
-            throw new Error("テナントが組織に属していません");
+        if (!tenant) {
+            throw new Error("テナントが見つかりません");
         }
         const existing = await ctx.db
             .query("TenantMemberAssignments")
@@ -87,7 +73,6 @@ export const assign = mutation({
             return existing._id;
         }
         return await ctx.db.insert("TenantMemberAssignments", {
-            clerkOrgId: args.clerkOrgId,
             tenantId: args.tenantId,
             clerkUserId: args.clerkUserId,
         });
@@ -99,7 +84,6 @@ export const assign = mutation({
  */
 export const unassign = mutation({
     args: {
-        clerkOrgId: v.string(),
         tenantId: v.id("Tenants"),
         clerkUserId: v.string(),
     },
@@ -113,7 +97,7 @@ export const unassign = mutation({
                     .eq("clerkUserId", args.clerkUserId),
             )
             .first();
-        if (assignment && assignment.clerkOrgId === args.clerkOrgId) {
+        if (assignment) {
             await ctx.db.delete(assignment._id);
         }
     },
@@ -124,7 +108,6 @@ export const unassign = mutation({
  */
 export const setAssignmentsForMember = mutation({
     args: {
-        clerkOrgId: v.string(),
         clerkUserId: v.string(),
         tenantIds: v.array(v.id("Tenants")),
     },
@@ -132,11 +115,7 @@ export const setAssignmentsForMember = mutation({
         await requireClerkUserId(ctx);
         const current = await ctx.db
             .query("TenantMemberAssignments")
-            .withIndex("by_org_user", (q) =>
-                q
-                    .eq("clerkOrgId", args.clerkOrgId)
-                    .eq("clerkUserId", args.clerkUserId),
-            )
+            .withIndex("by_user", (q) => q.eq("clerkUserId", args.clerkUserId))
             .collect();
 
         const currentTenantIds = new Set(current.map((c) => c.tenantId));
@@ -151,9 +130,8 @@ export const setAssignmentsForMember = mutation({
         for (const tenantId of targetTenantIds) {
             if (currentTenantIds.has(tenantId)) continue;
             const tenant = await ctx.db.get(tenantId);
-            if (!tenant || tenant.clerkOrgId !== args.clerkOrgId) continue;
+            if (!tenant) continue;
             await ctx.db.insert("TenantMemberAssignments", {
-                clerkOrgId: args.clerkOrgId,
                 tenantId,
                 clerkUserId: args.clerkUserId,
             });

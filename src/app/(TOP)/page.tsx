@@ -1,6 +1,5 @@
 import { Link } from "@/components/link";
 import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
-import OrganizationMembershipList from "@/components/organizations/OrganizationMembershipList";
 import { Button } from "@/components/ui/button";
 
 const highlights = [
@@ -103,14 +102,6 @@ export default function Home() {
                         >
                             流れ
                         </Link>
-                        <SignedIn>
-                            <Link
-                                href="#memberships"
-                                className="hover:text-foreground transition"
-                            >
-                                組織
-                            </Link>
-                        </SignedIn>
                         <SignedOut>
                             <Link
                                 href="#get-started"
@@ -141,7 +132,7 @@ export default function Home() {
                                 variant="outline"
                                 className="rounded-full bg-white/80"
                             >
-                                <Link href="#memberships">組織へ</Link>
+                                <Link href="/home">ダッシュボードへ</Link>
                             </Button>
                             <UserButton />
                         </SignedIn>
@@ -194,7 +185,7 @@ export default function Home() {
                                     size="lg"
                                     className="rounded-full"
                                 >
-                                    <Link href="#memberships">組織を選ぶ</Link>
+                                    <Link href="/home">ダッシュボードへ</Link>
                                 </Button>
                             </SignedIn>
                         </div>
@@ -362,23 +353,6 @@ export default function Home() {
                         </div>
                     </div>
                 </section>
-
-                <SignedIn>
-                    <section
-                        id="memberships"
-                        className="border-foreground/10 rounded-3xl border bg-white/80 p-6 shadow-sm backdrop-blur-sm"
-                    >
-                        <div className="flex flex-col gap-2">
-                            <h2 className="text-xl font-semibold">
-                                管理中の組織
-                            </h2>
-                            <p className="text-muted-foreground text-sm">
-                                運用中の組織を選択して、予約管理に進めます。
-                            </p>
-                        </div>
-                        <OrganizationMembershipList />
-                    </section>
-                </SignedIn>
 
                 <SignedOut>
                     <section

@@ -19,21 +19,21 @@ import type * as tenants from "../tenants.js";
 import type * as values from "../values.js";
 
 import type {
-    ApiFromModules,
-    FilterApi,
-    FunctionReference,
+  ApiFromModules,
+  FilterApi,
+  FunctionReference,
 } from "convex/server";
 
 declare const fullApi: ApiFromModules<{
-    bookings: typeof bookings;
-    files: typeof files;
-    "lib/clerkAuth": typeof lib_clerkAuth;
-    locations: typeof locations;
-    services: typeof services;
-    slots: typeof slots;
-    tenantMemberAssignments: typeof tenantMemberAssignments;
-    tenants: typeof tenants;
-    values: typeof values;
+  bookings: typeof bookings;
+  files: typeof files;
+  "lib/clerkAuth": typeof lib_clerkAuth;
+  locations: typeof locations;
+  services: typeof services;
+  slots: typeof slots;
+  tenantMemberAssignments: typeof tenantMemberAssignments;
+  tenants: typeof tenants;
+  values: typeof values;
 }>;
 
 /**
@@ -45,8 +45,8 @@ declare const fullApi: ApiFromModules<{
  * ```
  */
 export declare const api: FilterApi<
-    typeof fullApi,
-    FunctionReference<any, "public">
+  typeof fullApi,
+  FunctionReference<any, "public">
 >;
 
 /**
@@ -58,8 +58,8 @@ export declare const api: FilterApi<
  * ```
  */
 export declare const internal: FilterApi<
-    typeof fullApi,
-    FunctionReference<any, "internal">
+  typeof fullApi,
+  FunctionReference<any, "internal">
 >;
 
 export declare const components: {};

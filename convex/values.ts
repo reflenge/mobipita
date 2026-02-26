@@ -1,10 +1,26 @@
 import { v } from "convex/values";
 
-/** メッセージの公開範囲（全体 / 組織） */
-export const messageScope = v.union(
-    v.literal("global"),
-    v.literal("organization"),
+/**
+ * ユーザーロール（強い順）。
+ * - reflenge: 開発会社（最高権限）
+ * - beyondKampo: 導入企業（株式会社BEYOND KAMPO）
+ * - staff: 店舗スタッフ
+ * - customer: お客さん（デフォルト）
+ */
+export const userRole = v.union(
+    v.literal("reflenge"),
+    v.literal("beyondKampo"),
+    v.literal("staff"),
+    v.literal("customer"),
 );
+
+/** ロールの強さ順マップ（数値が大きいほど強い） */
+export const ROLE_LEVEL: Record<string, number> = {
+    reflenge: 40,
+    beyondKampo: 30,
+    staff: 20,
+    customer: 10,
+};
 
 /** ファイルの状態（仮置き / 本紐付け） */
 export const fileStatus = v.union(

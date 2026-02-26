@@ -79,19 +79,6 @@ export default function NotFound() {
                     </div>
                 </section>
 
-                {/* <SignedIn>
-                    <section className="rounded-3xl border border-foreground/10 bg-white/80 p-6 shadow-sm backdrop-blur-sm">
-                        <div className="flex flex-col gap-2">
-                            <h2 className="text-xl font-semibold">
-                                管理中の組織に戻る
-                            </h2>
-                            <p className="text-sm text-muted-foreground">
-                                利用中の組織を選択して運用画面へ戻れます。
-                            </p>
-                        </div>
-                        <OrganizationMembershipList />
-                    </section>
-                </SignedIn> */}
             </main>
         </div>
     );
