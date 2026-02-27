@@ -18,6 +18,7 @@ import {
     BookCopy,
     UserPlus,
     UsersRound,
+    Tag,
 } from "lucide-react";
 
 export default function CompanySidebar() {
@@ -102,6 +103,14 @@ export default function CompanySidebar() {
                                     </SidebarMenuSubButton>
                                 </SidebarMenuSubItem>
                             </SidebarMenuSub>
+                        </SidebarMenuItem>
+                        <SidebarMenuItem>
+                            <SidebarMenuButton asChild>
+                                <Link href="/company/tags">
+                                    <Tag />
+                                    <span>タグ管理</span>
+                                </Link>
+                            </SidebarMenuButton>
                         </SidebarMenuItem>
                     </SidebarMenu>
                 </SidebarGroupContent>

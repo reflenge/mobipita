@@ -18,6 +18,7 @@ import {
     ShoppingBagIcon,
     StoreIcon,
     SearchIcon,
+    UserCircle,
 } from "lucide-react";
 
 export default function CustomerSidebar() {
@@ -87,6 +88,14 @@ export default function CustomerSidebar() {
                             <Link href="/bookings">
                                 <CalendarCheck />
                                 <span>マイ予約</span>
+                            </Link>
+                        </SidebarMenuButton>
+                    </SidebarMenuItem>
+                    <SidebarMenuItem>
+                        <SidebarMenuButton asChild>
+                            <Link href="/profile">
+                                <UserCircle />
+                                <span>マイページ</span>
                             </Link>
                         </SidebarMenuButton>
                     </SidebarMenuItem>

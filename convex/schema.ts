@@ -86,4 +86,16 @@ export default defineSchema({
     })
         .index("by_tenant", ["tenantId"])
         .index("by_tenant_active", ["tenantId", "isActive"]),
+    StaffTags: defineTable({
+        title: v.string(),
+        description: v.string(),
+        isActive: v.boolean(),
+        createdByUserId: v.string(),
+    }).index("by_active", ["isActive"]),
+    UserProfiles: defineTable({
+        clerkUserId: v.string(),
+        customerMemo: v.optional(v.string()),
+        staffMemo: v.optional(v.string()),
+        staffTags: v.optional(v.array(v.id("StaffTags"))),
+    }).index("by_user", ["clerkUserId"]),
 });
