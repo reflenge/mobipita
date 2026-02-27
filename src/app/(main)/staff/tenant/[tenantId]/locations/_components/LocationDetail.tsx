@@ -18,7 +18,6 @@ import {
     MapPinLocateSelectProvider,
 } from "@/components/map";
 import { reverseGeocodeFromLatLng } from "@/components/map/reverseGeocode";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
     Card,
@@ -34,24 +33,11 @@ import {
     FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Textarea } from "@/components/ui/textarea";
 
-const typeLabels: Record<string, string> = {
-    fixed: "固定店舗",
-    mobile: "移動店舗",
-};
-
 const formSchema = z.object({
     locations: z.object({
-        type: z.enum(["fixed", "mobile"]),
         name: z
             .string()
             .min(1, "場所名を入力してください")
@@ -89,7 +75,6 @@ export function LocationDetail({ tenantId, locationId }: LocationDetailProps) {
         resolver: zodResolver(formSchema),
         defaultValues: {
             locations: {
-                type: "fixed",
                 name: "",
                 autoAddress: "",
                 semiAddress: "",
@@ -106,10 +91,6 @@ export function LocationDetail({ tenantId, locationId }: LocationDetailProps) {
         if (location) {
             form.reset({
                 locations: {
-                    type:
-                        location.type === "mobile" || location.type === "fixed"
-                            ? location.type
-                            : "fixed",
                     name: location.name,
                     autoAddress: location.autoAddress,
                     semiAddress: location.semiAddress,
@@ -125,10 +106,6 @@ export function LocationDetail({ tenantId, locationId }: LocationDetailProps) {
         if (location && isEditing) {
             form.reset({
                 locations: {
-                    type:
-                        location.type === "mobile" || location.type === "fixed"
-                            ? location.type
-                            : "fixed",
                     name: location.name,
                     autoAddress: location.autoAddress,
                     semiAddress: location.semiAddress,
@@ -159,7 +136,6 @@ export function LocationDetail({ tenantId, locationId }: LocationDetailProps) {
             try {
                 await updateLocation({
                     locationId: locationId as Id<"Locations">,
-                    type: data.locations.type,
                     name: data.locations.name,
                     autoAddress: data.locations.autoAddress,
                     semiAddress: data.locations.semiAddress,
@@ -237,7 +213,6 @@ export function LocationDetail({ tenantId, locationId }: LocationDetailProps) {
         );
     }
 
-    const type = typeLabels[location.type] ?? "不明";
     const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${location.lat},${location.lng}`;
 
     if (isEditing) {
@@ -261,41 +236,6 @@ export function LocationDetail({ tenantId, locationId }: LocationDetailProps) {
                         className="space-y-6"
                     >
                         <FieldGroup className="space-y-4">
-                            <Controller
-                                name="locations.type"
-                                control={form.control}
-                                render={({ field, fieldState }) => (
-                                    <Field data-invalid={fieldState.invalid}>
-                                        <FieldLabel>種別</FieldLabel>
-                                        <Select
-                                            value={field.value}
-                                            onValueChange={field.onChange}
-                                        >
-                                            <SelectTrigger
-                                                aria-invalid={
-                                                    fieldState.invalid
-                                                }
-                                                className="w-full max-w-xs"
-                                            >
-                                                <SelectValue placeholder="種別を選択" />
-                                            </SelectTrigger>
-                                            <SelectContent>
-                                                <SelectItem value="fixed">
-                                                    固定店舗
-                                                </SelectItem>
-                                                <SelectItem value="mobile">
-                                                    移動店舗
-                                                </SelectItem>
-                                            </SelectContent>
-                                        </Select>
-                                        {fieldState.invalid && (
-                                            <FieldError
-                                                errors={[fieldState.error]}
-                                            />
-                                        )}
-                                    </Field>
-                                )}
-                            />
                             <Controller
                                 name="locations.name"
                                 control={form.control}
@@ -425,7 +365,6 @@ export function LocationDetail({ tenantId, locationId }: LocationDetailProps) {
                         <CardTitle className="text-2xl">
                             {location.name}
                         </CardTitle>
-                        <Badge variant="secondary">{type}</Badge>
                     </div>
                     <div className="flex items-center gap-2">
                         <Button
@@ -458,7 +397,6 @@ export function LocationDetail({ tenantId, locationId }: LocationDetailProps) {
                     <MapSinglePin
                         lat={location.lat}
                         lng={location.lng}
-                        type={location.type}
                     />
                 </div>
                 <div className="grid grid-cols-2 gap-2 text-sm">

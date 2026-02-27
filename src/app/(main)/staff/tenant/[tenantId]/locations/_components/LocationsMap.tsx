@@ -23,16 +23,12 @@ export function LocationsMap({ tenantId }: LocationsMapProps) {
     const markers: MarkerItem[] = locations.map((loc) => ({
         lat: loc.lat,
         lng: loc.lng,
-        type: loc.type,
         name: loc.name,
     }));
 
     return (
         <section className="space-y-2">
             <h2 className="text-lg font-semibold">地図</h2>
-            <p className="text-muted-foreground text-sm">
-                青＝固定店舗、オレンジ＝移動店舗
-            </p>
             <MapMultiPin markers={markers} />
         </section>
     );

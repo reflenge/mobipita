@@ -5,7 +5,6 @@ import type { Id } from "@/../convex/_generated/dataModel";
 import { api } from "@/../convex/_generated/api";
 import { TiptapViewer } from "@/components/Tiptap/viewer";
 import { Link } from "@/components/link";
-import { Badge } from "@/components/ui/badge";
 import {
     Card,
     CardContent,
@@ -14,11 +13,6 @@ import {
     CardTitle,
 } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-
-const typeLabels: Record<string, string> = {
-    fixed: "固定店舗",
-    mobile: "移動店舗",
-};
 
 type LocationListProps = {
     tenantId: string;
@@ -65,7 +59,6 @@ export function LocationList({ tenantId }: LocationListProps) {
     return (
         <div className="grid gap-4 lg:grid-cols-2">
             {locations.map((location) => {
-                const type = typeLabels[location.type] ?? "不明";
                 const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${location.lat},${location.lng}`;
                 const detailHref = `/staff/tenant/${tenantId}/locations/${location._id}`;
                 return (
@@ -83,7 +76,6 @@ export function LocationList({ tenantId }: LocationListProps) {
                                         {location.name}
                                     </Link>
                                 </CardTitle>
-                                <Badge variant="secondary">{type}</Badge>
                             </div>
                             <CardDescription>
                                 {location.semiAddress}

@@ -265,7 +265,6 @@ export function CreateSlot({ tenantId }: Props) {
                 const loc = locationMap.get(locId);
                 if (!loc) return "{}";
                 return JSON.stringify({
-                    type: loc.type,
                     name: loc.name,
                     autoAddress: loc.autoAddress,
                     semiAddress: loc.semiAddress,

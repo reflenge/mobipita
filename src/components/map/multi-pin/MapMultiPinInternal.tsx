@@ -103,15 +103,15 @@ export function MapMultiPinInternal({
                 <Marker
                     key={i}
                     position={[m.lat, m.lng] as LatLngExpression}
-                    icon={iconCache[m.type]}
+                    icon={iconCache[m.type ?? "fixed"]}
                 >
                     <Popup>
                         <span className="font-medium">
-                            {m.name ?? pinLabels[m.type]}
+                            {m.name ?? pinLabels[m.type ?? "fixed"]}
                         </span>
                         {m.name && (
                             <span className="text-muted-foreground ml-1 text-xs">
-                                ({pinLabels[m.type]})
+                                ({pinLabels[m.type ?? "fixed"]})
                             </span>
                         )}
                     </Popup>

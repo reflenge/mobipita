@@ -41,7 +41,6 @@ export default defineSchema({
         .index("by_tenant_user", ["tenantId", "clerkUserId"]),
     Locations: defineTable({
         tenantId: v.id("Tenants"),
-        type: storeType,
         name: v.string(),
         autoAddress: v.string(),
         semiAddress: v.string(),

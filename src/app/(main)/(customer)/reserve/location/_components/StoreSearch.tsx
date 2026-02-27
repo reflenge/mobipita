@@ -117,7 +117,6 @@ export function StoreSearch() {
             (locations ?? []).map((loc) => ({
                 lat: loc.lat,
                 lng: loc.lng,
-                type: loc.type,
                 name: loc.name,
             })),
         [locations],
@@ -186,9 +185,6 @@ export function StoreSearch() {
             <Card>
                 <CardHeader>
                     <CardTitle className="text-base">店舗マップ</CardTitle>
-                    <p className="text-muted-foreground text-sm">
-                        青＝固定店舗、オレンジ＝移動店舗
-                    </p>
                 </CardHeader>
                 <CardContent>
                     {hasLocations ? (
@@ -237,10 +233,6 @@ export function StoreSearch() {
                                         </div>
                                         <div className="mt-1 flex items-center justify-between">
                                             <span className="text-muted-foreground text-xs">
-                                                {loc.type === "fixed"
-                                                    ? "固定店舗"
-                                                    : "移動店舗"}
-                                                {" · "}
                                                 <span className="text-foreground font-medium">
                                                     {loc.distanceKm < 1
                                                         ? `${(loc.distanceKm * 1000).toFixed(0)} m`

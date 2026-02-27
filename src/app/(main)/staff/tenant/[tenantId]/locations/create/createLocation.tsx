@@ -24,18 +24,10 @@ import {
     FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select";
 
 const formSchema = z.object({
     locations: z.object({
         tenantId: z.string(),
-        type: z.enum(["fixed", "mobile"]),
         name: z
             .string()
             .min(1, "場所名を入力してください")
@@ -72,7 +64,6 @@ export function CreateLocation({ tenantId }: Props) {
         defaultValues: {
             locations: {
                 tenantId,
-                type: "fixed",
                 name: "",
                 autoAddress: "",
                 semiAddress: "",
@@ -105,7 +96,6 @@ export function CreateLocation({ tenantId }: Props) {
             try {
                 await createLocation({
                     tenantId: data.locations.tenantId as Id<"Tenants">,
-                    type: data.locations.type,
                     name: data.locations.name,
                     autoAddress: data.locations.autoAddress,
                     semiAddress: data.locations.semiAddress,
@@ -147,41 +137,6 @@ export function CreateLocation({ tenantId }: Props) {
                     <input
                         type="hidden"
                         {...form.register("locations.tenantId")}
-                    />
-
-                    <Controller
-                        name="locations.type"
-                        control={form.control}
-                        render={({ field, fieldState }) => (
-                            <Field data-invalid={fieldState.invalid}>
-                                <FieldLabel htmlFor="form-location-create-type">
-                                    種別
-                                </FieldLabel>
-                                <Select
-                                    value={field.value}
-                                    onValueChange={field.onChange}
-                                >
-                                    <SelectTrigger
-                                        id="form-location-create-type"
-                                        aria-invalid={fieldState.invalid}
-                                        className="w-full max-w-xs"
-                                    >
-                                        <SelectValue placeholder="種別を選択" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="fixed">
-                                            固定店舗
-                                        </SelectItem>
-                                        <SelectItem value="mobile">
-                                            移動店舗
-                                        </SelectItem>
-                                    </SelectContent>
-                                </Select>
-                                {fieldState.invalid && (
-                                    <FieldError errors={[fieldState.error]} />
-                                )}
-                            </Field>
-                        )}
                     />
 
                     <Controller
