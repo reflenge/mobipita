@@ -40,8 +40,8 @@ const formSchema = z.object({
     locations: z.object({
         name: z
             .string()
-            .min(1, "場所名を入力してください")
-            .max(100, "場所名は100文字以内で入力してください"),
+            .min(1, "出店場所名を入力してください")
+            .max(100, "出店場所名は100文字以内で入力してください"),
         autoAddress: z.string().max(255, "住所は255文字以内で入力してください"),
         semiAddress: z
             .string()
@@ -143,7 +143,7 @@ export function LocationDetail({ tenantId, locationId }: LocationDetailProps) {
                     lng: data.locations.geo.lng,
                     details: data.locations.details,
                 });
-                toast.success("場所を更新しました");
+                toast.success("出店場所を更新しました");
                 setIsEditing(false);
             } catch (error) {
                 toast.error(
@@ -168,7 +168,7 @@ export function LocationDetail({ tenantId, locationId }: LocationDetailProps) {
             await removeLocation({
                 locationId: locationId as Id<"Locations">,
             });
-            toast.success("場所を削除しました");
+            toast.success("出店場所を削除しました");
             router.push(`/staff/tenant/${tenantId}/locations`);
         } catch (error) {
             toast.error(
@@ -206,7 +206,7 @@ export function LocationDetail({ tenantId, locationId }: LocationDetailProps) {
                 </CardHeader>
                 <CardContent>
                     <Link href={`/staff/tenant/${tenantId}/locations`}>
-                        <Button variant="outline">場所一覧へ</Button>
+                        <Button variant="outline">出店場所一覧へ</Button>
                     </Link>
                 </CardContent>
             </Card>
@@ -219,7 +219,7 @@ export function LocationDetail({ tenantId, locationId }: LocationDetailProps) {
         return (
             <Card>
                 <CardHeader className="flex flex-row items-center justify-between gap-3">
-                    <CardTitle>場所を編集</CardTitle>
+                    <CardTitle>出店場所を編集</CardTitle>
                     <Button
                         type="button"
                         variant="ghost"
@@ -242,12 +242,12 @@ export function LocationDetail({ tenantId, locationId }: LocationDetailProps) {
                                 render={({ field, fieldState }) => (
                                     <Field data-invalid={fieldState.invalid}>
                                         <FieldLabel>
-                                            店舗名（場所名）
+                                            出店場所名
                                         </FieldLabel>
                                         <Input
                                             {...field}
                                             aria-invalid={fieldState.invalid}
-                                            placeholder="例: カフェ高知駅前店"
+                                            placeholder="例: 高知駅前 日曜市会場"
                                             autoComplete="off"
                                         />
                                         {fieldState.invalid && (
@@ -258,6 +258,18 @@ export function LocationDetail({ tenantId, locationId }: LocationDetailProps) {
                                     </Field>
                                 )}
                             />
+                            <Field>
+                                <FieldLabel>地図で位置を選択</FieldLabel>
+                                <p className="text-muted-foreground mb-2 text-sm">
+                                    地図をクリックすると座標が設定され、住所が自動で入ります。
+                                </p>
+                                <MapPinLocateSelectProvider
+                                    defaultValue={geoValue}
+                                    onChange={handleMapChange}
+                                >
+                                    <MapPinLocateSelect />
+                                </MapPinLocateSelectProvider>
+                            </Field>
                             <Controller
                                 name="locations.autoAddress"
                                 control={form.control}
@@ -301,18 +313,6 @@ export function LocationDetail({ tenantId, locationId }: LocationDetailProps) {
                                     </Field>
                                 )}
                             />
-                            <Field>
-                                <FieldLabel>地図で位置を選択</FieldLabel>
-                                <p className="text-muted-foreground mb-2 text-sm">
-                                    地図をクリックすると座標が設定され、住所が自動で入ります。
-                                </p>
-                                <MapPinLocateSelectProvider
-                                    defaultValue={geoValue}
-                                    onChange={handleMapChange}
-                                >
-                                    <MapPinLocateSelect />
-                                </MapPinLocateSelectProvider>
-                            </Field>
                             <Controller
                                 name="locations.details"
                                 control={form.control}
@@ -322,7 +322,7 @@ export function LocationDetail({ tenantId, locationId }: LocationDetailProps) {
                                         <Textarea
                                             {...field}
                                             aria-invalid={fieldState.invalid}
-                                            placeholder="例: 入口は北側。駐車場2台分あり。"
+                                            placeholder="例: 東口広場のテント設置エリア。雨天時は中止。"
                                             rows={3}
                                             className="resize-none"
                                         />

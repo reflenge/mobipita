@@ -19,6 +19,7 @@ import { reverseGeocodeFromLatLng } from "@/components/map/reverseGeocode";
 import { Button } from "@/components/ui/button";
 import {
     Field,
+    FieldDescription,
     FieldError,
     FieldGroup,
     FieldLabel,
@@ -30,8 +31,8 @@ const formSchema = z.object({
         tenantId: z.string(),
         name: z
             .string()
-            .min(1, "場所名を入力してください")
-            .max(100, "場所名は100文字以内で入力してください"),
+            .min(1, "出店場所名を入力してください")
+            .max(100, "出店場所名は100文字以内で入力してください"),
         autoAddress: z.string().max(255, "住所は255文字以内で入力してください"),
         semiAddress: z
             .string()
@@ -103,13 +104,13 @@ export function CreateLocation({ tenantId }: Props) {
                     lng: data.locations.geo.lng,
                     details: data.locations.details,
                 });
-                toast.success("場所を作成しました");
+                toast.success("出店場所を登録しました");
                 router.push(`/staff/tenant/${tenantId}/locations`);
             } catch (error) {
                 toast.error(
                     error instanceof Error
                         ? error.message
-                        : "場所の作成に失敗しました",
+                        : "出店場所の登録に失敗しました",
                 );
             }
         });
@@ -122,9 +123,9 @@ export function CreateLocation({ tenantId }: Props) {
     return (
         <div className="container mx-auto space-y-6 px-6 py-10">
             <div>
-                <div className="text-xl">場所作成</div>
+                <div className="text-xl">出店場所の登録</div>
                 <p className="text-muted-foreground text-sm">
-                    {tenant.tenantName} {tenant._id} の場所を新規作成します
+                    {tenant.tenantName} の出店場所（移動販売で出店する場所）を新規登録します
                 </p>
             </div>
 
@@ -145,13 +146,13 @@ export function CreateLocation({ tenantId }: Props) {
                         render={({ field, fieldState }) => (
                             <Field data-invalid={fieldState.invalid}>
                                 <FieldLabel htmlFor="form-location-create-name">
-                                    店舗名(場所名)
+                                    出店場所名
                                 </FieldLabel>
                                 <Input
                                     {...field}
                                     id="form-location-create-name"
                                     aria-invalid={fieldState.invalid}
-                                    placeholder="例: カフェ高知駅前店"
+                                    placeholder="例: 高知駅の坂本龍馬の像の前"
                                     autoComplete="off"
                                 />
                                 {fieldState.invalid && (
@@ -160,6 +161,19 @@ export function CreateLocation({ tenantId }: Props) {
                             </Field>
                         )}
                     />
+
+                    <Field>
+                        <FieldLabel>地図で位置を選択</FieldLabel>
+                        <p className="text-muted-foreground mb-2 text-sm">
+                            地図をクリックすると座標が設定され、住所が自動で入ります。
+                        </p>
+                        <MapPinLocateSelectProvider
+                            defaultValue={geoValue}
+                            onChange={handleMapChange}
+                        >
+                            <MapPinLocateSelect />
+                        </MapPinLocateSelectProvider>
+                    </Field>
 
                     <Controller
                         name="locations.autoAddress"
@@ -206,19 +220,6 @@ export function CreateLocation({ tenantId }: Props) {
                         )}
                     />
 
-                    <Field>
-                        <FieldLabel>地図で位置を選択</FieldLabel>
-                        <p className="text-muted-foreground mb-2 text-sm">
-                            地図をクリックすると座標が設定され、住所が自動で入ります。
-                        </p>
-                        <MapPinLocateSelectProvider
-                            defaultValue={geoValue}
-                            onChange={handleMapChange}
-                        >
-                            <MapPinLocateSelect />
-                        </MapPinLocateSelectProvider>
-                    </Field>
-
                     <Controller
                         name="locations.details"
                         control={form.control}
@@ -257,7 +258,7 @@ export function CreateLocation({ tenantId }: Props) {
                         form="form-location-create"
                         disabled={isPending}
                     >
-                        {isPending ? "作成中..." : "作成する"}
+                        {isPending ? "登録中..." : "登録する"}
                     </Button>
                 </Field>
             </form>

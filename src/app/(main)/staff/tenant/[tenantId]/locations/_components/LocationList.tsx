@@ -47,9 +47,9 @@ export function LocationList({ tenantId }: LocationListProps) {
         return (
             <Card className="border-dashed">
                 <CardHeader>
-                    <CardTitle>場所はまだありません</CardTitle>
+                    <CardTitle>出店場所はまだありません</CardTitle>
                     <CardDescription>
-                        最初の場所を作成して、予約の受付を始めましょう。
+                        最初の出店場所を登録して、予約の受付を始めましょう。
                     </CardDescription>
                 </CardHeader>
             </Card>

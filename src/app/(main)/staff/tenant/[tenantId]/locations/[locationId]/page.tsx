@@ -17,7 +17,7 @@ export default async function LocationDetailPage({ params }: PageProps) {
                     href={`/staff/tenant/${tenantId}/locations`}
                     className="text-muted-foreground hover:text-foreground text-sm"
                 >
-                    ← 場所一覧
+                    ← 出店場所一覧
                 </Link>
             </div>
             <LocationDetail tenantId={tenantId} locationId={locationId} />
