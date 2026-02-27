@@ -34,12 +34,12 @@ const ROLE_ICON: Record<AppRole, React.ElementType> = {
 };
 
 const ROLE_BADGE_VARIANT: Record<AppRole, "default" | "secondary" | "outline"> =
-{
-    admin: "default",
-    company: "default",
-    staff: "secondary",
-    customer: "outline",
-};
+    {
+        admin: "default",
+        company: "default",
+        staff: "secondary",
+        customer: "outline",
+    };
 
 type RoleManagerProps = {
     users: UserForUpgrade[];
@@ -169,7 +169,7 @@ export function RoleManager({
                                         <Badge
                                             variant={
                                                 ROLE_BADGE_VARIANT[
-                                                user.currentRole
+                                                    user.currentRole
                                                 ] ?? "outline"
                                             }
                                             className="gap-1 text-[10px] leading-none"

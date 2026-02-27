@@ -14,11 +14,7 @@ export default async function AdminAssignmentPage() {
             const role =
                 ((u.publicMetadata as Record<string, unknown>)
                     ?.role as string) ?? "customer";
-            return (
-                role === "admin" ||
-                role === "company" ||
-                role === "staff"
-            );
+            return role === "admin" || role === "company" || role === "staff";
         })
         .map((u) => {
             const role =

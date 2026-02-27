@@ -441,9 +441,9 @@ export function StaffAssignment({ members }: StaffAssignmentProps) {
                                                 <Badge
                                                     variant={
                                                         member.role ===
-                                                        "admin" ||
+                                                            "admin" ||
                                                         member.role ===
-                                                        "company"
+                                                            "company"
                                                             ? "default"
                                                             : "secondary"
                                                     }

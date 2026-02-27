@@ -22,7 +22,7 @@ export function AdminWarningBanner() {
         return (
             <button
                 onClick={open}
-                className="fixed right-4 top-4 z-50 rounded-md bg-red-600 p-2 text-white shadow-lg hover:bg-red-700 transition-colors"
+                className="fixed top-4 right-4 z-50 rounded-md bg-red-600 p-2 text-white shadow-lg transition-colors hover:bg-red-700"
                 aria-label="管理者警告を表示"
             >
                 <AlertTriangle className="size-5" />
@@ -31,16 +31,16 @@ export function AdminWarningBanner() {
     }
 
     return (
-        <div className="fixed right-4 top-4 z-50 w-72 bg-red-600 text-white p-4 shadow-lg rounded-lg">
+        <div className="fixed top-4 right-4 z-50 w-72 rounded-lg bg-red-600 p-4 text-white shadow-lg">
             <button
                 onClick={dismiss}
-                className="absolute right-2 top-2 rounded p-0.5 hover:bg-red-700 transition-colors"
+                className="absolute top-2 right-2 rounded p-0.5 transition-colors hover:bg-red-700"
                 aria-label="閉じる"
             >
                 <X className="size-4" />
             </button>
-            <div className="font-bold text-lg">⚠ 管理者向け</div>
-            <p className="text-sm leading-snug mt-1">
+            <div className="text-lg font-bold">⚠ 管理者向け</div>
+            <p className="mt-1 text-sm leading-snug">
                 この画面は管理者専用です。操作には注意してください。
             </p>
         </div>

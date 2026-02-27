@@ -134,9 +134,7 @@ export function EmployeeList({ employees }: EmployeeListProps) {
     const filteredEmployees = React.useMemo(() => {
         let list = baseEmployees;
         if (roleFilter === "company") {
-            list = list.filter(
-                (e) => e.role === "company",
-            );
+            list = list.filter((e) => e.role === "company");
         } else if (roleFilter !== "all") {
             list = list.filter((e) => e.role === roleFilter);
         }
@@ -155,7 +153,10 @@ export function EmployeeList({ employees }: EmployeeListProps) {
         setCurrentPage(1);
     }, [roleFilter, searchQuery, showCustomers, pageSize]);
 
-    const totalPages = Math.max(1, Math.ceil(filteredEmployees.length / pageSize));
+    const totalPages = Math.max(
+        1,
+        Math.ceil(filteredEmployees.length / pageSize),
+    );
     const safePage = Math.min(currentPage, totalPages);
     const pagedEmployees = filteredEmployees.slice(
         (safePage - 1) * pageSize,
@@ -195,7 +196,12 @@ export function EmployeeList({ employees }: EmployeeListProps) {
             </div>
 
             {/* サマリーカード */}
-            <div className={cn("grid grid-cols-2 gap-3", showCustomers ? "sm:grid-cols-4" : "sm:grid-cols-3")}>
+            <div
+                className={cn(
+                    "grid grid-cols-2 gap-3",
+                    showCustomers ? "sm:grid-cols-4" : "sm:grid-cols-3",
+                )}
+            >
                 <SummaryCard
                     icon={Users}
                     iconClassName="bg-slate-100 text-slate-600 dark:bg-slate-900 dark:text-slate-400"
@@ -256,7 +262,7 @@ export function EmployeeList({ employees }: EmployeeListProps) {
                 />
                 <Label
                     htmlFor="show-customers"
-                    className="text-muted-foreground text-sm cursor-pointer select-none"
+                    className="text-muted-foreground cursor-pointer text-sm select-none"
                 >
                     カスタマーも表示する
                 </Label>
@@ -421,7 +427,9 @@ export function EmployeeList({ employees }: EmployeeListProps) {
             {filteredEmployees.length > 0 && (
                 <div className="flex flex-wrap items-center justify-between gap-4">
                     <div className="flex items-center gap-2">
-                        <span className="text-muted-foreground text-sm">表示件数</span>
+                        <span className="text-muted-foreground text-sm">
+                            表示件数
+                        </span>
                         <Select
                             value={String(pageSize)}
                             onValueChange={(v) => setPageSize(Number(v))}
@@ -448,7 +456,9 @@ export function EmployeeList({ employees }: EmployeeListProps) {
                                 size="icon"
                                 className="size-8"
                                 disabled={safePage <= 1}
-                                onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                                onClick={() =>
+                                    setCurrentPage((p) => Math.max(1, p - 1))
+                                }
                             >
                                 <ChevronLeft className="size-4" />
                             </Button>
@@ -460,7 +470,11 @@ export function EmployeeList({ employees }: EmployeeListProps) {
                                 size="icon"
                                 className="size-8"
                                 disabled={safePage >= totalPages}
-                                onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                                onClick={() =>
+                                    setCurrentPage((p) =>
+                                        Math.min(totalPages, p + 1),
+                                    )
+                                }
                             >
                                 <ChevronRight className="size-4" />
                             </Button>

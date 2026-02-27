@@ -17,8 +17,8 @@ export default async function AdminRolesPage() {
         .filter((u) => u.id !== userId)
         .map((u) => {
             const role =
-                ((u.publicMetadata as Record<string, unknown>)?.role as string) ??
-                "customer";
+                ((u.publicMetadata as Record<string, unknown>)
+                    ?.role as string) ?? "customer";
             const firstName = u.firstName ?? "";
             const lastName = u.lastName ?? "";
             const displayName =
