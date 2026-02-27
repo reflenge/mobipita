@@ -36,6 +36,10 @@ export default async function CustomerDetailPage({ params }: Props) {
         ((clerkUser.publicMetadata as Record<string, unknown>)?.role as string) ??
         "customer";
 
+    if (userRole === "admin") {
+        notFound();
+    }
+
     const userInfo = {
         userId: clerkUser.id,
         displayName,

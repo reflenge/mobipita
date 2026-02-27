@@ -2,7 +2,7 @@ import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { getRoleFromClaims, hasMinRole } from "@/lib/roles";
 
-export default async function AdminLayout({
+export default async function CompanyLayout({
     children,
 }: {
     children: React.ReactNode;

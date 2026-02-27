@@ -14,7 +14,7 @@ export default async function CompanyUsersPage() {
     const roles = assignableRoles("company");
 
     const client = await clerkClient();
-    const usersResponse = await client.users.getUserList({ limit: 100 });
+    const usersResponse = await client.users.getUserList({});
 
     // 管理者以外の全ユーザーを取得し、表示用の UserSummary に変換
     const users: UserSummary[] = usersResponse.data
