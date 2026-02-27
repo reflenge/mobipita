@@ -1,12 +1,11 @@
 import { Link } from "@/components/link";
 import {
     Card,
-    CardContent,
     CardDescription,
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
-import { Users, Shield, Store, Link2 } from "lucide-react";
+import { Users, Link2 } from "lucide-react";
 
 export default function AdminPage() {
     return (
@@ -21,41 +20,15 @@ export default function AdminPage() {
             </section>
 
             <div className="grid gap-4 sm:grid-cols-2">
-                <Link href="/admin/roles" className="block">
+                <Link href="/admin/users" className="block">
                     <Card className="hover:border-foreground/20 h-full transition-all hover:shadow-md">
                         <CardHeader>
                             <CardTitle className="flex items-center gap-2 text-base">
-                                <Shield className="size-5 text-amber-500" />
-                                ロール管理
+                                <Users className="size-5 text-amber-500" />
+                                ユーザー管理
                             </CardTitle>
                             <CardDescription>
-                                全ユーザーのロールを管理します。全ロールを割り当て可能です。
-                            </CardDescription>
-                        </CardHeader>
-                    </Card>
-                </Link>
-                <Link href="/admin/assignment" className="block">
-                    <Card className="hover:border-foreground/20 h-full transition-all hover:shadow-md">
-                        <CardHeader>
-                            <CardTitle className="flex items-center gap-2 text-base">
-                                <Store className="size-5 text-blue-500" />
-                                テナント割当
-                            </CardTitle>
-                            <CardDescription>
-                                スタッフをテナントに割り当てます。
-                            </CardDescription>
-                        </CardHeader>
-                    </Card>
-                </Link>
-                <Link href="/company" className="block">
-                    <Card className="hover:border-foreground/20 h-full transition-all hover:shadow-md">
-                        <CardHeader>
-                            <CardTitle className="flex items-center gap-2 text-base">
-                                <Users className="size-5 text-violet-500" />
-                                会社管理
-                            </CardTitle>
-                            <CardDescription>
-                                テナント管理・従業員一覧など、会社管理機能へ移動します。
+                                全ユーザーの一覧・ロール変更・テナント割当・詳細確認。admin ロールの割り当ても可能です。
                             </CardDescription>
                         </CardHeader>
                     </Card>

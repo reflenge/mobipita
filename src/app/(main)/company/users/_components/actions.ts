@@ -1,5 +1,9 @@
 "use server";
 
+/**
+ * 会社管理：ユーザー関連のサーバーアクション
+ * ロール変更は Clerk の publicMetadata に保存し、他機能（サイドバー・権限）と連携する。
+ */
 import { auth, clerkClient } from "@clerk/nextjs/server";
 import {
     type AppRole,
@@ -10,6 +14,7 @@ import {
 
 const VALID_ROLES = new Set<string>(Object.keys(ROLE_LEVEL));
 
+/** 対象ユーザーのロールを変更する。会社以上のみ実行可。自分自身は変更不可。 */
 export async function updateUserRole(targetUserId: string, newRole: AppRole) {
     const { userId, sessionClaims } = await auth();
     if (!userId) throw new Error("認証されていません");

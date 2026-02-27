@@ -1,18 +1,23 @@
 "use client";
 
+/**
+ * 会社管理：顧客詳細コンポーネント
+ * 顧客のプロフィール表示・スタッフメモ編集・スタッフタグの付与を行う。
+ * Convex の userProfiles / staffTags と連携する。
+ */
 import * as React from "react";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "@/../convex/_generated/api";
 import type { Id } from "@/../convex/_generated/dataModel";
 import { toast } from "sonner";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Save, Tag, MessageSquare, User, ArrowLeft } from "lucide-react";
+import { Save, Tag, MessageSquare, User, ArrowLeft, Loader2 } from "lucide-react";
 import { Link } from "@/components/link";
 import { GENDER_LABELS, type ProfileAddress } from "@/lib/profile";
 
@@ -39,13 +44,13 @@ export function CustomerDetail({ user }: { user: UserInfo }) {
 
     const [staffMemo, setStaffMemo] = React.useState("");
     const [memoInit, setMemoInit] = React.useState(false);
-    const [memoSaving, setMemoSaving] = React.useState(false);
+    const [isMemoPending, startMemoTransition] = React.useTransition();
 
     const [selectedTags, setSelectedTags] = React.useState<Set<string>>(
         new Set(),
     );
     const [tagsInit, setTagsInit] = React.useState(false);
-    const [tagsSaving, setTagsSaving] = React.useState(false);
+    const [isTagsPending, startTagsTransition] = React.useTransition();
 
     React.useEffect(() => {
         if (profile && !memoInit) {
@@ -80,34 +85,32 @@ export function CustomerDetail({ user }: { user: UserInfo }) {
         selectedTags.size !== currentTagSet.size ||
         [...selectedTags].some((t) => !currentTagSet.has(t));
 
-    async function handleSaveMemo() {
-        setMemoSaving(true);
-        try {
-            await updateStaffMemo({
-                clerkUserId: user.userId,
-                staffMemo,
-            });
-            toast.success("スタッフメモを保存しました");
-        } catch {
-            toast.error("保存に失敗しました");
-        } finally {
-            setMemoSaving(false);
-        }
+    function handleSaveMemo() {
+        startMemoTransition(async () => {
+            try {
+                await updateStaffMemo({
+                    clerkUserId: user.userId,
+                    staffMemo,
+                });
+                toast.success("スタッフメモを保存しました");
+            } catch {
+                toast.error("保存に失敗しました");
+            }
+        });
     }
 
-    async function handleSaveTags() {
-        setTagsSaving(true);
-        try {
-            await setStaffTags({
-                clerkUserId: user.userId,
-                tagIds: Array.from(selectedTags) as Id<"StaffTags">[],
-            });
-            toast.success("タグを保存しました");
-        } catch {
-            toast.error("タグの保存に失敗しました");
-        } finally {
-            setTagsSaving(false);
-        }
+    function handleSaveTags() {
+        startTagsTransition(async () => {
+            try {
+                await setStaffTags({
+                    clerkUserId: user.userId,
+                    tagIds: Array.from(selectedTags) as Id<"StaffTags">[],
+                });
+                toast.success("タグを保存しました");
+            } catch {
+                toast.error("タグの保存に失敗しました");
+            }
+        });
     }
 
     function toggleTag(tagId: string) {
@@ -129,7 +132,7 @@ export function CustomerDetail({ user }: { user: UserInfo }) {
         <div className="mx-auto max-w-2xl space-y-6">
             <div className="flex items-center gap-3">
                 <Button variant="ghost" size="icon" asChild>
-                    <Link href="/company/employee">
+                    <Link href="/company/users">
                         <ArrowLeft className="size-4" />
                     </Link>
                 </Button>
@@ -204,17 +207,22 @@ export function CustomerDetail({ user }: { user: UserInfo }) {
                         placeholder="スタッフ間で共有するメモ（顧客には表示されません）"
                         rows={4}
                     />
-                    <div className="flex justify-end">
-                        <Button
-                            size="sm"
-                            disabled={!memoDirty || memoSaving}
-                            onClick={handleSaveMemo}
-                        >
-                            <Save className="size-4" />
-                            保存
-                        </Button>
-                    </div>
                 </CardContent>
+                <CardFooter className="flex justify-end">
+                    <Button
+                        size="sm"
+                        disabled={!memoDirty || isMemoPending}
+                        onClick={handleSaveMemo}
+                        className="min-w-28"
+                    >
+                        {isMemoPending ? (
+                            <Loader2 className="size-4 animate-spin" />
+                        ) : (
+                            <Save className="size-4" />
+                        )}
+                        <span>{isMemoPending ? "保存中..." : "保存"}</span>
+                    </Button>
+                </CardFooter>
             </Card>
 
             {/* スタッフタグ */}
@@ -255,30 +263,37 @@ export function CustomerDetail({ user }: { user: UserInfo }) {
                             タグが定義されていません。会社管理 &gt; タグ管理から作成してください。
                         </p>
                     )}
-                    <div className="flex items-center justify-between">
-                        <div className="flex flex-wrap gap-1">
-                            {allTags
-                                ?.filter((t) => selectedTags.has(t._id))
-                                .map((t) => (
-                                    <Badge
-                                        key={t._id}
-                                        variant="secondary"
-                                        className="text-xs"
-                                    >
-                                        {t.title}
-                                    </Badge>
-                                ))}
-                        </div>
-                        <Button
-                            size="sm"
-                            disabled={!tagsDirty || tagsSaving}
-                            onClick={handleSaveTags}
-                        >
-                            <Save className="size-4" />
-                            保存
-                        </Button>
-                    </div>
                 </CardContent>
+                <CardFooter className="flex items-center justify-between">
+                    <div className="flex flex-wrap gap-1">
+                        {allTags
+                            ?.filter((t) => selectedTags.has(t._id))
+                            .map((t) => (
+                                <Badge
+                                    key={t._id}
+                                    variant="secondary"
+                                    className="text-xs"
+                                >
+                                    {t.title}
+                                </Badge>
+                            ))}
+                    </div>
+                    <Button
+                        size="sm"
+                        disabled={!tagsDirty || isTagsPending}
+                        onClick={handleSaveTags}
+                        className="min-w-28"
+                    >
+                        {isTagsPending ? (
+                            <Loader2 className="size-4 animate-spin" />
+                        ) : (
+                            <Save className="size-4" />
+                        )}
+                        <span>{isTagsPending ? "保存中..." : "保存"}</span>
+                    </Button>
+
+                </CardFooter>
+
             </Card>
         </div>
     );

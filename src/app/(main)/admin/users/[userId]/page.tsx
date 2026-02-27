@@ -1,13 +1,13 @@
 import { clerkClient } from "@clerk/nextjs/server";
 import { notFound } from "next/navigation";
-import { CustomerDetail } from "./_components/CustomerDetail";
+import { CustomerDetail } from "../../../company/users/[userId]/_components/CustomerDetail";
 import type { ProfileMeta } from "@/lib/profile";
 
 type Props = {
     params: Promise<{ userId: string }>;
 };
 
-export default async function CustomerDetailPage({ params }: Props) {
+export default async function AdminUserDetailPage({ params }: Props) {
     const { userId } = await params;
 
     const client = await clerkClient();

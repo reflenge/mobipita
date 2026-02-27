@@ -8,7 +8,7 @@ import {
     SidebarMenuItem,
     SidebarSeparator,
 } from "@/components/ui/sidebar";
-import { Shield, Users, Store, Link2 } from "lucide-react";
+import { Shield, Users } from "lucide-react";
 
 export default function AdminSidebar() {
     return (
@@ -28,25 +28,9 @@ export default function AdminSidebar() {
                         </SidebarMenuItem>
                         <SidebarMenuItem>
                             <SidebarMenuButton asChild>
-                                <Link href="/admin/roles">
+                                <Link href="/admin/users">
                                     <Users />
-                                    <span>ロール管理</span>
-                                </Link>
-                            </SidebarMenuButton>
-                        </SidebarMenuItem>
-                        <SidebarMenuItem>
-                            <SidebarMenuButton asChild>
-                                <Link href="/admin/assignment">
-                                    <Store />
-                                    <span>テナント割当</span>
-                                </Link>
-                            </SidebarMenuButton>
-                        </SidebarMenuItem>
-                        <SidebarMenuItem>
-                            <SidebarMenuButton asChild>
-                                <Link href="/admin/links">
-                                    <Link2 />
-                                    <span>リンク集</span>
+                                    <span>ユーザー管理</span>
                                 </Link>
                             </SidebarMenuButton>
                         </SidebarMenuItem>
