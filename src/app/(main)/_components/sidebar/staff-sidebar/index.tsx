@@ -1,3 +1,4 @@
+import { Store, UserStar } from "lucide-react";
 import { Link } from "@/components/link";
 import {
     SidebarGroup,
@@ -8,7 +9,6 @@ import {
     SidebarMenuItem,
     SidebarSeparator,
 } from "@/components/ui/sidebar";
-import { Store, UserStar } from "lucide-react";
 
 export default function StaffSidebar() {
     return (

@@ -1,10 +1,9 @@
 "use client";
 
 import * as React from "react";
+import { Loader2 } from "lucide-react";
+import type { EditTagForm } from "./types";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
 import {
     Dialog,
     DialogContent,
@@ -12,8 +11,9 @@ import {
     DialogTitle,
     DialogFooter,
 } from "@/components/ui/dialog";
-import { Loader2 } from "lucide-react";
-import type { EditTagForm } from "./types";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 
 type EditTagDialogProps = {
     tag: EditTagForm | null;
@@ -58,13 +58,16 @@ export function EditTagDialog({
                             <Input
                                 id="edit-title"
                                 value={displayForm.title}
-onChange={(e) =>
+                                onChange={(e) =>
                                     setForm((prev) =>
                                         prev
                                             ? { ...prev, title: e.target.value }
                                             : tag
-                                                ? { ...tag, title: e.target.value }
-                                                : null
+                                              ? {
+                                                    ...tag,
+                                                    title: e.target.value,
+                                                }
+                                              : null,
                                     )
                                 }
                             />
@@ -82,11 +85,11 @@ onChange={(e) =>
                                                   description: e.target.value,
                                               }
                                             : tag
-                                                ? {
-                                                      ...tag,
-                                                      description: e.target.value,
-                                                  }
-                                                : null
+                                              ? {
+                                                    ...tag,
+                                                    description: e.target.value,
+                                                }
+                                              : null,
                                     )
                                 }
                                 rows={3}
@@ -100,19 +103,19 @@ onChange={(e) =>
                                     type="color"
                                     value={displayForm.color}
                                     onChange={(e) =>
-                                    setForm((prev) =>
-                                        prev
-                                            ? {
-                                                  ...prev,
-                                                  color: e.target.value,
-                                              }
-                                            : tag
+                                        setForm((prev) =>
+                                            prev
                                                 ? {
-                                                      ...tag,
+                                                      ...prev,
                                                       color: e.target.value,
                                                   }
-                                                : null
-                                    )
+                                                : tag
+                                                  ? {
+                                                        ...tag,
+                                                        color: e.target.value,
+                                                    }
+                                                  : null,
+                                        )
                                     }
                                     className="size-10 cursor-pointer rounded border p-1"
                                 />
@@ -126,9 +129,7 @@ onChange={(e) =>
                 <DialogFooter>
                     <Button
                         onClick={handleSave}
-                        disabled={
-                            !displayForm?.title.trim() || isPending
-                        }
+                        disabled={!displayForm?.title.trim() || isPending}
                         className="min-w-28"
                     >
                         {isPending ? (

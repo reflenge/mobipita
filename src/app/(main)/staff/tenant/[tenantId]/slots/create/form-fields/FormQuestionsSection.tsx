@@ -1,14 +1,14 @@
 "use client";
 
 import { useFieldArray } from "react-hook-form";
-import { Button } from "@/components/ui/button";
-import { FieldDescription, FieldLabel } from "@/components/ui/field";
+import { QuestionLabelField } from "./QuestionLabelField";
+import { QuestionRequiredField } from "./QuestionRequiredField";
+import { QuestionTypeField } from "./QuestionTypeField";
 import type { FormValues } from "../schema";
 import type { UseFormRegister } from "react-hook-form";
 import type { Control } from "react-hook-form";
-import { QuestionLabelField } from "./QuestionLabelField";
-import { QuestionTypeField } from "./QuestionTypeField";
-import { QuestionRequiredField } from "./QuestionRequiredField";
+import { Button } from "@/components/ui/button";
+import { FieldDescription, FieldLabel } from "@/components/ui/field";
 
 type Props = {
     control: Control<FormValues>;

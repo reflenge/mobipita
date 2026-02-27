@@ -1,10 +1,12 @@
 "use client";
 
 import { useMemo } from "react";
-import { useQuery } from "convex/react";
 import { useUser } from "@clerk/nextjs";
-import { api } from "@/../convex/_generated/api";
+import { useQuery } from "convex/react";
+import { ArrowRight, CalendarPlus, Home, MapPin, Store } from "lucide-react";
+import Image from "next/image";
 import type { Id } from "@/../convex/_generated/dataModel";
+import { api } from "@/../convex/_generated/api";
 import { Link } from "@/components/link";
 import {
     Card,
@@ -14,8 +16,6 @@ import {
     CardTitle,
 } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ArrowRight, CalendarPlus, Home, MapPin, Store } from "lucide-react";
-import Image from "next/image";
 
 export function MemberTenantListPage() {
     const { user } = useUser();

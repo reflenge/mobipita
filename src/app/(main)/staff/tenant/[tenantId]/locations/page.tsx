@@ -1,7 +1,7 @@
-import { Link } from "@/components/link";
-import { Button } from "@/components/ui/button";
 import { LocationList } from "./_components/LocationList";
 import { LocationsMap } from "./_components/LocationsMap";
+import { Link } from "@/components/link";
+import { Button } from "@/components/ui/button";
 
 type PageProps = {
     params: Promise<{ tenantId: string }>;

@@ -1,14 +1,15 @@
 "use client";
 
 import { useTransition } from "react";
-import { Switch } from "@/components/ui/switch";
-import { useMutation, useQuery } from "convex/react";
-import { api } from "@/../convex/_generated/api";
-import { Id } from "@/../convex/_generated/dataModel";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation, useQuery } from "convex/react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
+import CreateServiceSkeleton from "./createServiceSkeleton";
+import type { Id } from "@/../convex/_generated/dataModel";
+import { api } from "@/../convex/_generated/api";
+import Tiptap from "@/components/Tiptap";
 import { Button } from "@/components/ui/button";
 import {
     Field,
@@ -19,8 +20,7 @@ import {
     FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import Tiptap from "@/components/Tiptap";
-import CreateServiceSkeleton from "./createServiceSkeleton";
+import { Switch } from "@/components/ui/switch";
 
 const formSchema = z.object({
     service: z.object({

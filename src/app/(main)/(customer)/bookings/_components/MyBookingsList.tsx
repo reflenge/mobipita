@@ -14,14 +14,14 @@
  */
 import { useCallback, useState } from "react";
 import { useMutation, useQuery } from "convex/react";
-import { api } from "@/../convex/_generated/api";
-import type { Id } from "@/../convex/_generated/dataModel";
+import { CalendarIcon, ClockIcon, MapPinIcon, XCircleIcon } from "lucide-react";
 import { toast } from "sonner";
+import type { Id } from "@/../convex/_generated/dataModel";
+import { api } from "@/../convex/_generated/api";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { CalendarIcon, ClockIcon, MapPinIcon, XCircleIcon } from "lucide-react";
 
 const STATUS_CONFIG: Record<
     string,

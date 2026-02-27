@@ -1,21 +1,6 @@
 "use client";
 
 import {
-    Dialog,
-    DialogContent,
-    DialogHeader,
-    DialogTitle,
-} from "@/components/ui/dialog";
-import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
-import {
-    Tooltip,
-    TooltipContent,
-    TooltipProvider,
-    TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { TiptapViewer } from "@/components/Tiptap/viewer";
-import {
     CalendarIcon,
     ClockIcon,
     MapPinIcon,
@@ -33,6 +18,21 @@ import {
     HashIcon,
     ArchiveIcon,
 } from "lucide-react";
+import { TiptapViewer } from "@/components/Tiptap/viewer";
+import { Badge } from "@/components/ui/badge";
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+} from "@/components/ui/dialog";
+import { Separator } from "@/components/ui/separator";
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 const STATUS_CONFIG: Record<
     string,

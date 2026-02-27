@@ -1,7 +1,10 @@
 "use client";
 
-import { usePathname } from "next/navigation";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { BreadcrumbDropdown } from "./BreadcrumbDropdown";
+import { getSegmentLabel, isExistingRoute, truncateLabel } from "./utils";
+import type { BreadcrumbSegment } from "./types";
 import {
     Breadcrumb,
     BreadcrumbItem,
@@ -10,10 +13,6 @@ import {
     BreadcrumbPage,
     BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-
-import type { BreadcrumbSegment } from "./types";
-import { getSegmentLabel, isExistingRoute, truncateLabel } from "./utils";
-import { BreadcrumbDropdown } from "./BreadcrumbDropdown";
 
 export default function AutoBreadcrumb() {
     const pathname = usePathname();

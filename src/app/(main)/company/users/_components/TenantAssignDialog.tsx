@@ -2,9 +2,12 @@
 
 import * as React from "react";
 import { useQuery, useMutation } from "convex/react";
-import { api } from "@/../convex/_generated/api";
-import type { Id } from "@/../convex/_generated/dataModel";
+import { Check, Loader2, Save } from "lucide-react";
 import { toast } from "sonner";
+import type { Id } from "@/../convex/_generated/dataModel";
+import { api } from "@/../convex/_generated/api";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 import {
     Dialog,
     DialogContent,
@@ -12,11 +15,8 @@ import {
     DialogTitle,
     DialogFooter,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Switch } from "@/components/ui/switch";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Check, Loader2, Save } from "lucide-react";
+import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
 
 type TenantAssignDialogProps = {
@@ -57,7 +57,8 @@ export function TenantAssignDialog({
         }
     }, [open, memberTenants, initialized]);
 
-    const isLoading = tenants === undefined || memberTenants === undefined || !initialized;
+    const isLoading =
+        tenants === undefined || memberTenants === undefined || !initialized;
 
     const currentSet = new Set(memberTenants ?? []);
     const isDirty =
@@ -116,7 +117,8 @@ export function TenantAssignDialog({
                             </p>
                             {initialized && (
                                 <p className="text-muted-foreground text-xs">
-                                    {selected.size} / {tenantList.length} 割当済み
+                                    {selected.size} / {tenantList.length}{" "}
+                                    割当済み
                                 </p>
                             )}
                         </div>
@@ -125,7 +127,10 @@ export function TenantAssignDialog({
                     {isLoading ? (
                         <div className="space-y-2">
                             {[1, 2, 3].map((i) => (
-                                <Skeleton key={i} className="h-12 w-full rounded-lg" />
+                                <Skeleton
+                                    key={i}
+                                    className="h-12 w-full rounded-lg"
+                                />
                             ))}
                         </div>
                     ) : tenantList.length === 0 ? (
@@ -149,7 +154,9 @@ export function TenantAssignDialog({
                                     >
                                         <Switch
                                             checked={checked}
-                                            onCheckedChange={() => toggle(tenant._id)}
+                                            onCheckedChange={() =>
+                                                toggle(tenant._id)
+                                            }
                                         />
                                         <span className="min-w-0 flex-1 truncate text-sm font-medium">
                                             {tenant.tenantName}

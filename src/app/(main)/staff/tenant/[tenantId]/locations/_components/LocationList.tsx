@@ -1,8 +1,11 @@
 "use client";
 
 import { useQuery } from "convex/react";
+import type { Id } from "@/../convex/_generated/dataModel";
 import { api } from "@/../convex/_generated/api";
-import { Id } from "@/../convex/_generated/dataModel";
+import { TiptapViewer } from "@/components/Tiptap/viewer";
+import { Link } from "@/components/link";
+import { Badge } from "@/components/ui/badge";
 import {
     Card,
     CardContent,
@@ -11,9 +14,6 @@ import {
     CardTitle,
 } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Badge } from "@/components/ui/badge";
-import { Link } from "@/components/link";
-import { TiptapViewer } from "@/components/Tiptap/viewer";
 
 const typeLabels: Record<string, string> = {
     fixed: "固定店舗",

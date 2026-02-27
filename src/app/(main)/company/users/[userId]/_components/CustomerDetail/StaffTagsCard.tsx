@@ -2,14 +2,20 @@
 
 import * as React from "react";
 import { useMutation } from "convex/react";
-import { api } from "@/../convex/_generated/api";
-import type { Id } from "@/../convex/_generated/dataModel";
-import { toast } from "sonner";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Tag, Save, Loader2 } from "lucide-react";
+import { toast } from "sonner";
+import type { Id } from "@/../convex/_generated/dataModel";
+import { api } from "@/../convex/_generated/api";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+    Card,
+    CardContent,
+    CardFooter,
+    CardHeader,
+    CardTitle,
+} from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
 
 export type StaffTagItem = {
     _id: Id<"StaffTags">;
@@ -30,7 +36,9 @@ export function StaffTagsCard({
     allTags,
 }: StaffTagsCardProps) {
     const setStaffTags = useMutation(api.userProfiles.setStaffTags);
-    const [selectedTags, setSelectedTags] = React.useState<Set<string>>(new Set());
+    const [selectedTags, setSelectedTags] = React.useState<Set<string>>(
+        new Set(),
+    );
     const [initialized, setInitialized] = React.useState(false);
     const [isPending, startTransition] = React.useTransition();
 
@@ -83,22 +91,27 @@ export function StaffTagsCard({
                         {allTags.map((tag) => (
                             <label
                                 key={tag._id}
-                                className="flex cursor-pointer items-start gap-3 rounded-lg border p-3 transition-colors select-none hover:bg-accent/50"
+                                className="hover:bg-accent/50 flex cursor-pointer items-start gap-3 rounded-lg border p-3 transition-colors select-none"
                             >
                                 <Checkbox
                                     checked={selectedTags.has(tag._id)}
                                     onCheckedChange={() => toggleTag(tag._id)}
                                 />
                                 <div className="min-w-0">
-                                    <p className="text-sm font-medium">{tag.title}</p>
-                                    <p className="text-muted-foreground text-xs">{tag.description}</p>
+                                    <p className="text-sm font-medium">
+                                        {tag.title}
+                                    </p>
+                                    <p className="text-muted-foreground text-xs">
+                                        {tag.description}
+                                    </p>
                                 </div>
                             </label>
                         ))}
                     </div>
                 ) : (
                     <p className="text-muted-foreground text-sm">
-                        タグが定義されていません。会社管理 &gt; タグ管理から作成してください。
+                        タグが定義されていません。会社管理 &gt;
+                        タグ管理から作成してください。
                     </p>
                 )}
             </CardContent>
@@ -107,7 +120,11 @@ export function StaffTagsCard({
                     {allTags
                         ?.filter((t) => selectedTags.has(t._id))
                         .map((t) => (
-                            <Badge key={t._id} variant="secondary" className="gap-1 text-xs">
+                            <Badge
+                                key={t._id}
+                                variant="secondary"
+                                className="gap-1 text-xs"
+                            >
                                 <span
                                     className="size-2 rounded-full"
                                     style={{ backgroundColor: t.color }}

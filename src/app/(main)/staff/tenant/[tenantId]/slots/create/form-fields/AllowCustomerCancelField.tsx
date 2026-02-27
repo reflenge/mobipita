@@ -1,6 +1,8 @@
 "use client";
 
 import { Controller } from "react-hook-form";
+import type { FormValues } from "../schema";
+import type { Control } from "react-hook-form";
 import {
     Field,
     FieldContent,
@@ -9,8 +11,6 @@ import {
     FieldLabel,
 } from "@/components/ui/field";
 import { Switch } from "@/components/ui/switch";
-import type { FormValues } from "../schema";
-import type { Control } from "react-hook-form";
 
 type Props = {
     control: Control<FormValues>;

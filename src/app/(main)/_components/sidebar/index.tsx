@@ -1,3 +1,10 @@
+import { UserButton } from "@clerk/nextjs";
+import AdminSidebar from "./admin-sidebar";
+import CompanySidebar from "./company-sidebar";
+import CustomerSidebar from "./customer-sidebar";
+import StaffSidebar from "./staff-sidebar";
+import type { AppRole } from "@/lib/roles";
+import { Link } from "@/components/link";
 import {
     Sidebar,
     SidebarContent,
@@ -8,13 +15,6 @@ import {
     SidebarMenuItem,
     SidebarRail,
 } from "@/components/ui/sidebar";
-import { Link } from "@/components/link";
-import { UserButton } from "@clerk/nextjs";
-import CustomerSidebar from "./customer-sidebar";
-import StaffSidebar from "./staff-sidebar";
-import CompanySidebar from "./company-sidebar";
-import AdminSidebar from "./admin-sidebar";
-import type { AppRole } from "@/lib/roles";
 import { hasMinRole } from "@/lib/roles";
 
 interface AppSidebarProps {

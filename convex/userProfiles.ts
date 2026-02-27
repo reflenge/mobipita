@@ -1,13 +1,7 @@
-import { mutation, query } from "./_generated/server";
-import type { Id } from "./_generated/dataModel";
 import { v } from "convex/values";
-import {
-    requireClerkIdentity,
-    requireClerkUserId,
-    requireStaffOrAbove,
-    getRoleFromIdentity,
-    getClerkUserIdFromIdentity,
-} from "./lib/clerkAuth";
+import { mutation, query } from "./_generated/server";
+import { requireClerkUserId, requireStaffOrAbove } from "./lib/clerkAuth";
+import type { Id } from "./_generated/dataModel";
 
 export const getMyProfile = query({
     args: {},

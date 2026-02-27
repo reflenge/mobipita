@@ -1,4 +1,3 @@
-import { Editor } from "@tiptap/react";
 import {
     Bold,
     Strikethrough,
@@ -10,6 +9,7 @@ import {
     List,
     ListOrdered,
 } from "lucide-react";
+import type { Editor } from "@tiptap/react";
 import {
     Tooltip,
     TooltipContent,

@@ -1,7 +1,7 @@
 "use client";
 
-import { Card, CardContent } from "@/components/ui/card";
 import { Tag } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
 
 export function TagsEmptyState() {
     return (

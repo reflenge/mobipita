@@ -2,6 +2,14 @@
 
 // React から Leaflet（地図ライブラリ）を扱うためのコンポーネント群をインポート
 import { useCallback, useEffect, useRef, useState } from "react";
+import "leaflet/dist/leaflet.css";
+import { createRoot } from "react-dom/client";
+import L, { type ControlPosition, type LatLngExpression } from "leaflet";
+// Leaflet のデフォルトマーカー画像（通常・2x・影）をインポート
+import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
+import markerIcon from "leaflet/dist/images/marker-icon.png";
+import markerShadow from "leaflet/dist/images/marker-shadow.png";
+import { LocateFixed } from "lucide-react";
 import {
     MapContainer,
     Marker,
@@ -10,14 +18,6 @@ import {
     useMap,
     useMapEvents,
 } from "react-leaflet";
-import L, { type ControlPosition, type LatLngExpression } from "leaflet";
-import "leaflet/dist/leaflet.css";
-import { LocateFixed } from "lucide-react";
-import { createRoot } from "react-dom/client";
-// Leaflet のデフォルトマーカー画像（通常・2x・影）をインポート
-import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
-import markerIcon from "leaflet/dist/images/marker-icon.png";
-import markerShadow from "leaflet/dist/images/marker-shadow.png";
 import { reverseGeocodeFromLatLng } from "./reverseGeocode";
 
 // Next.js のバンドル環境だと Leaflet のデフォルトマーカー画像 URL 解決に失敗しやすいので、

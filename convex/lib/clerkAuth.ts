@@ -1,6 +1,6 @@
-import type { UserIdentity } from "convex/server";
 import { ConvexError } from "convex/values";
 import { ROLE_LEVEL } from "../values";
+import type { UserIdentity } from "convex/server";
 
 export type AppRole = "admin" | "company" | "staff" | "customer";
 

@@ -1,10 +1,6 @@
-import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
-import {
-    requireClerkUserId,
-    requireMinRole,
-    requireStaffOrAbove,
-} from "./lib/clerkAuth";
+import { mutation, query } from "./_generated/server";
+import { requireMinRole, requireStaffOrAbove } from "./lib/clerkAuth";
 
 export const list = query({
     args: {},

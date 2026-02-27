@@ -2,17 +2,16 @@ import { auth, clerkClient } from "@clerk/nextjs/server";
 import { notFound } from "next/navigation";
 import { CustomerDetail } from "./_components/CustomerDetail";
 import type { ProfileMeta } from "@/lib/profile";
-import { getRoleFromClaims, assignableRoles } from "@/lib/roles";
+import { assignableRoles } from "@/lib/roles";
 
 type Props = {
     params: Promise<{ userId: string }>;
 };
 
 export default async function CustomerDetailPage({ params }: Props) {
-    const { userId: currentUserId, sessionClaims } = await auth();
+    const { userId: currentUserId } = await auth();
     if (!currentUserId) return null;
 
-    const operatorRole = getRoleFromClaims(sessionClaims);
     const roles = assignableRoles("company");
 
     const { userId } = await params;
@@ -33,8 +32,8 @@ export default async function CustomerDetailPage({ params }: Props) {
         (clerkUser.emailAddresses[0]?.emailAddress ?? "不明");
 
     const userRole =
-        ((clerkUser.publicMetadata as Record<string, unknown>)?.role as string) ??
-        "customer";
+        ((clerkUser.publicMetadata as Record<string, unknown>)
+            ?.role as string) ?? "customer";
 
     if (userRole === "admin") {
         notFound();

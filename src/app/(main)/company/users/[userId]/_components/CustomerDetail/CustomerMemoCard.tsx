@@ -1,7 +1,7 @@
 "use client";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { User } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 type CustomerMemoCardProps = {
     customerMemo: string;
@@ -17,7 +17,7 @@ export function CustomerMemoCard({ customerMemo }: CustomerMemoCardProps) {
                 </CardTitle>
             </CardHeader>
             <CardContent>
-                <p className="text-muted-foreground bg-muted/50 min-h-16 whitespace-pre-wrap rounded-md p-3 text-sm">
+                <p className="text-muted-foreground bg-muted/50 min-h-16 rounded-md p-3 text-sm whitespace-pre-wrap">
                     {customerMemo || "メモなし"}
                 </p>
             </CardContent>

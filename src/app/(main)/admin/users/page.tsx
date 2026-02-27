@@ -1,9 +1,9 @@
 import { auth, clerkClient } from "@clerk/nextjs/server";
-import { getRoleFromClaims, assignableRoles } from "@/lib/roles";
 import {
     UserList,
     type UserSummary,
 } from "../../company/users/_components/UserList";
+import { getRoleFromClaims, assignableRoles } from "@/lib/roles";
 
 export default async function AdminUsersPage() {
     const { userId, sessionClaims } = await auth();

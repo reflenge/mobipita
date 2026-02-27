@@ -33,8 +33,8 @@ export default async function AdminUserDetailPage({ params }: Props) {
         (clerkUser.emailAddresses[0]?.emailAddress ?? "不明");
 
     const userRole =
-        ((clerkUser.publicMetadata as Record<string, unknown>)?.role as string) ??
-        "customer";
+        ((clerkUser.publicMetadata as Record<string, unknown>)
+            ?.role as string) ?? "customer";
 
     const userInfo = {
         userId: clerkUser.id,

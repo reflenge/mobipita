@@ -1,14 +1,21 @@
 "use client";
 
 import { useCallback, useTransition } from "react";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useQuery, useMutation } from "convex/react";
 import { useRouter } from "next/navigation";
-import { api } from "@/../convex/_generated/api";
-import { Id } from "@/../convex/_generated/dataModel";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
+import CreateLocationSkeleton from "./createLocationSkeleton";
+import type { Id } from "@/../convex/_generated/dataModel";
+import { api } from "@/../convex/_generated/api";
+import Tiptap from "@/components/Tiptap";
+import {
+    MapPinLocateSelect,
+    MapPinLocateSelectProvider,
+} from "@/components/map";
+import { reverseGeocodeFromLatLng } from "@/components/map/reverseGeocode";
 import { Button } from "@/components/ui/button";
 import {
     Field,
@@ -24,13 +31,6 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
-import Tiptap from "@/components/Tiptap";
-import {
-    MapPinLocateSelect,
-    MapPinLocateSelectProvider,
-} from "@/components/map";
-import { reverseGeocodeFromLatLng } from "@/components/map/reverseGeocode";
-import CreateLocationSkeleton from "./createLocationSkeleton";
 
 const formSchema = z.object({
     locations: z.object({

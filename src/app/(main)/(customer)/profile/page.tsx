@@ -1,18 +1,23 @@
 "use client";
 
+import * as React from "react";
 import { useUser } from "@clerk/nextjs";
 import { useQuery, useMutation } from "convex/react";
-import { api } from "@/../convex/_generated/api";
-import * as React from "react";
-import { toast } from "sonner";
-import { Link } from "@/components/link";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Textarea } from "@/components/ui/textarea";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
 import { Pencil, Save, User } from "lucide-react";
+import { toast } from "sonner";
+import { api } from "@/../convex/_generated/api";
+import { Link } from "@/components/link";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
+} from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Textarea } from "@/components/ui/textarea";
 import { GENDER_LABELS, type ProfileMeta } from "@/lib/profile";
 
 export default function ProfilePage() {
@@ -44,9 +49,10 @@ export default function ProfilePage() {
     if (!user) return null;
 
     const meta = (user.unsafeMetadata ?? {}) as ProfileMeta;
-    const initials = `${user.lastName ?? ""}${user.firstName ?? ""}`
-        .slice(0, 2)
-        .toUpperCase() || "?";
+    const initials =
+        `${user.lastName ?? ""}${user.firstName ?? ""}`
+            .slice(0, 2)
+            .toUpperCase() || "?";
 
     const isDirty = memo !== (profile?.customerMemo ?? "");
 
@@ -80,7 +86,10 @@ export default function ProfilePage() {
                 <CardHeader>
                     <CardTitle className="flex items-center gap-3 text-base">
                         <Avatar className="size-12">
-                            <AvatarImage src={user.imageUrl} alt={user.fullName ?? ""} />
+                            <AvatarImage
+                                src={user.imageUrl}
+                                alt={user.fullName ?? ""}
+                            />
                             <AvatarFallback>{initials}</AvatarFallback>
                         </Avatar>
                         <div>
@@ -93,13 +102,22 @@ export default function ProfilePage() {
                         </div>
                     </CardTitle>
                     <CardDescription>
-                        ※GoogleやLINEでログインした直後は、連携元の名前がそのまま登録されています。<br />
+                        ※GoogleやLINEでログインした直後は、連携元の名前がそのまま登録されています。
+                        <br />
                         正しいお名前に変更してください。
                     </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-3 text-sm">
-                    <InfoRow label="性別" value={meta.gender ? GENDER_LABELS[meta.gender] : "未設定"} />
-                    <InfoRow label="生年月日" value={meta.birthday ?? "未設定"} />
+                    <InfoRow
+                        label="性別"
+                        value={
+                            meta.gender ? GENDER_LABELS[meta.gender] : "未設定"
+                        }
+                    />
+                    <InfoRow
+                        label="生年月日"
+                        value={meta.birthday ?? "未設定"}
+                    />
                     <InfoRow label="電話番号" value={meta.phone ?? "未設定"} />
                     {meta.address ? (
                         <InfoRow

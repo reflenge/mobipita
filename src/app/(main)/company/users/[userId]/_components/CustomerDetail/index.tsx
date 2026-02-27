@@ -7,18 +7,18 @@
  */
 import * as React from "react";
 import { useQuery } from "convex/react";
-import { api } from "@/../convex/_generated/api";
-import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
 import { ArrowLeft } from "lucide-react";
-import { Link } from "@/components/link";
 import { RoleChangeDialog } from "../../../_components/RoleChangeDialog";
 import { TenantAssignDialog } from "../../../_components/TenantAssignDialog";
-import type { CustomerDetailProps } from "./types";
-import { ProfileCard } from "./ProfileCard";
 import { CustomerMemoCard } from "./CustomerMemoCard";
+import { ProfileCard } from "./ProfileCard";
 import { StaffMemoCard } from "./StaffMemoCard";
 import { StaffTagsCard, type StaffTagItem } from "./StaffTagsCard";
+import type { CustomerDetailProps } from "./types";
+import { api } from "@/../convex/_generated/api";
+import { Link } from "@/components/link";
+import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export type { UserInfo } from "./types";
 
@@ -69,7 +69,9 @@ export function CustomerDetail({
                         <ArrowLeft className="size-4" />
                     </Link>
                 </Button>
-                <h1 className="text-2xl font-semibold tracking-tight">顧客詳細</h1>
+                <h1 className="text-2xl font-semibold tracking-tight">
+                    顧客詳細
+                </h1>
             </div>
 
             <ProfileCard

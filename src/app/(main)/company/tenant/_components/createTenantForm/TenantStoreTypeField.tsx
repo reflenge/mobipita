@@ -1,6 +1,8 @@
 "use client";
 
 import { Controller, useFormContext } from "react-hook-form";
+import { storeTypeOptions } from "./schema";
+import type { CreateTenantFormValues } from "./schema";
 import {
     Field,
     FieldDescription,
@@ -14,8 +16,6 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
-import type { CreateTenantFormValues } from "./schema";
-import { storeTypeOptions } from "./schema";
 
 const FORM_ID = "form-company-tenant-create";
 

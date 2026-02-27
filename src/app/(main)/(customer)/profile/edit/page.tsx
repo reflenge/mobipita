@@ -2,12 +2,20 @@
 
 import * as React from "react";
 import { useUser } from "@clerk/nextjs";
+import { Save, ArrowLeft, CalendarIcon, Search, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { Link } from "@/components/link";
 import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from "@/components/ui/popover";
 import {
     Select,
     SelectContent,
@@ -16,21 +24,13 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Calendar } from "@/components/ui/calendar";
-import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-} from "@/components/ui/popover";
-import { Save, ArrowLeft, CalendarIcon, Search, Loader2 } from "lucide-react";
-import { Link } from "@/components/link";
-import { cn } from "@/lib/utils";
 import {
     GENDER_LABELS,
     PREFECTURES,
     type ProfileMeta,
     type ProfileAddress,
 } from "@/lib/profile";
+import { cn } from "@/lib/utils";
 
 export default function ProfileEditPage() {
     const { user, isLoaded } = useUser();
@@ -102,9 +102,7 @@ export default function ProfileEditPage() {
                 return;
             }
             setPrefecture(json.data.pref ?? "");
-            setCity(
-                `${json.data.city ?? ""}${json.data.town ?? ""}`,
-            );
+            setCity(`${json.data.city ?? ""}${json.data.town ?? ""}`);
             toast.success("住所を取得しました");
         } catch {
             toast.error("住所検索に失敗しました");
@@ -173,7 +171,9 @@ export default function ProfileEditPage() {
                                 <Input
                                     id="lastName"
                                     value={lastName}
-                                    onChange={(e) => setLastName(e.target.value)}
+                                    onChange={(e) =>
+                                        setLastName(e.target.value)
+                                    }
                                     placeholder="山田"
                                 />
                             </div>
@@ -182,7 +182,9 @@ export default function ProfileEditPage() {
                                 <Input
                                     id="firstName"
                                     value={firstName}
-                                    onChange={(e) => setFirstName(e.target.value)}
+                                    onChange={(e) =>
+                                        setFirstName(e.target.value)
+                                    }
                                     placeholder="太郎"
                                 />
                             </div>
@@ -191,14 +193,20 @@ export default function ProfileEditPage() {
                         <div className="grid gap-4 sm:grid-cols-2">
                             <div className="space-y-2">
                                 <Label htmlFor="gender">性別</Label>
-                                <Select value={gender} onValueChange={setGender}>
+                                <Select
+                                    value={gender}
+                                    onValueChange={setGender}
+                                >
                                     <SelectTrigger id="gender">
                                         <SelectValue placeholder="選択してください" />
                                     </SelectTrigger>
                                     <SelectContent>
                                         {Object.entries(GENDER_LABELS).map(
                                             ([value, label]) => (
-                                                <SelectItem key={value} value={value}>
+                                                <SelectItem
+                                                    key={value}
+                                                    value={value}
+                                                >
                                                     {label}
                                                 </SelectItem>
                                             ),
@@ -214,29 +222,52 @@ export default function ProfileEditPage() {
                                             variant="outline"
                                             className={cn(
                                                 "w-full justify-start text-left font-normal",
-                                                !birthday && "text-muted-foreground",
+                                                !birthday &&
+                                                    "text-muted-foreground",
                                             )}
                                         >
                                             <CalendarIcon className="size-4" />
                                             {birthday
-                                                ? new Date(birthday + "T00:00:00").toLocaleDateString("ja-JP", {
-                                                      year: "numeric",
-                                                      month: "long",
-                                                      day: "numeric",
-                                                  })
+                                                ? new Date(
+                                                      birthday + "T00:00:00",
+                                                  ).toLocaleDateString(
+                                                      "ja-JP",
+                                                      {
+                                                          year: "numeric",
+                                                          month: "long",
+                                                          day: "numeric",
+                                                      },
+                                                  )
                                                 : "選択してください"}
                                         </Button>
                                     </PopoverTrigger>
-                                    <PopoverContent className="w-auto p-0" align="start">
+                                    <PopoverContent
+                                        className="w-auto p-0"
+                                        align="start"
+                                    >
                                         <Calendar
                                             mode="single"
-                                            selected={birthday ? new Date(birthday + "T00:00:00") : undefined}
+                                            selected={
+                                                birthday
+                                                    ? new Date(
+                                                          birthday +
+                                                              "T00:00:00",
+                                                      )
+                                                    : undefined
+                                            }
                                             onSelect={(date) => {
                                                 if (date) {
-                                                    const y = date.getFullYear();
-                                                    const m = String(date.getMonth() + 1).padStart(2, "0");
-                                                    const d = String(date.getDate()).padStart(2, "0");
-                                                    setBirthday(`${y}-${m}-${d}`);
+                                                    const y =
+                                                        date.getFullYear();
+                                                    const m = String(
+                                                        date.getMonth() + 1,
+                                                    ).padStart(2, "0");
+                                                    const d = String(
+                                                        date.getDate(),
+                                                    ).padStart(2, "0");
+                                                    setBirthday(
+                                                        `${y}-${m}-${d}`,
+                                                    );
                                                 } else {
                                                     setBirthday("");
                                                 }
@@ -244,7 +275,14 @@ export default function ProfileEditPage() {
                                             captionLayout="dropdown"
                                             fromYear={1920}
                                             toYear={new Date().getFullYear()}
-                                            defaultMonth={birthday ? new Date(birthday + "T00:00:00") : new Date(2000, 0)}
+                                            defaultMonth={
+                                                birthday
+                                                    ? new Date(
+                                                          birthday +
+                                                              "T00:00:00",
+                                                      )
+                                                    : new Date(2000, 0)
+                                            }
                                         />
                                     </PopoverContent>
                                 </Popover>
@@ -276,7 +314,9 @@ export default function ProfileEditPage() {
                                     <Input
                                         id="postalCode"
                                         value={postalCode}
-                                        onChange={(e) => setPostalCode(e.target.value)}
+                                        onChange={(e) =>
+                                            setPostalCode(e.target.value)
+                                        }
                                         placeholder="100-0001"
                                         className="flex-1"
                                     />
@@ -298,7 +338,10 @@ export default function ProfileEditPage() {
                             </div>
                             <div className="space-y-2">
                                 <Label htmlFor="prefecture">都道府県</Label>
-                                <Select value={prefecture} onValueChange={setPrefecture}>
+                                <Select
+                                    value={prefecture}
+                                    onValueChange={setPrefecture}
+                                >
                                     <SelectTrigger id="prefecture">
                                         <SelectValue placeholder="選択してください" />
                                     </SelectTrigger>

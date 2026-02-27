@@ -5,8 +5,12 @@
  * ユーザーのロールを Select で選択し、サーバーアクションで Clerk の publicMetadata を更新する。
  */
 import * as React from "react";
+import { Loader2, Crown, ShieldCheck, Briefcase, UserX } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { updateUserRole } from "./actions";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 import {
     Dialog,
     DialogContent,
@@ -14,8 +18,6 @@ import {
     DialogTitle,
     DialogFooter,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
     Select,
     SelectContent,
@@ -24,9 +26,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
-import { Loader2, Crown, ShieldCheck, Briefcase, UserX } from "lucide-react";
 import { type AppRole, ROLE_LABELS } from "@/lib/roles";
-import { updateUserRole } from "./actions";
 
 /** ロールごとの Select 内アイコン */
 const ROLE_ICON: Record<AppRole, React.ElementType> = {

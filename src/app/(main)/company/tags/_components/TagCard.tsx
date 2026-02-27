@@ -1,12 +1,18 @@
 "use client";
 
-import type { Doc } from "@/../convex/_generated/dataModel";
-import { Button } from "@/components/ui/button";
-import { Card, CardFooter, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Switch } from "@/components/ui/switch";
 import { Pencil } from "lucide-react";
 import type { EditTagForm } from "./types";
+import type { Doc } from "@/../convex/_generated/dataModel";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+    Card,
+    CardFooter,
+    CardHeader,
+    CardTitle,
+    CardDescription,
+} from "@/components/ui/card";
+import { Switch } from "@/components/ui/switch";
 
 type TagCardProps = {
     tag: Doc<"StaffTags">;
@@ -32,12 +38,10 @@ export function TagCard({ tag, onEdit, onToggle }: TagCardProps) {
                             {tag.isActive ? "有効" : "無効"}
                         </Badge>
                     </CardTitle>
-                    <CardDescription>
-                        {tag.description}
-                    </CardDescription>
+                    <CardDescription>{tag.description}</CardDescription>
                 </div>
             </CardHeader>
-            <CardFooter className="flex shrink-0 items-center gap-3 justify-between">
+            <CardFooter className="flex shrink-0 items-center justify-between gap-3">
                 <Button
                     variant="outline"
                     size="sm"
@@ -71,9 +75,7 @@ export function TagCard({ tag, onEdit, onToggle }: TagCardProps) {
                                 ? `「${tag.title}」を無効にする（選択不可にします）`
                                 : `「${tag.title}」を有効にする（選択可能にします）`
                         }
-                        title={
-                            tag.isActive ? "無効にする" : "有効にする"
-                        }
+                        title={tag.isActive ? "無効にする" : "有効にする"}
                     />
                 </div>
             </CardFooter>

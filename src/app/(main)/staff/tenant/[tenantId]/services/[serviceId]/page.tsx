@@ -1,5 +1,5 @@
-import { Link } from "@/components/link";
 import { ServiceDetail } from "../_components/ServiceDetail";
+import { Link } from "@/components/link";
 
 type PageProps = {
     params: Promise<{ tenantId: string; serviceId: string }>;

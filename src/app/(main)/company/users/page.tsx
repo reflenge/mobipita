@@ -3,8 +3,8 @@
  * 自社ユーザーの一覧表示・ロール変更・テナント割当・詳細への導線を提供する。
  */
 import { auth, clerkClient } from "@clerk/nextjs/server";
-import { assignableRoles } from "@/lib/roles";
 import { UserList, type UserSummary } from "./_components/UserList";
+import { assignableRoles } from "@/lib/roles";
 
 export default async function CompanyUsersPage() {
     const { userId } = await auth();
@@ -20,14 +20,14 @@ export default async function CompanyUsersPage() {
     const users: UserSummary[] = usersResponse.data
         .filter((u) => {
             const role =
-                ((u.publicMetadata as Record<string, unknown>)?.role as string) ??
-                "customer";
+                ((u.publicMetadata as Record<string, unknown>)
+                    ?.role as string) ?? "customer";
             return role !== "admin";
         })
         .map((u) => {
             const role =
-                ((u.publicMetadata as Record<string, unknown>)?.role as string) ??
-                "customer";
+                ((u.publicMetadata as Record<string, unknown>)
+                    ?.role as string) ?? "customer";
             const firstName = u.firstName ?? "";
             const lastName = u.lastName ?? "";
             const displayName =

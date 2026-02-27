@@ -1,6 +1,7 @@
-import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
+import { mutation, query } from "./_generated/server";
 import { requireClerkIdentity, requireClerkUserId } from "./lib/clerkAuth";
+import type { Id } from "./_generated/dataModel";
 
 export const listByTenant = query({
     args: {
@@ -28,8 +29,8 @@ export const listAll = query({
         const tenants = await ctx.db.query("Tenants").collect();
 
         const results: Array<{
-            _id: import("./_generated/dataModel").Id<"Services">;
-            tenantId: import("./_generated/dataModel").Id<"Tenants">;
+            _id: Id<"Services">;
+            tenantId: Id<"Tenants">;
             tenantName: string;
             title: string;
             description: string;

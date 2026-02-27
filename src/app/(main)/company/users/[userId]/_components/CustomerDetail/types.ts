@@ -1,5 +1,5 @@
-import type { AppRole } from "@/lib/roles";
 import type { ProfileAddress } from "@/lib/profile";
+import type { AppRole } from "@/lib/roles";
 
 /** 顧客詳細で表示するユーザー情報（Clerk + プロフィール拡張） */
 export type UserInfo = {

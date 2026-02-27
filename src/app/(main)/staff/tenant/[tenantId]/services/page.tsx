@@ -1,6 +1,6 @@
+import { ServiceList } from "./_components/ServiceList";
 import { Link } from "@/components/link";
 import { Button } from "@/components/ui/button";
-import { ServiceList } from "./_components/ServiceList";
 
 type PageProps = {
     params: Promise<{ tenantId: string }>;

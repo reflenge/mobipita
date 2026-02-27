@@ -2,19 +2,28 @@
 
 import * as React from "react";
 import { useMutation } from "convex/react";
-import { api } from "@/../convex/_generated/api";
-import { toast } from "sonner";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
 import { MessageSquare, Save, Loader2 } from "lucide-react";
+import { toast } from "sonner";
+import { api } from "@/../convex/_generated/api";
+import { Button } from "@/components/ui/button";
+import {
+    Card,
+    CardContent,
+    CardFooter,
+    CardHeader,
+    CardTitle,
+} from "@/components/ui/card";
+import { Textarea } from "@/components/ui/textarea";
 
 type StaffMemoCardProps = {
     clerkUserId: string;
     initialMemo: string;
 };
 
-export function StaffMemoCard({ clerkUserId, initialMemo }: StaffMemoCardProps) {
+export function StaffMemoCard({
+    clerkUserId,
+    initialMemo,
+}: StaffMemoCardProps) {
     const updateStaffMemo = useMutation(api.userProfiles.updateStaffMemo);
     const [staffMemo, setStaffMemo] = React.useState(initialMemo);
     const [initialized, setInitialized] = React.useState(false);

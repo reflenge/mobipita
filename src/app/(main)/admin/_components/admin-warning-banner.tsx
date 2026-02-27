@@ -24,7 +24,7 @@ export function AdminWarningBanner() {
             <div className="admin-warning-border fixed top-4 right-4 z-50 rounded-md p-[2px] shadow-lg">
                 <button
                     onClick={open}
-                    className="rounded-[calc(0.375rem-2px)] flex size-10 items-center justify-center bg-red-600 text-white transition-colors hover:bg-red-700"
+                    className="flex size-10 items-center justify-center rounded-[calc(0.375rem-2px)] bg-red-600 text-white transition-colors hover:bg-red-700"
                     aria-label="管理者警告を表示"
                 >
                     <AlertTriangle className="size-5" />

@@ -1,6 +1,6 @@
+import { SlotListCalendar } from "./_components/SlotListCalendar";
 import { Link } from "@/components/link";
 import { Button } from "@/components/ui/button";
-import { SlotListCalendar } from "./_components/SlotListCalendar";
 
 type PageProps = {
     params: Promise<{ tenantId: string }>;

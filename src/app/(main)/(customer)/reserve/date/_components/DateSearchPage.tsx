@@ -9,15 +9,15 @@
  */
 import { useState } from "react";
 import { useQuery } from "convex/react";
+import { ArrowLeftIcon } from "lucide-react";
 import { api } from "@/../convex/_generated/api";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Link } from "@/components/link";
 import {
     SlotResultList,
     type SlotResult,
 } from "@/app/(main)/(customer)/_components/SlotResultList";
-import { ArrowLeftIcon } from "lucide-react";
+import { Link } from "@/components/link";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 function todayStr(): string {
     const d = new Date();

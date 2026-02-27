@@ -1,7 +1,7 @@
+import TenantList from "./_components/tenantList";
 import { Link } from "@/components/link";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import TenantList from "./_components/tenantList";
 
 export default async function TenantPage() {
     return (

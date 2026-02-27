@@ -1,23 +1,12 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { useMutation, useQuery } from "convex/react";
-import { api } from "@/../convex/_generated/api";
-import { Id } from "@/../convex/_generated/dataModel";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation, useQuery } from "convex/react";
 import { useForm, useWatch } from "react-hook-form";
 import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
-import { Field, FieldGroup } from "@/components/ui/field";
 import CreateSlotSkeleton from "./createSlotSkeleton";
-import SlotCalender, { type SlotEvent } from "./slot-calender";
 import { getTodayYYYYMMDD, parseTimeToMinutes } from "./dateUtils";
-import {
-    formSchema,
-    type FormValues,
-    DEFAULT_SLOT_TEMPLATE,
-    validateDateTimeSlots,
-} from "./schema";
 import {
     ServiceSelectField,
     LocationSelectField,
@@ -33,6 +22,17 @@ import {
     FormQuestionsSection,
     CancellationPolicySection,
 } from "./form-fields";
+import {
+    formSchema,
+    type FormValues,
+    DEFAULT_SLOT_TEMPLATE,
+    validateDateTimeSlots,
+} from "./schema";
+import SlotCalender, { type SlotEvent } from "./slot-calender";
+import type { Id } from "@/../convex/_generated/dataModel";
+import { api } from "@/../convex/_generated/api";
+import { Button } from "@/components/ui/button";
+import { Field, FieldGroup } from "@/components/ui/field";
 
 type Props = {
     tenantId: string;

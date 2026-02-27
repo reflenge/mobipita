@@ -1,9 +1,9 @@
 "use client";
 
 import { Controller, useFormContext } from "react-hook-form";
+import type { CreateTenantFormValues } from "./schema";
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import type { CreateTenantFormValues } from "./schema";
 
 /** フォーム要素と紐づけるための ID プレフィックス */
 const FORM_ID = "form-company-tenant-create";

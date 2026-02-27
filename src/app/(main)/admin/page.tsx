@@ -1,3 +1,4 @@
+import { Users, Link2 } from "lucide-react";
 import { Link } from "@/components/link";
 import {
     Card,
@@ -5,7 +6,6 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
-import { Users, Link2 } from "lucide-react";
 
 export default function AdminPage() {
     return (
@@ -28,7 +28,8 @@ export default function AdminPage() {
                                 ユーザー管理
                             </CardTitle>
                             <CardDescription>
-                                全ユーザーの一覧・ロール変更・テナント割当・詳細確認。admin ロールの割り当ても可能です。
+                                全ユーザーの一覧・ロール変更・テナント割当・詳細確認。admin
+                                ロールの割り当ても可能です。
                             </CardDescription>
                         </CardHeader>
                     </Card>
@@ -41,7 +42,8 @@ export default function AdminPage() {
                                 リンク集
                             </CardTitle>
                             <CardDescription>
-                                Google Analytics・Vercel・Clerk・Stripe など外部サービスの管理ページへ。
+                                Google Analytics・Vercel・Clerk・Stripe
+                                など外部サービスの管理ページへ。
                             </CardDescription>
                         </CardHeader>
                     </Card>

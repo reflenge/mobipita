@@ -1,23 +1,23 @@
 "use client";
 
 import { useMemo } from "react";
-import { useQuery } from "convex/react";
-import { api } from "@/../convex/_generated/api";
-import type { Id } from "@/../convex/_generated/dataModel";
-import { subWeeks, format } from "date-fns";
-import FullCalendar from "@fullcalendar/react";
+import jaLocale from "@fullcalendar/core/locales/ja";
 import dayGridPlugin from "@fullcalendar/daygrid";
-import listPlugin from "@fullcalendar/list";
-import timeGridPlugin from "@fullcalendar/timegrid";
 import { type DateClickArg } from "@fullcalendar/interaction";
 import interactionPlugin from "@fullcalendar/interaction";
-import jaLocale from "@fullcalendar/core/locales/ja";
+import listPlugin from "@fullcalendar/list";
+import FullCalendar from "@fullcalendar/react";
+import timeGridPlugin from "@fullcalendar/timegrid";
+import { useQuery } from "convex/react";
+import { subWeeks, format } from "date-fns";
 import { toast } from "sonner";
+import type { Id } from "@/../convex/_generated/dataModel";
 import type {
     EventInput,
     EventClickArg,
     EventContentArg,
 } from "@fullcalendar/core";
+import { api } from "@/../convex/_generated/api";
 
 /** createSlot の useMemo で生成され、カレンダーに渡されるイベント1件の型 */
 export type SlotEvent = {

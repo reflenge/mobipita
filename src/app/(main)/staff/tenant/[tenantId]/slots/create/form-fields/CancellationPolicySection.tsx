@@ -1,12 +1,12 @@
 "use client";
 
-import { FieldDescription, FieldLabel } from "@/components/ui/field";
-import { CancelDeadlineInputField } from "./CancelDeadlineInputField";
-import { RescheduleDeadlineInputField } from "./RescheduleDeadlineInputField";
 import { AllowCustomerCancelField } from "./AllowCustomerCancelField";
 import { AllowReschedulingField } from "./AllowReschedulingField";
+import { CancelDeadlineInputField } from "./CancelDeadlineInputField";
+import { RescheduleDeadlineInputField } from "./RescheduleDeadlineInputField";
 import type { FormValues } from "../schema";
 import type { Control } from "react-hook-form";
+import { FieldDescription, FieldLabel } from "@/components/ui/field";
 
 type Props = {
     control: Control<FormValues>;

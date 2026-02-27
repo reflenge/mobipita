@@ -1,7 +1,7 @@
-import { Button } from "@/components/ui/button";
-import { Link } from "@/components/link";
-import { Separator } from "@/components/ui/separator";
 import TenantDetail from "../_components/tenantDetail";
+import { Link } from "@/components/link";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
 
 type PageProps = {
     params: Promise<{

@@ -1,9 +1,20 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useTransition } from "react";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useQuery, useMutation } from "convex/react";
+import { useRouter } from "next/navigation";
+import { Controller, useForm } from "react-hook-form";
+import { toast } from "sonner";
+import * as z from "zod";
+import type { Id } from "@/../convex/_generated/dataModel";
 import { api } from "@/../convex/_generated/api";
-import { Id } from "@/../convex/_generated/dataModel";
+import Tiptap from "@/components/Tiptap";
+import { TiptapViewer } from "@/components/Tiptap/viewer";
+import { Link } from "@/components/link";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
     Card,
     CardContent,
@@ -11,9 +22,6 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import {
     Field,
     FieldContent,
@@ -23,16 +31,8 @@ import {
     FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Switch } from "@/components/ui/switch";
-import { Link } from "@/components/link";
-import { useRouter } from "next/navigation";
-import Tiptap from "@/components/Tiptap";
-import { TiptapViewer } from "@/components/Tiptap/viewer";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Controller, useForm } from "react-hook-form";
-import { useTransition } from "react";
-import { toast } from "sonner";
-import * as z from "zod";
 
 const formSchema = z.object({
     title: z

@@ -1,6 +1,8 @@
 "use client";
 
 import { Controller } from "react-hook-form";
+import type { FormValues } from "../schema";
+import type { Control } from "react-hook-form";
 import {
     Field,
     FieldDescription,
@@ -14,8 +16,6 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
-import type { FormValues } from "../schema";
-import type { Control } from "react-hook-form";
 
 type Location = { _id: string; name: string };
 

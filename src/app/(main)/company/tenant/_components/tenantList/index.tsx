@@ -3,6 +3,7 @@
 import * as React from "react";
 import { useQuery } from "convex/react";
 import { api } from "@/../convex/_generated/api";
+import { Link } from "@/components/link";
 import { Badge } from "@/components/ui/badge";
 import {
     Card,
@@ -12,7 +13,6 @@ import {
     CardTitle,
 } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Link } from "@/components/link";
 
 const statusLabels: Record<string, string> = {
     preparing: "準備中",

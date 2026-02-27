@@ -9,14 +9,14 @@
  */
 import { useMemo } from "react";
 import { useQuery } from "convex/react";
-import { api } from "@/../convex/_generated/api";
+import { CalendarIcon, ClockIcon, MapPinIcon, UsersIcon } from "lucide-react";
 import type { Id } from "@/../convex/_generated/dataModel";
+import { api } from "@/../convex/_generated/api";
+import { Link } from "@/components/link";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { Link } from "@/components/link";
-import { CalendarIcon, ClockIcon, MapPinIcon, UsersIcon } from "lucide-react";
 
 type Props = { tenantId: string };
 

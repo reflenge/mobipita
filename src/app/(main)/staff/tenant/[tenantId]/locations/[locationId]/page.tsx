@@ -1,5 +1,5 @@
-import { Link } from "@/components/link";
 import { LocationDetail } from "../_components/LocationDetail";
+import { Link } from "@/components/link";
 
 type PageProps = {
     params: Promise<{

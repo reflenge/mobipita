@@ -8,13 +8,13 @@
  */
 import { useMemo, useState } from "react";
 import { useQuery } from "convex/react";
+import { ArrowLeftIcon, SearchIcon, StoreIcon } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { api } from "@/../convex/_generated/api";
+import { Link } from "@/components/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Link } from "@/components/link";
-import { ArrowLeftIcon, SearchIcon, StoreIcon } from "lucide-react";
-import { useRouter } from "next/navigation";
 
 export function TenantSearchPage() {
     const router = useRouter();

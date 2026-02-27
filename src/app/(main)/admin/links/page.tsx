@@ -1,11 +1,4 @@
 import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
-} from "@/components/ui/card";
-import {
     BarChart3,
     Eye,
     Cloud,
@@ -14,6 +7,13 @@ import {
     CreditCard,
     ExternalLink,
 } from "lucide-react";
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
+} from "@/components/ui/card";
 
 // セキュリティ上の理由から、個別プロジェクトの詳細リンクではなく、共通のダッシュボードURLのみを記載しています。
 const EXTERNAL_LINKS = [
@@ -97,7 +97,7 @@ export default function AdminLinksPage() {
                                             {item.description}
                                         </CardDescription>
                                     </div>
-                                    <ExternalLink className="size-4 shrink-0 text-muted-foreground" />
+                                    <ExternalLink className="text-muted-foreground size-4 shrink-0" />
                                 </CardHeader>
                                 <CardContent className="mt-auto pt-0">
                                     <span className="text-muted-foreground text-xs">

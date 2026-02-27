@@ -1,13 +1,13 @@
-import type { Metadata } from "next";
-import { ClerkProvider } from "@clerk/nextjs";
 import { jaJP } from "@clerk/localizations";
+import { ClerkProvider } from "@clerk/nextjs";
 import { Geist, Geist_Mono } from "next/font/google";
 import "@/styles/globals.css";
-import { cn } from "@/lib/utils";
+import { NuqsAdapter } from "nuqs/adapters/next/app";
 import ConvexClientProvider from "./ConvexClientProvider";
+import type { Metadata } from "next";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { NuqsAdapter } from "nuqs/adapters/next/app";
+import { cn } from "@/lib/utils";
 // import { Analytics } from "@vercel/analytics/next";
 // import { SpeedInsights } from "@vercel/speed-insights/next";
 // import ClarityInit from "@/components/clarity-init";

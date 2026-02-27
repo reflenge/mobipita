@@ -1,3 +1,13 @@
+import {
+    CalendarCheck,
+    CalendarIcon,
+    Home,
+    MapPinIcon,
+    ShoppingBagIcon,
+    StoreIcon,
+    SearchIcon,
+    UserCircle,
+} from "lucide-react";
 import { Link } from "@/components/link";
 import {
     SidebarGroup,
@@ -10,16 +20,6 @@ import {
     SidebarMenuSubButton,
     SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
-import {
-    CalendarCheck,
-    CalendarIcon,
-    Home,
-    MapPinIcon,
-    ShoppingBagIcon,
-    StoreIcon,
-    SearchIcon,
-    UserCircle,
-} from "lucide-react";
 
 export default function CustomerSidebar() {
     return (

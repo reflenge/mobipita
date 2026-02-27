@@ -1,7 +1,7 @@
-import { Link } from "@/components/link";
 import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
-import { Button } from "@/components/ui/button";
 import { ReservationCta } from "./_components/reservation-cta";
+import { Link } from "@/components/link";
+import { Button } from "@/components/ui/button";
 
 const highlights = [
     {
@@ -43,20 +43,17 @@ const steps = [
     {
         step: "01",
         title: "希望の枠を探す",
-        description:
-            "テナント・日付・サービスから検索し、空き枠を確認します。",
+        description: "テナント・日付・サービスから検索し、空き枠を確認します。",
     },
     {
         step: "02",
         title: "予約を確定",
-        description:
-            "日時・場所を選び、必要事項を入力して予約を確定します。",
+        description: "日時・場所を選び、必要事項を入力して予約を確定します。",
     },
     {
         step: "03",
         title: "当日ご利用",
-        description:
-            "予約内容を確認のうえ、指定の時間・場所でご利用ください。",
+        description: "予約内容を確認のうえ、指定の時間・場所でご利用ください。",
     },
 ];
 

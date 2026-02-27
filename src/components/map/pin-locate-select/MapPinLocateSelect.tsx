@@ -1,7 +1,7 @@
 "use client";
 
-import dynamic from "next/dynamic";
 import * as React from "react";
+import dynamic from "next/dynamic";
 import type { Coordinate } from "../types";
 
 const LeafletMap = dynamic(

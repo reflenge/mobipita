@@ -2,10 +2,7 @@
 
 import * as React from "react";
 import { useQuery, useMutation } from "convex/react";
-import { api } from "@/../convex/_generated/api";
-import type { Id } from "@/../convex/_generated/dataModel";
 import { toast } from "sonner";
-import { Skeleton } from "@/components/ui/skeleton";
 import {
     TagsPageHeader,
     TagsEmptyState,
@@ -14,6 +11,9 @@ import {
     EditTagDialog,
 } from "./_components";
 import type { EditTagForm } from "./_components";
+import type { Id } from "@/../convex/_generated/dataModel";
+import { api } from "@/../convex/_generated/api";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function TagsPage() {
     const tags = useQuery(api.staffTags.listAll);
@@ -26,7 +26,7 @@ export default function TagsPage() {
     const [isCreatePending, startCreateTransition] = React.useTransition();
 
     const [editingTag, setEditingTag] = React.useState<EditTagForm | null>(
-        null
+        null,
     );
     const [isEditPending, startEditTransition] = React.useTransition();
 
@@ -67,7 +67,10 @@ export default function TagsPage() {
         });
     }
 
-    async function handleToggle(tagId: Id<"StaffTags">, currentActive: boolean) {
+    async function handleToggle(
+        tagId: Id<"StaffTags">,
+        currentActive: boolean,
+    ) {
         try {
             if (currentActive) {
                 await deactivateTag({ tagId });

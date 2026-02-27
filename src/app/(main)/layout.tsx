@@ -1,12 +1,10 @@
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
-
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { AppSidebar } from "./_components/sidebar";
-
 import AutoBreadcrumb from "./_components/breadcrumb";
-import { cn } from "@/lib/utils";
+import { AppSidebar } from "./_components/sidebar";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { getRoleFromClaims } from "@/lib/roles";
+import { cn } from "@/lib/utils";
 
 export default async function MainLayout({
     children,

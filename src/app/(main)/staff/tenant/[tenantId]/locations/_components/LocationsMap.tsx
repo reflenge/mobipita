@@ -1,10 +1,10 @@
 "use client";
 
 import { useQuery } from "convex/react";
-import { api } from "@/../convex/_generated/api";
-import { Id } from "@/../convex/_generated/dataModel";
-import { MapMultiPin } from "@/components/map";
+import type { Id } from "@/../convex/_generated/dataModel";
 import type { MarkerItem } from "@/components/map";
+import { api } from "@/../convex/_generated/api";
+import { MapMultiPin } from "@/components/map";
 
 type LocationsMapProps = {
     tenantId: string;

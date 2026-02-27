@@ -1,6 +1,8 @@
 "use client";
 
 import Link from "next/link";
+import { truncateLabel } from "./utils";
+import type { BreadcrumbSegment } from "./types";
 import {
     BreadcrumbEllipsis,
     BreadcrumbItem,
@@ -14,9 +16,6 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-
-import type { BreadcrumbSegment } from "./types";
-import { truncateLabel } from "./utils";
 
 type Props = {
     segments: BreadcrumbSegment[];

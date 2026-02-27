@@ -1,12 +1,12 @@
 "use client";
 
 import { useQuery } from "convex/react";
-import { api } from "@/../convex/_generated/api";
 import type { Id } from "@/../convex/_generated/dataModel";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
+import { api } from "@/../convex/_generated/api";
 import { Link } from "@/components/link";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 
 type Props = {
     tenantId: string;

@@ -1,10 +1,10 @@
 "use client";
 
 import { useFormContext } from "react-hook-form";
+import type { CreateTenantFormValues } from "./schema";
 import { Button } from "@/components/ui/button";
 import { Field } from "@/components/ui/field";
 import { Spinner } from "@/components/ui/spinner";
-import type { CreateTenantFormValues } from "./schema";
 
 const FORM_ID = "form-company-tenant-create";
 

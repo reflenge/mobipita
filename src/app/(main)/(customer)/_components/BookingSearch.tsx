@@ -6,9 +6,6 @@
  * 役割: 「場所から探す」「日付から探す」「サービスから探す」の3つの検索ルートコンポーネントを描画する。
  * 各項目は Card コンポーネントでラップされ、クリック時にそれぞれの予約フロー画面へ遷移させる。
  */
-import { Card, CardContent } from "@/components/ui/card";
-
-import { Link } from "@/components/link";
 import {
     CalendarIcon,
     MapPinIcon,
@@ -16,6 +13,8 @@ import {
     ChevronRightIcon,
     StoreIcon,
 } from "lucide-react";
+import { Link } from "@/components/link";
+import { Card, CardContent } from "@/components/ui/card";
 
 const SEARCH_ROUTES = [
     {

@@ -9,17 +9,17 @@
  */
 import { useMemo, useState } from "react";
 import { useQuery } from "convex/react";
-import { api } from "@/../convex/_generated/api";
+import { ArrowLeftIcon, SearchIcon, ShoppingBagIcon } from "lucide-react";
 import type { Id } from "@/../convex/_generated/dataModel";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Link } from "@/components/link";
+import { api } from "@/../convex/_generated/api";
 import {
     SlotResultList,
     type SlotResult,
 } from "@/app/(main)/(customer)/_components/SlotResultList";
-import { ArrowLeftIcon, SearchIcon, ShoppingBagIcon } from "lucide-react";
+import { Link } from "@/components/link";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 
 export function ServiceSearchPage() {
     const [selectedServiceId, setSelectedServiceId] = useState<string | null>(

@@ -9,12 +9,12 @@
  * への遷移ボタンを提供する。
  */
 import { useMemo } from "react";
+import { CalendarIcon, ClockIcon, MapPinIcon, UsersIcon } from "lucide-react";
+import { Link } from "@/components/link";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { Link } from "@/components/link";
-import { CalendarIcon, ClockIcon, MapPinIcon, UsersIcon } from "lucide-react";
 
 export type SlotResult = {
     _id: string;

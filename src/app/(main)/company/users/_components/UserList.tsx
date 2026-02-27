@@ -7,7 +7,25 @@
  */
 import * as React from "react";
 import { useQuery } from "convex/react";
+import {
+    Users,
+    ShieldCheck,
+    Briefcase,
+    UserX,
+    Building2,
+    Shield,
+    Store,
+    UserCircle,
+    Crown,
+} from "lucide-react";
+import { RoleChangeDialog } from "./RoleChangeDialog";
+import { TenantAssignDialog } from "./TenantAssignDialog";
+import type { AppRole } from "@/lib/roles";
 import { api } from "@/../convex/_generated/api";
+import { Link } from "@/components/link";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
     Card,
     CardContent,
@@ -16,39 +34,6 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Input } from "@/components/ui/input";
-import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
-import { Link } from "@/components/link";
-import { cn } from "@/lib/utils";
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select";
-import {
-    Users,
-    ShieldCheck,
-    Briefcase,
-    UserX,
-    Search,
-    Building2,
-    Shield,
-    Store,
-    UserCircle,
-    ChevronLeft,
-    ChevronRight,
-    Crown,
-} from "lucide-react";
-import type { AppRole } from "@/lib/roles";
-import { RoleChangeDialog } from "./RoleChangeDialog";
-import { TenantAssignDialog } from "./TenantAssignDialog";
 
 /** 一覧表示用のユーザー要約（Clerk + ロール） */
 export type UserSummary = {
@@ -91,8 +76,10 @@ export function UserList({
     const tenants = useQuery(api.tenants.list, { limit: 100 });
     const assignments = useQuery(api.tenantMemberAssignments.listAll, {});
 
-    const [roleDialogUser, setRoleDialogUser] = React.useState<UserSummary | null>(null);
-    const [tenantDialogUser, setTenantDialogUser] = React.useState<UserSummary | null>(null);
+    const [roleDialogUser, setRoleDialogUser] =
+        React.useState<UserSummary | null>(null);
+    const [tenantDialogUser, setTenantDialogUser] =
+        React.useState<UserSummary | null>(null);
 
     /** テナント ID → テナント名のマップ（バッジ表示用） */
     const tenantMap = React.useMemo(() => {
@@ -155,11 +142,13 @@ export function UserList({
                         };
                         const RoleIcon = config.icon;
 
-                        const userTenantIds = assignmentsByUser.get(user.userId);
+                        const userTenantIds = assignmentsByUser.get(
+                            user.userId,
+                        );
                         const assignedTenants = userTenantIds
                             ? Array.from(userTenantIds)
-                                .map((id) => tenantMap.get(id))
-                                .filter(Boolean)
+                                  .map((id) => tenantMap.get(id))
+                                  .filter(Boolean)
                             : [];
 
                         return (
@@ -173,10 +162,19 @@ export function UserList({
                                             src={user.imageUrl ?? ""}
                                             alt={user.displayName}
                                         />
+                                        <AvatarFallback>
+                                            {user.displayName
+                                                .slice(0, 2)
+                                                .toUpperCase() || "?"}
+                                        </AvatarFallback>
                                     </Avatar>
                                     <div className="min-w-0 flex-1">
-                                        <CardTitle>{user.displayName || "名前なし"}</CardTitle>
-                                        <CardDescription>{user.identifier}</CardDescription>
+                                        <CardTitle>
+                                            {user.displayName || "名前なし"}
+                                        </CardTitle>
+                                        <CardDescription>
+                                            {user.identifier}
+                                        </CardDescription>
                                     </div>
                                 </CardHeader>
                                 <CardContent className="space-y-3 pt-0">
@@ -197,18 +195,21 @@ export function UserList({
                                             <span className="text-muted-foreground text-xs font-medium">
                                                 テナント
                                             </span>
-                                            {!isLoading && assignedTenants.length > 0 ? (
+                                            {!isLoading &&
+                                            assignedTenants.length > 0 ? (
                                                 <div className="flex min-w-0 flex-1 flex-wrap gap-1">
-                                                    {assignedTenants.map((name) => (
-                                                        <Badge
-                                                            key={name}
-                                                            variant="outline"
-                                                            className="gap-1 text-[10px]"
-                                                        >
-                                                            <Building2 className="size-3 shrink-0" />
-                                                            {name}
-                                                        </Badge>
-                                                    ))}
+                                                    {assignedTenants.map(
+                                                        (name) => (
+                                                            <Badge
+                                                                key={name}
+                                                                variant="outline"
+                                                                className="gap-1 text-[10px]"
+                                                            >
+                                                                <Building2 className="size-3 shrink-0" />
+                                                                {name}
+                                                            </Badge>
+                                                        ),
+                                                    )}
                                                 </div>
                                             ) : !isLoading ? (
                                                 <span className="text-muted-foreground text-xs">
@@ -223,12 +224,10 @@ export function UserList({
                                     )}
                                 </CardContent>
                                 <CardFooter className="grid grid-cols-3 gap-1.5 sm:gap-2">
-                                    <Button
-                                        variant="outline"
-                                        size="sm"
-                                        asChild
-                                    >
-                                        <Link href={`${basePath}/${user.userId}`}>
+                                    <Button variant="outline" size="sm" asChild>
+                                        <Link
+                                            href={`${basePath}/${user.userId}`}
+                                        >
                                             <UserCircle className="size-3.5 shrink-0" />
                                             <span>詳細</span>
                                         </Link>
@@ -245,7 +244,9 @@ export function UserList({
                                         <Button
                                             variant="outline"
                                             size="sm"
-                                            onClick={() => setTenantDialogUser(user)}
+                                            onClick={() =>
+                                                setTenantDialogUser(user)
+                                            }
                                         >
                                             <Store className="size-3.5 shrink-0" />
                                             <span>テナント</span>

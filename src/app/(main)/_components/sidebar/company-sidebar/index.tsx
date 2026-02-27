@@ -1,3 +1,11 @@
+import {
+    ShieldUser,
+    Store,
+    PackagePlus,
+    BookCopy,
+    UsersRound,
+    Tag,
+} from "lucide-react";
 import { Link } from "@/components/link";
 import {
     SidebarGroup,
@@ -11,14 +19,6 @@ import {
     SidebarMenuSubItem,
     SidebarSeparator,
 } from "@/components/ui/sidebar";
-import {
-    ShieldUser,
-    Store,
-    PackagePlus,
-    BookCopy,
-    UsersRound,
-    Tag,
-} from "lucide-react";
 
 export default function CompanySidebar() {
     return (

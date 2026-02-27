@@ -1,21 +1,21 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { useQuery } from "convex/react";
-import { api } from "@/../convex/_generated/api";
-import type { Id } from "@/../convex/_generated/dataModel";
-import FullCalendar from "@fullcalendar/react";
-import dayGridPlugin from "@fullcalendar/daygrid";
-import listPlugin from "@fullcalendar/list";
-import timeGridPlugin from "@fullcalendar/timegrid";
-import interactionPlugin from "@fullcalendar/interaction";
 import jaLocale from "@fullcalendar/core/locales/ja";
+import dayGridPlugin from "@fullcalendar/daygrid";
+import interactionPlugin from "@fullcalendar/interaction";
+import listPlugin from "@fullcalendar/list";
+import FullCalendar from "@fullcalendar/react";
+import timeGridPlugin from "@fullcalendar/timegrid";
+import { useQuery } from "convex/react";
+import { SlotDetailDialog, type SlotData } from "./SlotDetailDialog";
+import type { Id } from "@/../convex/_generated/dataModel";
 import type {
     EventClickArg,
     EventContentArg,
     EventInput,
 } from "@fullcalendar/core";
-import { SlotDetailDialog, type SlotData } from "./SlotDetailDialog";
+import { api } from "@/../convex/_generated/api";
 
 const STATUS_COLOR: Record<string, string> = {
     open: "#2563eb",
