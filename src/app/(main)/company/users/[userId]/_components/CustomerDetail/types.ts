@@ -6,7 +6,7 @@ export type UserInfo = {
     userId: string;
     displayName: string;
     email: string;
-    imageUrl: string | null;
+    imageUrl: string;
     firstName: string;
     lastName: string;
     gender?: string;

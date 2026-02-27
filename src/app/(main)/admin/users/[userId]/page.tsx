@@ -40,7 +40,7 @@ export default async function AdminUserDetailPage({ params }: Props) {
         userId: clerkUser.id,
         displayName,
         email: clerkUser.emailAddresses[0]?.emailAddress ?? "",
-        imageUrl: clerkUser.imageUrl ?? null,
+        imageUrl: clerkUser.imageUrl ?? "",
         firstName,
         lastName,
         gender: meta.gender,

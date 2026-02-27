@@ -99,7 +99,7 @@ export function CustomerDetail({
                     userId: user.userId,
                     displayName: user.displayName,
                     identifier: user.email,
-                    imageUrl: user.imageUrl ?? "",
+                    imageUrl: user.imageUrl,
                     role: user.role ?? "customer",
                 }}
                 availableRoles={availableRoles}

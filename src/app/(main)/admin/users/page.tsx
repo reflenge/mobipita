@@ -22,14 +22,14 @@ export default async function AdminUsersPage() {
         const firstName = u.firstName ?? "";
         const lastName = u.lastName ?? "";
         const displayName =
-            `${firstName} ${lastName}`.trim() ||
+            `${lastName} ${firstName}`.trim() ||
             (u.emailAddresses[0]?.emailAddress ?? "不明");
         return {
             userId: u.id,
             role,
             displayName,
             identifier: u.emailAddresses[0]?.emailAddress ?? "不明",
-            imageUrl: u.imageUrl ?? null,
+            imageUrl: u.imageUrl ?? "",
             createdAt: u.createdAt,
         };
     });

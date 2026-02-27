@@ -59,7 +59,7 @@ export function ProfileCard({
             <CardHeader>
                 <CardTitle className="flex items-center gap-3 text-base">
                     <Avatar className="size-12">
-                        <AvatarImage src={user.imageUrl ?? ""} alt={user.displayName} />
+                        <AvatarImage src={user.imageUrl} alt={user.displayName} />
                         <AvatarFallback>{initials}</AvatarFallback>
                     </Avatar>
                     <div className="min-w-0 flex-1">
