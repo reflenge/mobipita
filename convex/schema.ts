@@ -89,6 +89,7 @@ export default defineSchema({
     StaffTags: defineTable({
         title: v.string(),
         description: v.string(),
+        color: v.string(),
         isActive: v.boolean(),
         createdByUserId: v.string(),
     }).index("by_active", ["isActive"]),

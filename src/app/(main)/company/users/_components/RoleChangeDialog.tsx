@@ -40,10 +40,9 @@ type RoleChangeDialogProps = {
     open: boolean;
     onOpenChange: (open: boolean) => void;
     user: {
-        createdAt: number;
         displayName: string;
         identifier: string;
-        imageUrl: string;
+        imageUrl?: string | null;
         role: string;
         userId: string;
     };

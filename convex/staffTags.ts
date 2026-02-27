@@ -29,6 +29,7 @@ export const create = mutation({
     args: {
         title: v.string(),
         description: v.string(),
+        color: v.string(),
     },
     handler: async (ctx, args) => {
         const identity = await requireMinRole(ctx, "company");
@@ -36,6 +37,7 @@ export const create = mutation({
         return await ctx.db.insert("StaffTags", {
             title: args.title,
             description: args.description,
+            color: args.color,
             isActive: true,
             createdByUserId: userId,
         });
@@ -47,6 +49,7 @@ export const update = mutation({
         tagId: v.id("StaffTags"),
         title: v.string(),
         description: v.string(),
+        color: v.string(),
     },
     handler: async (ctx, args) => {
         await requireMinRole(ctx, "company");
@@ -55,6 +58,7 @@ export const update = mutation({
         await ctx.db.patch(args.tagId, {
             title: args.title,
             description: args.description,
+            color: args.color,
         });
         return args.tagId;
     },

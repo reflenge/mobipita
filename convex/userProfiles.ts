@@ -1,4 +1,5 @@
 import { mutation, query } from "./_generated/server";
+import type { Id } from "./_generated/dataModel";
 import { v } from "convex/values";
 import {
     requireClerkIdentity,
@@ -36,7 +37,7 @@ export const getByUserId = query({
             return {
                 customerMemo: "",
                 staffMemo: "",
-                staffTags: [] as string[],
+                staffTags: [] as Id<"StaffTags">[],
             };
         }
         return {

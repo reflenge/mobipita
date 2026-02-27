@@ -48,6 +48,7 @@ import {
 } from "lucide-react";
 import type { AppRole } from "@/lib/roles";
 import { RoleChangeDialog } from "./RoleChangeDialog";
+import { TenantAssignDialog } from "./TenantAssignDialog";
 
 /** 一覧表示用のユーザー要約（Clerk + ロール） */
 export type UserSummary = {
@@ -91,6 +92,7 @@ export function UserList({
     const assignments = useQuery(api.tenantMemberAssignments.listAll, {});
 
     const [roleDialogUser, setRoleDialogUser] = React.useState<UserSummary | null>(null);
+    const [tenantDialogUser, setTenantDialogUser] = React.useState<UserSummary | null>(null);
 
     /** テナント ID → テナント名のマップ（バッジ表示用） */
     const tenantMap = React.useMemo(() => {
@@ -224,24 +226,6 @@ export function UserList({
                                     <Button
                                         variant="outline"
                                         size="sm"
-                                        onClick={() => setRoleDialogUser(user)}
-                                    >
-                                        <Shield className="size-3.5 shrink-0" />
-                                        <span>ロール</span>
-                                    </Button>
-                                    <Button
-                                        variant="outline"
-                                        size="sm"
-                                        asChild
-                                    >
-                                        <Link href={`${basePath}/${user.userId}/assignment`}>
-                                            <Store className="size-3.5 shrink-0" />
-                                            <span>テナント</span>
-                                        </Link>
-                                    </Button>
-                                    <Button
-                                        variant="outline"
-                                        size="sm"
                                         asChild
                                     >
                                         <Link href={`${basePath}/${user.userId}`}>
@@ -249,6 +233,24 @@ export function UserList({
                                             <span>詳細</span>
                                         </Link>
                                     </Button>
+                                    <Button
+                                        variant="outline"
+                                        size="sm"
+                                        onClick={() => setRoleDialogUser(user)}
+                                    >
+                                        <Shield className="size-3.5 shrink-0" />
+                                        <span>ロール</span>
+                                    </Button>
+                                    {user.role !== "customer" && (
+                                        <Button
+                                            variant="outline"
+                                            size="sm"
+                                            onClick={() => setTenantDialogUser(user)}
+                                        >
+                                            <Store className="size-3.5 shrink-0" />
+                                            <span>テナント</span>
+                                        </Button>
+                                    )}
                                 </CardFooter>
                             </Card>
                         );
@@ -266,6 +268,17 @@ export function UserList({
                     user={roleDialogUser}
                     availableRoles={availableRoles}
                     isSelf={roleDialogUser.userId === currentUserId}
+                />
+            )}
+
+            {/* テナント割当ダイアログ */}
+            {tenantDialogUser && (
+                <TenantAssignDialog
+                    open={!!tenantDialogUser}
+                    onOpenChange={(open) => {
+                        if (!open) setTenantDialogUser(null);
+                    }}
+                    user={tenantDialogUser}
                 />
             )}
         </section>
