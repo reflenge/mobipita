@@ -1,6 +1,7 @@
 import { Link } from "@/components/link";
 import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 import { Button } from "@/components/ui/button";
+import { ReservationCta } from "./_components/reservation-cta";
 
 const highlights = [
     {
@@ -41,21 +42,21 @@ const features = [
 const steps = [
     {
         step: "01",
-        title: "運用条件を登録",
+        title: "希望の枠を探す",
         description:
-            "場所・稼働時間・予約枠を設定。現場の制約に合わせた設計が可能。",
+            "テナント・日付・サービスから検索し、空き枠を確認します。",
     },
     {
         step: "02",
-        title: "予約と移動状況を監視",
+        title: "予約を確定",
         description:
-            "本部と現場が同じ情報を確認。遅延や混雑の兆候を早期に把握。",
+            "日時・場所を選び、必要事項を入力して予約を確定します。",
     },
     {
         step: "03",
-        title: "通知とリカバリー",
+        title: "当日ご利用",
         description:
-            "到着通知・遅延アラートでリカバリーを自動化し、品質を維持。",
+            "予約内容を確認のうえ、指定の時間・場所でご利用ください。",
     },
 ];
 
@@ -114,7 +115,7 @@ export default function Home() {
                     <div className="flex items-center gap-2">
                         <SignedOut>
                             <Button asChild size="sm" className="rounded-full">
-                                <Link href="/sign-up">無料で始める</Link>
+                                <Link href="/sign-up">新規登録</Link>
                             </Button>
                             <Button
                                 asChild
@@ -141,22 +142,24 @@ export default function Home() {
             </header>
 
             <main className="mx-auto flex w-full max-w-6xl flex-col gap-16 px-6 pt-16 pb-20">
+                <SignedIn>
+                    <ReservationCta />
+                </SignedIn>
                 <section className="grid items-center gap-10 lg:grid-cols-[1.05fr_0.95fr]">
                     <div className="animate-in fade-in slide-in-from-bottom-6 flex flex-col gap-6 duration-700 motion-reduce:animate-none">
                         <span className="border-foreground/10 text-muted-foreground inline-flex w-fit items-center gap-2 rounded-full border bg-white/70 px-4 py-1 font-mono text-[0.65rem] tracking-[0.3em] uppercase">
-                            Ops Scheduling
+                            ご予約はこちら
                         </span>
                         <div className="space-y-4">
                             <h1 className="text-4xl leading-tight font-semibold tracking-tight sm:text-5xl lg:text-6xl">
-                                移動型ビジネスの運用を、
+                                当社の予約サービス、
                                 <span className="text-foreground/70">
-                                    10分単位で最適化。
+                                    いつでもオンラインで。
                                 </span>
                             </h1>
                             <p className="text-muted-foreground text-base leading-relaxed sm:text-lg">
-                                「Mobile（移動）」+「Pita（ピタッと決まる・合わせる）」。
-                                予約・移動・通知を一体化し、現場運用のズレを抑えながら
-                                収益性と顧客体験を両立します。
+                                日時・場所・サービスから希望の枠を選んでご予約いただけます。
+                                ログイン後は画面上部の「ここから予約」からお進みください。
                             </p>
                         </div>
                         <div className="flex flex-wrap items-center gap-3">
@@ -185,7 +188,9 @@ export default function Home() {
                                     size="lg"
                                     className="rounded-full"
                                 >
-                                    <Link href="/home">ダッシュボードへ</Link>
+                                    <Link href="/reserve/tenant">
+                                        予約する →
+                                    </Link>
                                 </Button>
                             </SignedIn>
                         </div>
@@ -281,15 +286,15 @@ export default function Home() {
                     <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
                         <div>
                             <p className="text-muted-foreground font-mono text-xs tracking-[0.35em] uppercase">
-                                WHY MOBIPITA
+                                サービスについて
                             </p>
                             <h2 className="mt-3 text-2xl font-semibold sm:text-3xl">
-                                本部と現場のズレをなくす運用設計
+                                当社の予約・運用の特徴
                             </h2>
                         </div>
                         <p className="text-muted-foreground max-w-md text-sm">
-                            予約から到着までをひとつの運用フローに統合。時間・場所・通知を
-                            一体化して、移動型ビジネスの不確実性を抑えます。
+                            10分単位の枠でご予約いただけます。時間・場所がわかりやすく、
+                            スムーズにご利用いただけます。
                         </p>
                     </div>
                     <div className="grid gap-4 md:grid-cols-3">
@@ -323,12 +328,11 @@ export default function Home() {
                                     FLOW
                                 </p>
                                 <h2 className="mt-3 text-2xl font-semibold sm:text-3xl">
-                                    導入後の運用は、3ステップで完結
+                                    ご予約の流れ
                                 </h2>
                             </div>
                             <p className="text-muted-foreground max-w-md text-sm">
-                                設定・監視・通知までを一貫して設計。担当者の負担を
-                                抑えながら、品質を維持できます。
+                                テナント・日付・サービスから希望の枠を選び、予約を確定してください。
                             </p>
                         </div>
                         <div className="mt-6 grid gap-4 md:grid-cols-3">
@@ -360,14 +364,14 @@ export default function Home() {
                         className="border-foreground/10 grid gap-4 rounded-3xl border bg-white/80 p-6 text-center shadow-sm backdrop-blur-sm"
                     >
                         <h2 className="text-2xl font-semibold">
-                            導入相談から、運用改善へ
+                            ご利用にはログインが必要です
                         </h2>
                         <p className="text-muted-foreground text-sm">
-                            現場の運用課題やKPIをヒアリングし、最適な設定をご提案します。
+                            予約・マイページのご利用は、アカウントのログイン後に可能です。
                         </p>
                         <div className="flex flex-wrap justify-center gap-3">
                             <Button asChild size="lg" className="rounded-full">
-                                <Link href="/sign-up">導入相談を申し込む</Link>
+                                <Link href="/sign-up">新規登録</Link>
                             </Button>
                             <Button
                                 asChild
@@ -375,7 +379,7 @@ export default function Home() {
                                 variant="outline"
                                 className="rounded-full bg-white/80"
                             >
-                                <Link href="/sign-in">担当者ログイン</Link>
+                                <Link href="/sign-in">ログイン</Link>
                             </Button>
                         </div>
                     </section>

@@ -1,0 +1,90 @@
+/* スマホ: 手が上（ボタン）方向にタップする動き */
+@keyframes reservation-cta-tap-up {
+    0%,
+    100% {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+    }
+    35% {
+        transform: translateY(-6px) scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: translateY(-14px) scale(0.92);
+        opacity: 0.9;
+    }
+    65% {
+        transform: translateY(-16px) scale(0.9);
+        opacity: 0.85;
+    }
+    80%,
+    100% {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+    }
+}
+
+/* PC: 手が右（ボタン）方向にタップする動き（横並び用） */
+@keyframes reservation-cta-tap-right {
+    0%,
+    100% {
+        transform: translateX(0) scale(1);
+        opacity: 1;
+    }
+    35% {
+        transform: translateX(6px) scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: translateX(14px) scale(0.92);
+        opacity: 0.9;
+    }
+    65% {
+        transform: translateX(16px) scale(0.9);
+        opacity: 0.85;
+    }
+    80%,
+    100% {
+        transform: translateX(0) scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes reservation-cta-pulse {
+    0%,
+    100% {
+        box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.25);
+        transform: scale(1);
+    }
+    50% {
+        box-shadow: 0 14px 48px -8px rgba(0, 0, 0, 0.3);
+        transform: scale(1.02);
+    }
+}
+
+/* スマホでは上向き、sm以上では右向き（手の画像もタップで遷移するため pointer-events は有効） */
+.reservation-cta-tap-hand {
+    animation: reservation-cta-tap-up 2.2s ease-in-out infinite;
+}
+
+@media (min-width: 640px) {
+    .reservation-cta-tap-hand {
+        animation: reservation-cta-tap-right 2.2s ease-in-out infinite;
+    }
+}
+
+.reservation-cta-button {
+    animation: reservation-cta-pulse 2s ease-in-out infinite;
+}
+
+.reservation-cta-button:hover,
+.reservation-cta-button:focus-visible {
+    animation: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .reservation-cta-tap-hand,
+    .reservation-cta-button {
+        animation: none;
+    }
+}
