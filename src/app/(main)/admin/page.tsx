@@ -6,7 +6,7 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
-import { Users, Shield, Store } from "lucide-react";
+import { Users, Shield, Store, Link2 } from "lucide-react";
 
 export default function AdminPage() {
     return (
@@ -56,6 +56,19 @@ export default function AdminPage() {
                             </CardTitle>
                             <CardDescription>
                                 テナント管理・従業員一覧など、会社管理機能へ移動します。
+                            </CardDescription>
+                        </CardHeader>
+                    </Card>
+                </Link>
+                <Link href="/admin/links" className="block">
+                    <Card className="hover:border-foreground/20 h-full transition-all hover:shadow-md">
+                        <CardHeader>
+                            <CardTitle className="flex items-center gap-2 text-base">
+                                <Link2 className="size-5 text-teal-500" />
+                                リンク集
+                            </CardTitle>
+                            <CardDescription>
+                                Google Analytics・Vercel・Clerk・Stripe など外部サービスの管理ページへ。
                             </CardDescription>
                         </CardHeader>
                     </Card>
