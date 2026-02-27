@@ -15,6 +15,7 @@ import {
     ExternalLink,
 } from "lucide-react";
 
+// セキュリティ上の理由から、個別プロジェクトの詳細リンクではなく、共通のダッシュボードURLのみを記載しています。
 const EXTERNAL_LINKS = [
     {
         title: "Google Analytics",
