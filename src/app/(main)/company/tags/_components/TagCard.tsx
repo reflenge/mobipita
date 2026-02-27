@@ -2,7 +2,7 @@
 
 import type { Doc } from "@/../convex/_generated/dataModel";
 import { Button } from "@/components/ui/button";
-import { Card, CardFooter, CardHeader } from "@/components/ui/card";
+import { Card, CardFooter, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Pencil } from "lucide-react";
@@ -23,20 +23,18 @@ export function TagCard({ tag, onEdit, onToggle }: TagCardProps) {
                     style={{ backgroundColor: tag.color }}
                 />
                 <div className="min-w-0 flex-1">
-                    <div className="flex items-center gap-2">
-                        <span className="text-sm font-semibold">
-                            {tag.title}
-                        </span>
+                    <CardTitle className="flex items-center gap-2">
+                        {tag.title}
                         <Badge
                             variant={tag.isActive ? "default" : "outline"}
                             className="text-[10px]"
                         >
                             {tag.isActive ? "有効" : "無効"}
                         </Badge>
-                    </div>
-                    <p className="text-muted-foreground mt-0.5 text-xs">
+                    </CardTitle>
+                    <CardDescription>
                         {tag.description}
-                    </p>
+                    </CardDescription>
                 </div>
             </CardHeader>
             <CardFooter className="flex shrink-0 items-center gap-3 justify-between">
