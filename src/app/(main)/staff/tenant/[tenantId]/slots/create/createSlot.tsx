@@ -341,7 +341,14 @@ export function CreateSlot({ tenantId }: Props) {
                 setIsSubmitting(false);
             }
         },
-        [crossFieldErrors, form, locations, createBatch, tenantId],
+        [
+            crossFieldErrors,
+            form,
+            locations,
+            createBatch,
+            tenantId,
+            activeServices,
+        ],
     );
 
     // ─── ローディング ──────────────────────────────────────

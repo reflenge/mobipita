@@ -4,7 +4,7 @@ import { useCallback, useTransition } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQuery, useMutation } from "convex/react";
 import { useRouter } from "next/navigation";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, useForm, useWatch } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
 import CreateLocationSkeleton from "./createLocationSkeleton";
@@ -83,7 +83,7 @@ export function CreateLocation({ tenantId }: Props) {
         mode: "all",
     });
 
-    const geoValue = form.watch("locations.geo");
+    const geoValue = useWatch({ control: form.control, name: "locations.geo" });
 
     const handleMapChange = useCallback(
         (v: { lat: number; lng: number } | null) => {

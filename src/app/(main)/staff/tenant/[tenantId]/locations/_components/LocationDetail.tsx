@@ -5,7 +5,7 @@ import { useTransition } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQuery, useMutation } from "convex/react";
 import { useRouter } from "next/navigation";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, useForm, useWatch } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
 import type { Id } from "@/../convex/_generated/dataModel";
@@ -100,7 +100,7 @@ export function LocationDetail({ tenantId, locationId }: LocationDetailProps) {
         mode: "all",
     });
 
-    const geoValue = form.watch("locations.geo");
+    const geoValue = useWatch({ control: form.control, name: "locations.geo" });
 
     const startEditing = useCallback(() => {
         if (location) {
