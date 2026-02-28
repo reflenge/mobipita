@@ -108,3 +108,11 @@ flowchart TB
 - **利用規約・プライバシーポリシー**: 会員登録時の同意フロー
 - **特定商取引法に基づく表記**: 有料サービスを提供する場合
 - **個人情報**: 保持期間、削除請求への対応方針
+
+---
+
+## 5. Stripe Connect（プラットフォーム・加盟店）の実装
+
+- **方針**: 今の「テナントに対してサービスをつける」実装はそのまま。テナントを Stripe Connect の**加盟店**（連結アカウント）として扱う。
+- **採用**: 連結アカウント **Standard** / 支払い **Direct charges** / 決済 UI **Stripe Checkout（リダイレクト）**。
+- **詳細**: [Docs/stripe-connect.md](./stripe-connect.md) に OAuth 接続・Direct charge・Checkout Session・Webhook までの手順を記載している。
