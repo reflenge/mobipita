@@ -15,6 +15,7 @@ import type * as locations from "../locations.js";
 import type * as services from "../services.js";
 import type * as slots from "../slots.js";
 import type * as staffTags from "../staffTags.js";
+import type * as stripeConnect from "../stripeConnect.js";
 import type * as tenantMemberAssignments from "../tenantMemberAssignments.js";
 import type * as tenants from "../tenants.js";
 import type * as userProfiles from "../userProfiles.js";
@@ -34,6 +35,7 @@ declare const fullApi: ApiFromModules<{
   services: typeof services;
   slots: typeof slots;
   staffTags: typeof staffTags;
+  stripeConnect: typeof stripeConnect;
   tenantMemberAssignments: typeof tenantMemberAssignments;
   tenants: typeof tenants;
   userProfiles: typeof userProfiles;

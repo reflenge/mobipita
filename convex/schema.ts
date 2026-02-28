@@ -98,4 +98,19 @@ export default defineSchema({
         staffMemo: v.optional(v.string()),
         staffTags: v.optional(v.array(v.id("StaffTags"))),
     }).index("by_user", ["clerkUserId"]),
+    // Stripe Connect: ユーザーと Connect アカウントの対応
+    // 将来は tenantId や shopId など別の識別子で紐づけることを推奨（コメント参照）
+    StripeConnectAccounts: defineTable({
+        clerkUserId: v.string(),
+        stripeAccountId: v.string(), // acct_xxx (V2 Connected Account ID)
+    })
+        .index("by_user", ["clerkUserId"])
+        .index("by_stripe_account", ["stripeAccountId"]),
+    // サブスクリプション状態（Webhook で更新）。customer_account = Connect アカウント ID (acct_xxx)
+    StripeConnectSubscriptions: defineTable({
+        customerAccountId: v.string(), // V2 では .customer ではなく .customer_account を使用
+        stripeSubscriptionId: v.optional(v.string()),
+        status: v.string(), // active, canceled, past_due 等
+        cancelAtPeriodEnd: v.optional(v.boolean()),
+    }).index("by_customer_account", ["customerAccountId"]),
 });

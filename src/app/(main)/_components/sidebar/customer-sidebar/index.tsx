@@ -1,6 +1,7 @@
 import {
     CalendarCheck,
     CalendarIcon,
+    CreditCard,
     Home,
     MapPinIcon,
     ShoppingBagIcon,
@@ -96,6 +97,14 @@ export default function CustomerSidebar() {
                             <Link href="/profile">
                                 <UserCircle />
                                 <span>マイページ</span>
+                            </Link>
+                        </SidebarMenuButton>
+                    </SidebarMenuItem>
+                    <SidebarMenuItem>
+                        <SidebarMenuButton asChild>
+                            <Link href="/connect">
+                                <CreditCard />
+                                <span>Connect（支払い）</span>
                             </Link>
                         </SidebarMenuButton>
                     </SidebarMenuItem>
