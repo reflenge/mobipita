@@ -59,11 +59,11 @@ export async function POST(req: Request) {
         const successUrl =
             typeof body.successUrl === 'string' && body.successUrl
                 ? body.successUrl
-                : `${baseUrl}/connect/store/${accountId}/success?session_id={CHECKOUT_SESSION_ID}`
+                : `${baseUrl}/stripetest/connect/store/${accountId}/success?session_id={CHECKOUT_SESSION_ID}`
         const cancelUrl =
             typeof body.cancelUrl === 'string' && body.cancelUrl
                 ? body.cancelUrl
-                : `${baseUrl}/connect/store/${accountId}`
+                : `${baseUrl}/stripetest/connect/store/${accountId}`
 
         const stripeClient = getStripeClient()
 
@@ -102,9 +102,9 @@ export async function POST(req: Request) {
         const message = err instanceof Error ? err.message : 'Unknown error'
         const statusCode =
             err &&
-            typeof err === 'object' &&
-            'statusCode' in err &&
-            typeof (err as { statusCode?: number }).statusCode === 'number'
+                typeof err === 'object' &&
+                'statusCode' in err &&
+                typeof (err as { statusCode?: number }).statusCode === 'number'
                 ? (err as { statusCode: number }).statusCode
                 : 500
         return NextResponse.json({ error: message }, { status: statusCode })

@@ -39,7 +39,7 @@ export async function POST(req: Request) {
         const returnUrl =
             typeof body.returnUrl === 'string' && body.returnUrl
                 ? body.returnUrl
-                : `${baseUrl}/connect`
+                : `${baseUrl}/stripetest/connect`
 
         const stripeClient = getStripeClient()
 
@@ -61,9 +61,9 @@ export async function POST(req: Request) {
         const message = err instanceof Error ? err.message : 'Unknown error'
         const statusCode =
             err &&
-            typeof err === 'object' &&
-            'statusCode' in err &&
-            typeof (err as { statusCode?: number }).statusCode === 'number'
+                typeof err === 'object' &&
+                'statusCode' in err &&
+                typeof (err as { statusCode?: number }).statusCode === 'number'
                 ? (err as { statusCode: number }).statusCode
                 : 500
         return NextResponse.json({ error: message }, { status: statusCode })

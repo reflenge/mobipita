@@ -45,16 +45,16 @@ export async function POST(req: Request) {
                 type: 'account_onboarding',
                 account_onboarding: {
                     configurations: ['merchant', 'customer'],
-                    refresh_url: `${baseUrl}/connect`,
-                    return_url: `${baseUrl}/connect?accountId=${encodeURIComponent(accountId)}`,
+                    refresh_url: `${baseUrl}/stripetest/connect`,
+                    return_url: `${baseUrl}/stripetest/connect?accountId=${encodeURIComponent(accountId)}`,
                 },
             },
         })
 
         const url =
             typeof accountLink === 'object' &&
-            accountLink !== null &&
-            'url' in accountLink
+                accountLink !== null &&
+                'url' in accountLink
                 ? (accountLink as { url: string }).url
                 : null
         if (!url) {
@@ -69,9 +69,9 @@ export async function POST(req: Request) {
         const message = err instanceof Error ? err.message : 'Unknown error'
         const statusCode =
             err &&
-            typeof err === 'object' &&
-            'statusCode' in err &&
-            typeof (err as { statusCode?: number }).statusCode === 'number'
+                typeof err === 'object' &&
+                'statusCode' in err &&
+                typeof (err as { statusCode?: number }).statusCode === 'number'
                 ? (err as { statusCode: number }).statusCode
                 : 500
         return NextResponse.json({ error: message }, { status: statusCode })
