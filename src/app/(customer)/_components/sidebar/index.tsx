@@ -146,7 +146,7 @@ export function AppSidebar({ user }: AppSidebarProps) {
                                 <SidebarMenu>
                                     <SidebarMenuItem>
                                         <SidebarMenuButton asChild>
-                                            <Link href="/staff">
+                                            <Link href="/m/staff">
                                                 <LayoutDashboard />
                                                 <span>スタッフ</span>
                                             </Link>
