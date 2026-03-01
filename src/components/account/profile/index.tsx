@@ -20,7 +20,14 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Textarea } from "@/components/ui/textarea";
 import { GENDER_LABELS, type ProfileMeta } from "@/lib/profile";
 
-export default function ProfilePage() {
+import type { AccountPageProps } from "..";
+import { AccountProfileEdit } from "./edit";
+
+export function AccountProfile({ basePath, segments }: AccountPageProps) {
+    if (segments[0] === "edit") {
+        return <AccountProfileEdit basePath={basePath} />;
+    }
+
     const { user, isLoaded } = useUser();
     const profile = useQuery(api.userProfiles.getMyProfile);
     const updateMemo = useMutation(api.userProfiles.updateCustomerMemo);
@@ -72,12 +79,12 @@ export default function ProfilePage() {
         <div className="mx-auto max-w-2xl space-y-6 px-6 py-10">
             <div className="flex items-center justify-between">
                 <h1 className="text-2xl font-semibold tracking-tight">
-                    マイページ
+                    プロフィール
                 </h1>
                 <Button variant="outline" size="sm" asChild>
-                    <Link href="/profile/edit">
+                    <Link href={`${basePath}/profile/edit`}>
                         <Pencil className="size-4" />
-                        プロフィール編集
+                        編集
                     </Link>
                 </Button>
             </div>

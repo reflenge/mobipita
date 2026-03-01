@@ -32,7 +32,11 @@ import {
 } from "@/lib/profile";
 import { cn } from "@/lib/utils";
 
-export default function ProfileEditPage() {
+interface AccountProfileEditProps {
+    basePath: string;
+}
+
+export function AccountProfileEdit({ basePath }: AccountProfileEditProps) {
     const { user, isLoaded } = useUser();
     const router = useRouter();
     const [saving, setSaving] = React.useState(false);
@@ -138,7 +142,7 @@ export default function ProfileEditPage() {
                 unsafeMetadata: newMeta,
             });
             toast.success("プロフィールを更新しました");
-            router.push("/profile");
+            router.push(`${basePath}/profile`);
         } catch {
             toast.error("プロフィールの更新に失敗しました");
         } finally {
@@ -150,7 +154,7 @@ export default function ProfileEditPage() {
         <div className="mx-auto max-w-2xl space-y-6 px-6 py-10">
             <div className="flex items-center gap-3">
                 <Button variant="ghost" size="icon" asChild>
-                    <Link href="/profile">
+                    <Link href={`${basePath}/profile`}>
                         <ArrowLeft className="size-4" />
                     </Link>
                 </Button>

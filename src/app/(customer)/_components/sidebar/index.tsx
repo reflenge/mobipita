@@ -30,6 +30,7 @@ import {
     StoreIcon,
     UserCircle,
 } from "lucide-react";
+import AccountSidebar from "@/components/account/sidebar";
 
 interface AppSidebarProps {
     user: {
@@ -137,6 +138,7 @@ export function AppSidebar({ user }: AppSidebarProps) {
                         </SidebarMenu>
                     </SidebarGroupContent>
                 </SidebarGroup>
+                <AccountSidebar />
                 {hasMinRole(user.role, "staff") && (
                     <>
                         <SidebarSeparator />

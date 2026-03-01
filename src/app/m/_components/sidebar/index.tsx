@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/sidebar";
 import { hasMinRole } from "@/lib/roles";
 import { Home } from "lucide-react";
+import AccountSidebar from "@/components/account/sidebar";
 
 interface AppSidebarProps {
     user: {
@@ -49,6 +50,7 @@ export function AppSidebar({ user }: AppSidebarProps) {
                 {hasMinRole(user.role, "staff") && <StaffSidebar />}
                 {hasMinRole(user.role, "company") && <CompanySidebar />}
                 {hasMinRole(user.role, "admin") && <AdminSidebar />}
+                <AccountSidebar management />
                 <SidebarSeparator />
                 <SidebarGroup>
                     <SidebarGroupLabel>利用者向け画面へ</SidebarGroupLabel>
