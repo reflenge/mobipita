@@ -15,7 +15,7 @@ import { api } from "@/../convex/_generated/api";
 import {
     SlotResultList,
     type SlotResult,
-} from "@/app/(main)/(customer)/_components/SlotResultList";
+} from "@/app/(customer)/_components/SlotResultList";
 import { Link } from "@/components/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";

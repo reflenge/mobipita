@@ -20,7 +20,7 @@ import { api } from "@/../convex/_generated/api";
 import {
     SlotResultList,
     type SlotResult,
-} from "@/app/(main)/(customer)/_components/SlotResultList";
+} from "@/app/(customer)/_components/SlotResultList";
 import { MapMultiPin } from "@/components/map";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
