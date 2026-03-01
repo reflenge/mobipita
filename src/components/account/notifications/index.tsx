@@ -1,11 +1,6 @@
 import { Bell } from "lucide-react";
-import {
-    Card,
-    CardContent,
-    CardHeader,
-    CardTitle,
-} from "@/components/ui/card";
 import type { AccountPageProps } from "..";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export function AccountNotifications(_props: AccountPageProps) {
     return (

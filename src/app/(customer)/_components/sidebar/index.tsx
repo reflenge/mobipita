@@ -1,5 +1,17 @@
 import { UserButton } from "@clerk/nextjs";
+import {
+    CalendarCheck,
+    CalendarIcon,
+    Home,
+    LayoutDashboard,
+    MapPinIcon,
+    SearchIcon,
+    ShoppingBagIcon,
+    StoreIcon,
+    UserCircle,
+} from "lucide-react";
 import type { AppRole } from "@/lib/roles";
+import AccountSidebar from "@/components/account/sidebar";
 import { Link } from "@/components/link";
 import {
     Sidebar,
@@ -19,18 +31,6 @@ import {
     SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
 import { hasMinRole } from "@/lib/roles";
-import {
-    CalendarCheck,
-    CalendarIcon,
-    Home,
-    LayoutDashboard,
-    MapPinIcon,
-    SearchIcon,
-    ShoppingBagIcon,
-    StoreIcon,
-    UserCircle,
-} from "lucide-react";
-import AccountSidebar from "@/components/account/sidebar";
 
 interface AppSidebarProps {
     user: {
@@ -41,15 +41,17 @@ interface AppSidebarProps {
 
 export function AppSidebar({ user }: AppSidebarProps) {
     return (
-        <Sidebar className="top-(--header-height) h-[calc(100svh-var(--header-height))]!"
+        <Sidebar
+            className="top-(--header-height) h-[calc(100svh-var(--header-height))]!"
             variant="floating"
-            collapsible="icon">
+            collapsible="icon"
+        >
             <SidebarHeader>
                 <SidebarMenu>
                     <SidebarMenuItem>
                         <SidebarMenuButton asChild>
                             <Link href="/home">
-                                <span className="flex h-6 w-6 aspect-square items-center justify-center rounded bg-linear-to-br from-amber-400 to-teal-500 text-[0.5rem] font-bold text-white">
+                                <span className="flex aspect-square h-6 w-6 items-center justify-center rounded bg-linear-to-br from-amber-400 to-teal-500 text-[0.5rem] font-bold text-white">
                                     MP
                                 </span>
                                 <span>BEYOND KAMPO</span>

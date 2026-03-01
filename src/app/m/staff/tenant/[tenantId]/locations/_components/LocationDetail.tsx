@@ -241,9 +241,7 @@ export function LocationDetail({ tenantId, locationId }: LocationDetailProps) {
                                 control={form.control}
                                 render={({ field, fieldState }) => (
                                     <Field data-invalid={fieldState.invalid}>
-                                        <FieldLabel>
-                                            出店場所名
-                                        </FieldLabel>
+                                        <FieldLabel>出店場所名</FieldLabel>
                                         <Input
                                             {...field}
                                             aria-invalid={fieldState.invalid}
@@ -394,10 +392,7 @@ export function LocationDetail({ tenantId, locationId }: LocationDetailProps) {
                     <h3 className="text-muted-foreground mb-2 text-sm font-medium">
                         地図
                     </h3>
-                    <MapSinglePin
-                        lat={location.lat}
-                        lng={location.lng}
-                    />
+                    <MapSinglePin lat={location.lat} lng={location.lng} />
                 </div>
                 <div className="grid grid-cols-2 gap-2 text-sm">
                     <span className="text-muted-foreground">緯度</span>

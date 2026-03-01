@@ -4,12 +4,12 @@
 
 ## 環境変数 (.env.local)
 
-| 変数名 | 説明 | 例 |
-|--------|------|-----|
-| `STRIPE_SECRET_KEY` | Stripe シークレットキー（必須） | `sk_test_...` |
-| `STRIPE_CONNECT_WEBHOOK_SECRET` | Connect 用 Webhook シークレット（Thin イベント用） | `whsec_...` |
-| `STRIPE_SUBSCRIPTION_WEBHOOK_SECRET` | サブスクリプション用 Webhook シークレット | `whsec_...` |
-| `STRIPE_PLATFORM_PRICE_ID` | プラットフォームサブスクリプションの Price ID | `price_...` |
+| 変数名                               | 説明                                               | 例            |
+| ------------------------------------ | -------------------------------------------------- | ------------- |
+| `STRIPE_SECRET_KEY`                  | Stripe シークレットキー（必須）                    | `sk_test_...` |
+| `STRIPE_CONNECT_WEBHOOK_SECRET`      | Connect 用 Webhook シークレット（Thin イベント用） | `whsec_...`   |
+| `STRIPE_SUBSCRIPTION_WEBHOOK_SECRET` | サブスクリプション用 Webhook シークレット          | `whsec_...`   |
+| `STRIPE_PLATFORM_PRICE_ID`           | プラットフォームサブスクリプションの Price ID      | `price_...`   |
 
 未設定または `*_placeholder` で始まる値はエラーメッセージで案内されます。
 
@@ -32,19 +32,19 @@
 
 ## Webhook
 
-- **Thin イベント** (`/api/webhooks/stripe-connect`)  
-  - イベント: `v2.core.account[requirements].updated`, `v2.core.account[configuration.merchant].capability_status_updated` 等  
-  - ダッシュボードで「Connected accounts」向けに Event destination を追加し、Payload style を **Thin** に設定。  
-  - ローカル:  
-    `stripe listen --thin-events 'v2.core.account[requirements].updated,...' --forward-thin-to http://localhost:3000/api/webhooks/stripe-connect`
+- **Thin イベント** (`/api/webhooks/stripe-connect`)
+    - イベント: `v2.core.account[requirements].updated`, `v2.core.account[configuration.merchant].capability_status_updated` 等
+    - ダッシュボードで「Connected accounts」向けに Event destination を追加し、Payload style を **Thin** に設定。
+    - ローカル:  
+      `stripe listen --thin-events 'v2.core.account[requirements].updated,...' --forward-thin-to http://localhost:3000/api/webhooks/stripe-connect`
 
-- **サブスクリプション** (`/api/webhooks/stripe-subscriptions`)  
-  - スナップショット形式。`customer.subscription.updated`, `customer.subscription.deleted` 等を処理。  
-  - 状態の永続化は Convex の `stripeConnect.upsertSubscriptionStatus` / `removeSubscriptionStatus` を Webhook から呼ぶ形で実装可能（要サーバー用 Convex クライアントまたは HTTP Action）。
+- **サブスクリプション** (`/api/webhooks/stripe-subscriptions`)
+    - スナップショット形式。`customer.subscription.updated`, `customer.subscription.deleted` 等を処理。
+    - 状態の永続化は Convex の `stripeConnect.upsertSubscriptionStatus` / `removeSubscriptionStatus` を Webhook から呼ぶ形で実装可能（要サーバー用 Convex クライアントまたは HTTP Action）。
 
 ## ストアフロント URL
 
-- ストア: `/connect/store/[accountId]`  
+- ストア: `/connect/store/[accountId]`
 - 本番では URL に `accountId` ではなく tenantId や shopId などの識別子を使うことを推奨。
 
 ## 参考

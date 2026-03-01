@@ -125,7 +125,8 @@ export function CreateLocation({ tenantId }: Props) {
             <div>
                 <div className="text-xl">出店場所の登録</div>
                 <p className="text-muted-foreground text-sm">
-                    {tenant.tenantName} の出店場所（移動販売で出店する場所）を新規登録します
+                    {tenant.tenantName}{" "}
+                    の出店場所（移動販売で出店する場所）を新規登録します
                 </p>
             </div>
 
@@ -148,6 +149,10 @@ export function CreateLocation({ tenantId }: Props) {
                                 <FieldLabel htmlFor="form-location-create-name">
                                     出店場所名
                                 </FieldLabel>
+                                <FieldDescription>
+                                    お客様が見てすぐわかる名前をつけてください（例:
+                                    高知駅の坂本龍馬の像の前）
+                                </FieldDescription>
                                 <Input
                                     {...field}
                                     id="form-location-create-name"
@@ -164,9 +169,9 @@ export function CreateLocation({ tenantId }: Props) {
 
                     <Field>
                         <FieldLabel>地図で位置を選択</FieldLabel>
-                        <p className="text-muted-foreground mb-2 text-sm">
-                            地図をクリックすると座標が設定され、住所が自動で入ります。
-                        </p>
+                        <FieldDescription>
+                            地図上の出店場所をクリックしてピンを置いてください。ピンの位置から住所が自動で入力されます。
+                        </FieldDescription>
                         <MapPinLocateSelectProvider
                             defaultValue={geoValue}
                             onChange={handleMapChange}
@@ -183,6 +188,9 @@ export function CreateLocation({ tenantId }: Props) {
                                 <FieldLabel htmlFor="form-location-create-autoAddress">
                                     住所（自動取得）
                                 </FieldLabel>
+                                <FieldDescription>
+                                    地図のピンから自動で取得されます。手動では編集できません。
+                                </FieldDescription>
                                 <Input
                                     value={field.value}
                                     id="form-location-create-autoAddress"
@@ -206,6 +214,9 @@ export function CreateLocation({ tenantId }: Props) {
                                 <FieldLabel htmlFor="form-location-create-semiAddress">
                                     住所（正式）
                                 </FieldLabel>
+                                <FieldDescription>
+                                    お客様に表示される住所です。番地や建物名まで正確に入力してください。
+                                </FieldDescription>
                                 <Input
                                     {...field}
                                     id="form-location-create-semiAddress"
@@ -228,6 +239,9 @@ export function CreateLocation({ tenantId }: Props) {
                                 <FieldLabel htmlFor="form-location-create-details">
                                     詳細・備考
                                 </FieldLabel>
+                                <FieldDescription>
+                                    駐車場の有無・目印・アクセス方法など、お客様に伝えたい情報を自由に記入できます。
+                                </FieldDescription>
                                 <Tiptap
                                     sentence={field.value}
                                     setSentence={field.onChange}

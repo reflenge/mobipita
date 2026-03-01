@@ -1,12 +1,18 @@
 "use client";
 import { Suspense } from "react";
-import { toast } from "sonner";
 import { useQueryState } from "nuqs";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 
 export default function HomePage() {
     return (
-        <Suspense fallback={<div className="mx-auto container px-6 py-10 text-muted-foreground">読み込み中…</div>}>
+        <Suspense
+            fallback={
+                <div className="text-muted-foreground container mx-auto px-6 py-10">
+                    読み込み中…
+                </div>
+            }
+        >
             <HomePageInner />
         </Suspense>
     );
@@ -17,12 +23,14 @@ function HomePageInner() {
 
     if (canceled) {
         console.log(
-            'Order canceled -- continue to shop around and checkout when you’re ready.'
-        )
-        toast.error('Order canceled -- continue to shop around and checkout when you’re ready.')
+            "Order canceled -- continue to shop around and checkout when you’re ready.",
+        );
+        toast.error(
+            "Order canceled -- continue to shop around and checkout when you’re ready.",
+        );
     }
     return (
-        <div className="mx-auto container space-y-6 px-6 py-10">
+        <div className="container mx-auto space-y-6 px-6 py-10">
             <form action="/api/checkout_sessions" method="POST">
                 <section>
                     <Button type="submit" role="link">

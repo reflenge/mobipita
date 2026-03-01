@@ -36,7 +36,9 @@ export const setConnectAccount = mutation({
             .withIndex("by_user", (q) => q.eq("clerkUserId", clerkUserId))
             .first();
         if (existing) {
-            await ctx.db.patch(existing._id, { stripeAccountId: args.stripeAccountId });
+            await ctx.db.patch(existing._id, {
+                stripeAccountId: args.stripeAccountId,
+            });
             return existing._id;
         }
         return await ctx.db.insert("StripeConnectAccounts", {
@@ -58,7 +60,7 @@ export const upsertSubscriptionStatus = mutation({
         const existing = await ctx.db
             .query("StripeConnectSubscriptions")
             .withIndex("by_customer_account", (q) =>
-                q.eq("customerAccountId", args.customerAccountId)
+                q.eq("customerAccountId", args.customerAccountId),
             )
             .first();
         const data = {
@@ -82,7 +84,7 @@ export const removeSubscriptionStatus = mutation({
         const row = await ctx.db
             .query("StripeConnectSubscriptions")
             .withIndex("by_customer_account", (q) =>
-                q.eq("customerAccountId", args.customerAccountId)
+                q.eq("customerAccountId", args.customerAccountId),
             )
             .first();
         if (row) await ctx.db.delete(row._id);
@@ -102,7 +104,7 @@ export const getMySubscriptionStatus = query({
         const sub = await ctx.db
             .query("StripeConnectSubscriptions")
             .withIndex("by_customer_account", (q) =>
-                q.eq("customerAccountId", accountRow.stripeAccountId)
+                q.eq("customerAccountId", accountRow.stripeAccountId),
             )
             .first();
         return sub;

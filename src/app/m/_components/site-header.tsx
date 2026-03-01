@@ -1,14 +1,13 @@
-"use client"
+"use client";
 
-import { ShieldAlert, SidebarIcon } from "lucide-react"
-
-import { Button } from "@/components/ui/button"
-import { Separator } from "@/components/ui/separator"
-import { useSidebar } from "@/components/ui/sidebar"
-import AutoBreadcrumb from "./breadcrumb"
+import { ShieldAlert, SidebarIcon } from "lucide-react";
+import AutoBreadcrumb from "./breadcrumb";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
+import { useSidebar } from "@/components/ui/sidebar";
 
 export function SiteHeader() {
-    const { toggleSidebar } = useSidebar()
+    const { toggleSidebar } = useSidebar();
 
     return (
         <header className="bg-background sticky top-0 z-50 flex w-full items-center outline">
@@ -24,14 +23,15 @@ export function SiteHeader() {
                 <Separator orientation="vertical" className="mr-2 h-4" />
                 <AutoBreadcrumb />
                 <div
-                    className="ml-auto flex items-center gap-3 h-12 px-7 py-2 rounded-full shadow font-extrabold text-white text-lg tracking-wide border-2 border-red-800"
+                    className="ml-auto flex h-12 items-center gap-3 rounded-full border-2 border-red-800 px-7 py-2 text-lg font-extrabold tracking-wide text-white shadow"
                     style={{
-                        background: "linear-gradient(270deg, #b91c1c, #dc2626, #f472b6, #b91c1c)",
+                        background:
+                            "linear-gradient(270deg, #b91c1c, #dc2626, #f472b6, #b91c1c)",
                         backgroundSize: "800% 800%",
-                        animation: "gradientBGmove 5s ease-in-out infinite"
+                        animation: "gradientBGmove 5s ease-in-out infinite",
                     }}
                 >
-                    <ShieldAlert className="w-7 h-7 mr-2" strokeWidth={2.8} />
+                    <ShieldAlert className="mr-2 h-7 w-7" strokeWidth={2.8} />
                     <span className="text-xl font-extrabold">管理画面</span>
                 </div>
                 <style>
@@ -45,5 +45,5 @@ export function SiteHeader() {
                 </style>
             </div>
         </header>
-    )
+    );
 }

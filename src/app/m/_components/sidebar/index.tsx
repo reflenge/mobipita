@@ -1,8 +1,10 @@
 import { UserButton } from "@clerk/nextjs";
+import { Home } from "lucide-react";
 import AdminSidebar from "./admin-sidebar";
 import CompanySidebar from "./company-sidebar";
 import StaffSidebar from "./staff-sidebar";
 import type { AppRole } from "@/lib/roles";
+import AccountSidebar from "@/components/account/sidebar";
 import { Link } from "@/components/link";
 import {
     Sidebar,
@@ -19,8 +21,6 @@ import {
     SidebarGroupLabel,
 } from "@/components/ui/sidebar";
 import { hasMinRole } from "@/lib/roles";
-import { Home } from "lucide-react";
-import AccountSidebar from "@/components/account/sidebar";
 
 interface AppSidebarProps {
     user: {
@@ -31,13 +31,17 @@ interface AppSidebarProps {
 
 export function AppSidebar({ user }: AppSidebarProps) {
     return (
-        <Sidebar className="top-(--header-height) h-[calc(100svh-var(--header-height))]!" variant="floating" collapsible="icon">
+        <Sidebar
+            className="top-(--header-height) h-[calc(100svh-var(--header-height))]!"
+            variant="floating"
+            collapsible="icon"
+        >
             <SidebarHeader>
                 <SidebarMenu>
                     <SidebarMenuItem>
                         <SidebarMenuButton asChild>
                             <Link href="/m/company">
-                                <span className="flex h-6 w-6 aspect-square items-center justify-center rounded bg-linear-to-br from-amber-400 to-teal-500 text-[0.5rem] font-bold text-white">
+                                <span className="flex aspect-square h-6 w-6 items-center justify-center rounded bg-linear-to-br from-amber-400 to-teal-500 text-[0.5rem] font-bold text-white">
                                     MP
                                 </span>
                                 <span>BEYOND KAMPO 管理</span>

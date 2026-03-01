@@ -14,7 +14,9 @@ interface AccountSidebarProps {
     management?: boolean;
 }
 
-export default function AccountSidebar({ management = false }: AccountSidebarProps) {
+export default function AccountSidebar({
+    management = false,
+}: AccountSidebarProps) {
     const basePath = management ? "/m/account" : "/account";
     return (
         <>

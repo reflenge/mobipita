@@ -5,6 +5,8 @@ import { useUser } from "@clerk/nextjs";
 import { useQuery, useMutation } from "convex/react";
 import { Pencil, Save, User } from "lucide-react";
 import { toast } from "sonner";
+import { AccountProfileEdit } from "./edit";
+import type { AccountPageProps } from "..";
 import { api } from "@/../convex/_generated/api";
 import { Link } from "@/components/link";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -20,14 +22,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Textarea } from "@/components/ui/textarea";
 import { GENDER_LABELS, type ProfileMeta } from "@/lib/profile";
 
-import type { AccountPageProps } from "..";
-import { AccountProfileEdit } from "./edit";
-
 export function AccountProfile({ basePath, segments }: AccountPageProps) {
-    if (segments[0] === "edit") {
-        return <AccountProfileEdit basePath={basePath} />;
-    }
-
     const { user, isLoaded } = useUser();
     const profile = useQuery(api.userProfiles.getMyProfile);
     const updateMemo = useMutation(api.userProfiles.updateCustomerMemo);
@@ -42,6 +37,10 @@ export function AccountProfile({ basePath, segments }: AccountPageProps) {
             setMemoInitialized(true);
         }
     }, [profile, memoInitialized]);
+
+    if (segments[0] === "edit") {
+        return <AccountProfileEdit basePath={basePath} />;
+    }
 
     if (!isLoaded || profile === undefined) {
         return (

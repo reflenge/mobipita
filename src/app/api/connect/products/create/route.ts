@@ -5,52 +5,57 @@
  * POST body: { accountId, name, description?, priceInCents, currency? }
  */
 
-import { NextResponse } from 'next/server'
-import { auth } from '@clerk/nextjs/server'
-import { getStripeClient } from '@/lib/stripe-connect'
+import { auth } from "@clerk/nextjs/server";
+import { NextResponse } from "next/server";
+import { getStripeClient } from "@/lib/stripe-connect";
 
 export async function POST(req: Request) {
     try {
-        const { userId } = await auth()
+        const { userId } = await auth();
         if (!userId) {
-            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+            return NextResponse.json(
+                { error: "Unauthorized" },
+                { status: 401 },
+            );
         }
 
-        const body = await req.json().catch(() => ({}))
+        const body = await req.json().catch(() => ({}));
         const accountId =
-            typeof body.accountId === 'string' ? body.accountId.trim() : null
-        const name = typeof body.name === 'string' ? body.name.trim() : null
+            typeof body.accountId === "string" ? body.accountId.trim() : null;
+        const name = typeof body.name === "string" ? body.name.trim() : null;
         const description =
-            typeof body.description === 'string' ? body.description.trim() : undefined
+            typeof body.description === "string"
+                ? body.description.trim()
+                : undefined;
         const priceInCents =
-            typeof body.priceInCents === 'number' && body.priceInCents >= 0
+            typeof body.priceInCents === "number" && body.priceInCents >= 0
                 ? Math.round(body.priceInCents)
-                : null
+                : null;
         const currency =
-            typeof body.currency === 'string' && body.currency.length === 3
+            typeof body.currency === "string" && body.currency.length === 3
                 ? body.currency.toLowerCase()
-                : 'jpy'
+                : "jpy";
 
-        if (!accountId || !accountId.startsWith('acct_')) {
+        if (!accountId || !accountId.startsWith("acct_")) {
             return NextResponse.json(
-                { error: 'Valid accountId (acct_xxx) is required' },
-                { status: 400 }
-            )
+                { error: "Valid accountId (acct_xxx) is required" },
+                { status: 400 },
+            );
         }
         if (!name) {
             return NextResponse.json(
-                { error: 'name is required' },
-                { status: 400 }
-            )
+                { error: "name is required" },
+                { status: 400 },
+            );
         }
         if (priceInCents === null) {
             return NextResponse.json(
-                { error: 'priceInCents (number >= 0) is required' },
-                { status: 400 }
-            )
+                { error: "priceInCents (number >= 0) is required" },
+                { status: 400 },
+            );
         }
 
-        const stripeClient = getStripeClient()
+        const stripeClient = getStripeClient();
 
         const product = await stripeClient.products.create(
             {
@@ -61,25 +66,27 @@ export async function POST(req: Request) {
                     currency,
                 },
             },
-            { stripeAccount: accountId }
-        )
+            { stripeAccount: accountId },
+        );
 
         return NextResponse.json({
             productId: product.id,
             defaultPriceId:
-                typeof product.default_price === 'object' && product.default_price && 'id' in product.default_price
+                typeof product.default_price === "object" &&
+                product.default_price &&
+                "id" in product.default_price
                     ? (product.default_price as { id: string }).id
                     : product.default_price,
-        })
+        });
     } catch (err) {
-        const message = err instanceof Error ? err.message : 'Unknown error'
+        const message = err instanceof Error ? err.message : "Unknown error";
         const statusCode =
             err &&
-            typeof err === 'object' &&
-            'statusCode' in err &&
-            typeof (err as { statusCode?: number }).statusCode === 'number'
+            typeof err === "object" &&
+            "statusCode" in err &&
+            typeof (err as { statusCode?: number }).statusCode === "number"
                 ? (err as { statusCode: number }).statusCode
-                : 500
-        return NextResponse.json({ error: message }, { status: statusCode })
+                : 500;
+        return NextResponse.json({ error: message }, { status: statusCode });
     }
 }
