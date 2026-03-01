@@ -6,6 +6,7 @@
 
 'use client'
 
+import { Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
@@ -13,6 +14,14 @@ import { Button } from '@/components/ui/button'
 import { toast } from 'sonner'
 
 export default function ConnectProductsPage() {
+    return (
+        <Suspense fallback={<div className="mx-auto max-w-md px-4 py-8 text-muted-foreground">読み込み中…</div>}>
+            <ConnectProductsInner />
+        </Suspense>
+    )
+}
+
+function ConnectProductsInner() {
     const searchParams = useSearchParams()
     const router = useRouter()
     const accountId = searchParams.get('accountId')
