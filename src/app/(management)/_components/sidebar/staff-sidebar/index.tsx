@@ -7,13 +7,11 @@ import {
     SidebarMenu,
     SidebarMenuButton,
     SidebarMenuItem,
-    SidebarSeparator,
 } from "@/components/ui/sidebar";
 
 export default function StaffSidebar() {
     return (
         <>
-            <SidebarSeparator />
             <SidebarGroup>
                 <SidebarGroupLabel>スタッフ</SidebarGroupLabel>
                 <SidebarGroupContent>
