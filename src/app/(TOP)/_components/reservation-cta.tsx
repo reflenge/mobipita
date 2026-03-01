@@ -28,7 +28,7 @@ export function ReservationCta() {
             {/* 手とボタンを横並びで、文字と画像が被らないように */}
             <div className="group flex flex-col items-center gap-4 sm:flex-row sm:justify-center sm:gap-6">
                 <Link
-                    href="/reserve/tenant"
+                    href="/home"
                     className="reservation-cta-tap-hand order-2 flex shrink-0 items-center justify-center sm:order-1"
                     aria-label="ここから予約"
                 >
@@ -41,7 +41,7 @@ export function ReservationCta() {
                     />
                 </Link>
                 <Link
-                    href="/reserve/tenant"
+                    href="/home"
                     className="reservation-cta-button bg-foreground text-background hover:bg-foreground/90 group-hover:bg-foreground/90 order-1 flex w-full max-w-md shrink-0 items-center justify-center gap-3 rounded-2xl px-8 py-6 text-xl font-bold shadow-lg transition group-hover:scale-[1.03] hover:scale-[1.03] active:scale-[0.98] sm:order-2 sm:py-8 sm:text-2xl md:text-3xl"
                 >
                     <span>ここから予約</span>
