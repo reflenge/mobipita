@@ -1,97 +1,120 @@
 import { defineSchema, defineTable } from "convex/server";
 import { v } from "convex/values";
 import {
-    messageScope,
     fileStatus,
     tenantType,
     tenantStatus,
     storeType,
+    slotStatus,
+    slotVisibility,
+    bookingStatus,
 } from "./values";
 
 export default defineSchema({
-    // チャットメッセージの保存テーブル。
-    Messages: defineTable({
-        // 本文。
-        text: v.string(),
-        // 送信者の Clerk userId。
-        userId: v.string(),
-        // スコープ（全体 / 組織）。
-        scope: messageScope,
-        // 組織スコープの場合のみ入る orgId。
-        orgId: v.optional(v.string()),
-    })
-        // スコープ単体で検索するためのインデックス。
-        .index("by_scope", ["scope"])
-        // 組織スコープかつ orgId で検索するための複合インデックス。
-        .index("by_scope_orgId", ["scope", "orgId"]),
-    // アップロード済みファイルのメタデータ。
     Files: defineTable({
-        // Convex のストレージ ID。
         storageId: v.id("_storage"),
-        // 元のファイル名。
         fileName: v.string(),
-        // MIME タイプ。
         contentType: v.string(),
-        // ファイルサイズ（bytes）。
         size: v.number(),
-        // ファイルの状態。
         status: fileStatus,
     })
-        // storageId での直接検索用。
         .index("by_storageId", ["storageId"])
-        // 状態での絞り込み用。
         .index("by_status", ["status"])
-        // MIME タイプでの絞り込み用。
         .index("by_contentType", ["contentType"]),
-    // テナント情報。
     Tenants: defineTable({
-        // Clerk の組織 ID。
-        clerkOrgId: v.string(),
-        // 作成者の Clerk userId。
         createdByUserId: v.string(),
-        // テナント名。
         tenantName: v.string(),
-        // URL に使うスラッグ。
-        // NOTE: 今のところ使っていない 使う予定もあまりない
-        tenantSlug: v.string(),
-        // テナント種別。
         tenantType: tenantType,
-        // ロゴ画像の Files レコード ID（任意）。
         tenantLogoFileId: v.optional(v.id("Files")),
-        // 運用状態。
         tenantStatus: tenantStatus,
-        // 店舗形態（移動店舗 / 固定店舗）。
         storeType: storeType,
     })
-        // テナントスラッグで検索するためのインデックス。
-        .index("by_org_slug", ["tenantSlug"])
-        // 組織 ID で検索するためのインデックス。
-        .index("by_clerkOrgId", ["clerkOrgId"])
-        // 組織内でスラッグの重複チェック用。
-        .index("by_clerkOrgId_tenantSlug", ["clerkOrgId", "tenantSlug"])
-        // ステータスでの絞り込み用。
         .index("by_status", ["tenantStatus"])
-        // 種別での絞り込み用。
         .index("by_type", ["tenantType"])
-        // ステータス + 種別の複合検索用。
         .index("by_status_type", ["tenantStatus", "tenantType"]),
-    // テナントへの従業員（Member）割当。1 Member が複数テナントに割り当て可能。
     TenantMemberAssignments: defineTable({
-        // Clerk の組織 ID（スコープ用）。
-        clerkOrgId: v.string(),
-        // 割当先テナント（Convex Tenants の ID）。
         tenantId: v.id("Tenants"),
-        // 割当るメンバーの Clerk userId。
         clerkUserId: v.string(),
     })
         .index("by_tenant", ["tenantId"])
-        .index("by_org_user", ["clerkOrgId", "clerkUserId"])
-        .index("by_org", ["clerkOrgId"])
-        // 同一テナント・同一ユーザーの重複を防ぐ。
+        .index("by_user", ["clerkUserId"])
         .index("by_tenant_user", ["tenantId", "clerkUserId"]),
     TenantDetails: defineTable({
-        tenantId: v.id("Tenants"), // 親テーブルへの参照
+        tenantId: v.id("Tenants"),
         phoneNumber: v.optional(v.string()),
-        // 今後、住所やSNSリンク、メモなどが増えてもここに追加すればOK
     }).index("by_tenantId", ["tenantId"]),
+    Locations: defineTable({
+        tenantId: v.id("Tenants"),
+        name: v.string(),
+        autoAddress: v.string(),
+        semiAddress: v.string(),
+        lat: v.number(),
+        lng: v.number(),
+        details: v.string(),
+    }).index("by_tenant", ["tenantId"]),
+    Slots: defineTable({
+        tenantId: v.id("Tenants"),
+        serviceId: v.id("Services"),
+        locationId: v.id("Locations"),
+        startAt: v.string(),
+        endAt: v.string(),
+        slotStatus: slotStatus,
+        visibility: slotVisibility,
+        capacity: v.number(),
+        createdByUserId: v.string(),
+        policySnapshot: v.string(),
+        locationSnapshot: v.string(),
+    })
+        .index("by_tenant", ["tenantId"])
+        .index("by_tenant_service", ["tenantId", "serviceId"])
+        .index("by_tenant_startAt", ["tenantId", "startAt"]),
+    Bookings: defineTable({
+        tenantId: v.id("Tenants"),
+        slotId: v.id("Slots"),
+        status: bookingStatus,
+        clerkUserId: v.string(),
+        answers: v.string(),
+        policySnapshot: v.string(),
+    })
+        .index("by_slot", ["slotId"])
+        .index("by_user", ["clerkUserId"])
+        .index("by_tenant", ["tenantId"])
+        .index("by_slot_status", ["slotId", "status"]),
+    Services: defineTable({
+        tenantId: v.id("Tenants"),
+        createdByUserId: v.string(),
+        title: v.string(),
+        description: v.string(),
+        isActive: v.boolean(),
+    })
+        .index("by_tenant", ["tenantId"])
+        .index("by_tenant_active", ["tenantId", "isActive"]),
+    StaffTags: defineTable({
+        title: v.string(),
+        description: v.string(),
+        color: v.string(),
+        isActive: v.boolean(),
+        createdByUserId: v.string(),
+    }).index("by_active", ["isActive"]),
+    UserProfiles: defineTable({
+        clerkUserId: v.string(),
+        customerMemo: v.optional(v.string()),
+        staffMemo: v.optional(v.string()),
+        staffTags: v.optional(v.array(v.id("StaffTags"))),
+    }).index("by_user", ["clerkUserId"]),
+    // Stripe Connect: ユーザーと Connect アカウントの対応
+    // 将来は tenantId や shopId など別の識別子で紐づけることを推奨（コメント参照）
+    StripeConnectAccounts: defineTable({
+        clerkUserId: v.string(),
+        stripeAccountId: v.string(), // acct_xxx (V2 Connected Account ID)
+    })
+        .index("by_user", ["clerkUserId"])
+        .index("by_stripe_account", ["stripeAccountId"]),
+    // サブスクリプション状態（Webhook で更新）。customer_account = Connect アカウント ID (acct_xxx)
+    StripeConnectSubscriptions: defineTable({
+        customerAccountId: v.string(), // V2 では .customer ではなく .customer_account を使用
+        stripeSubscriptionId: v.optional(v.string()),
+        status: v.string(), // active, canceled, past_due 等
+        cancelAtPeriodEnd: v.optional(v.boolean()),
+    }).index("by_customer_account", ["customerAccountId"]),
 });

@@ -88,7 +88,7 @@ import {
 
 export default function Header() {
     return (
-        <header className="flex justify-end items-center p-4 gap-4 h-16">
+        <header className="flex h-16 items-center justify-end gap-4 p-4">
             <Authenticated>
                 <OrganizationSwitcher />
                 <UserButton />
@@ -157,11 +157,11 @@ function AuthenticatedContent() {
 
 ## 注意事項
 
--   Convex の認証コンポーネントを使用することで、Convex バックエンドとの認証状態が正しく同期されます
--   Clerk のコンポーネントはフロントエンド側の認証状態しか確認できないため、Convex との統合では使用しないでください
--   認証状態の読み込みが完了する前に認証が必要なコンテンツを表示しないよう、`<AuthLoading>` を適切に使用してください
+- Convex の認証コンポーネントを使用することで、Convex バックエンドとの認証状態が正しく同期されます
+- Clerk のコンポーネントはフロントエンド側の認証状態しか確認できないため、Convex との統合では使用しないでください
+- 認証状態の読み込みが完了する前に認証が必要なコンテンツを表示しないよう、`<AuthLoading>` を適切に使用してください
 
 ## 参考資料
 
--   [Convex Authentication Documentation](https://docs.convex.dev/auth)
--   [Clerk + Convex Integration Guide](https://docs.convex.dev/auth/clerk)
+- [Convex Authentication Documentation](https://docs.convex.dev/auth)
+- [Clerk + Convex Integration Guide](https://docs.convex.dev/auth/clerk)

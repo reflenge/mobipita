@@ -12,9 +12,9 @@ DB_PASS=mypassword
 
 上記の設定により、以下のように環境変数にアクセスできます:
 
--   `process.env.DB_HOST`
--   `process.env.DB_USER`
--   `process.env.DB_PASS`
+- `process.env.DB_HOST`
+- `process.env.DB_USER`
+- `process.env.DB_PASS`
 
 ## ブラウザで使用できる環境変数
 
@@ -44,9 +44,9 @@ NEXT_PUBLIC_ANALYTICS_ID=abcdefghijk
 
 `NODE_ENV` には以下の 3 つの値のみ使用できます:
 
--   `production`
--   `development`
--   `test`
+- `production`
+- `development`
+- `test`
 
 ## Git 管理における注意点
 
@@ -56,9 +56,9 @@ NEXT_PUBLIC_ANALYTICS_ID=abcdefghijk
 
 以下のファイルはデフォルト定義として使用する:
 
--   `.env`
--   `.env.development`
--   `.env.production`
+- `.env`
+- `.env.development`
+- `.env.production`
 
 これらのファイルには、プロジェクト全体で共有する設定や、環境ごとのデフォルト値を記載します。
 
@@ -66,7 +66,7 @@ NEXT_PUBLIC_ANALYTICS_ID=abcdefghijk
 
 以下のファイルはシークレットキーなど機密情報を含むため、**必ず `.gitignore` に追加**してください:
 
--   `.env*.local`（`.env.local`, `.env.development.local`, `.env.production.local` など）
+- `.env*.local`（`.env.local`, `.env.development.local`, `.env.production.local` など）
 
 ```.gitignore
 # 環境変数ファイル（ローカル設定）
@@ -78,4 +78,4 @@ NEXT_PUBLIC_ANALYTICS_ID=abcdefghijk
 
 ## 参考資料
 
--   [Next.js における環境変数 (env) の取り扱い | zenn](https://zenn.dev/hisayuki_mori/articles/environment-variables-for-nextjs)
+- [Next.js における環境変数 (env) の取り扱い | zenn](https://zenn.dev/hisayuki_mori/articles/environment-variables-for-nextjs)

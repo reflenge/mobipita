@@ -8,10 +8,17 @@
  * @module
  */
 
+import type * as bookings from "../bookings.js";
 import type * as files from "../files.js";
 import type * as lib_clerkAuth from "../lib/clerkAuth.js";
+import type * as locations from "../locations.js";
+import type * as services from "../services.js";
+import type * as slots from "../slots.js";
+import type * as staffTags from "../staffTags.js";
+import type * as stripeConnect from "../stripeConnect.js";
 import type * as tenantMemberAssignments from "../tenantMemberAssignments.js";
 import type * as tenants from "../tenants.js";
+import type * as userProfiles from "../userProfiles.js";
 import type * as values from "../values.js";
 
 import type {
@@ -21,10 +28,17 @@ import type {
 } from "convex/server";
 
 declare const fullApi: ApiFromModules<{
+  bookings: typeof bookings;
   files: typeof files;
   "lib/clerkAuth": typeof lib_clerkAuth;
+  locations: typeof locations;
+  services: typeof services;
+  slots: typeof slots;
+  staffTags: typeof staffTags;
+  stripeConnect: typeof stripeConnect;
   tenantMemberAssignments: typeof tenantMemberAssignments;
   tenants: typeof tenants;
+  userProfiles: typeof userProfiles;
   values: typeof values;
 }>;
 

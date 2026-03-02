@@ -36,27 +36,16 @@ function handleLineInAppBrowser(req: NextRequest): NextResponse | null {
     return null;
 }
 
-export default clerkMiddleware(
-    async (auth, req) => {
-        // LINE内ブラウザ判定（外部ブラウザへの誘導は最優先）。
-        const lineRedirect = handleLineInAppBrowser(req);
-        if (lineRedirect) {
-            return lineRedirect;
-        }
+export default clerkMiddleware(async (auth, req) => {
+    const lineRedirect = handleLineInAppBrowser(req);
+    if (lineRedirect) {
+        return lineRedirect;
+    }
 
-        // サインイン/サインアップ以外は必ず認証が必要。
-        if (!isPublicRoute(req)) {
-            await auth.protect();
-        }
-    },
-    {
-        organizationSyncOptions: {
-            // /o/:id 配下に来たら、その id の Organization をアクティブに同期する。
-            // これにより「組織URL = 組織ID」の固定スコープを実現する。
-            organizationPatterns: ["/o/:id", "/o/:id/(.*)"],
-        },
-    },
-);
+    if (!isPublicRoute(req)) {
+        await auth.protect();
+    }
+});
 
 export const config = {
     matcher: [

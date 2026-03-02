@@ -9,17 +9,16 @@ const nextConfig: NextConfig = {
     devIndicators: false,
     // 外部画像の設定
     images: {
+        // Clerk の画像を許可するリモートパターン
         remotePatterns: [
-            {
-                protocol: "https",
-                hostname: "img.clerk.com",
-            },
-            {
-                protocol: "https",
-                hostname: "charming-buffalo-538.convex.cloud", // 👈 これを追加！
-                pathname: "/api/storage/**",
-            },
+            new URL("https://img.clerk.com/**"),
+            new URL("https://charming-buffalo-538.convex.cloud/**"),
         ],
+    },
+    //
+    compiler: {
+        // コンソールログを削除（本番のみ）
+        removeConsole: process.env.NODE_ENV === "production",
     },
 };
 

@@ -46,10 +46,10 @@ OK、言いたいことわかった。
 
 ## ① Tenantテーブルと Fileテーブルを作る
 
-* **Tenant**：店の情報（名前・slug・直営/テナント・ステータス・ロゴ参照）
-* **File**：アップロードしたファイル情報（storageId・名前・サイズ…）
+- **Tenant**：店の情報（名前・slug・直営/テナント・ステータス・ロゴ参照）
+- **File**：アップロードしたファイル情報（storageId・名前・サイズ…）
 
-👉 Tenantのロゴは `storageId` を直接持たず、**filesの _id を参照**するのが正解。
+👉 Tenantのロゴは `storageId` を直接持たず、**filesの \_id を参照**するのが正解。
 
 ---
 
@@ -70,9 +70,9 @@ OK、言いたいことわかった。
 
 ## ③ 画面（フォーム）を作る
 
-* React Hook Form + Zodで入力チェック
-* FilePondでロゴ1枚アップロード
-* tenantName / tenantSlug / tenantType を送る
+- React Hook Form + Zodで入力チェック
+- FilePondでロゴ1枚アップロード
+- tenantName / tenantSlug / tenantType を送る
 
 ---
 
@@ -90,23 +90,21 @@ pnpm add react-hook-form zod @hookform/resolvers filepond react-filepond filepon
 
 `convex/schema.ts` に
 
-* `tenants` テーブル
+- `tenants` テーブル
+    - `clerkOrgId`
+    - `tenantName`
+    - `tenantSlug`
+    - ✅ `tenantType: direct | tenant`
+    - `tenantLogoFileId?`
+    - `tenantStatus: preparing/open/paused/closed`
+    - index: `by_org_slug`
 
-  * `clerkOrgId`
-  * `tenantName`
-  * `tenantSlug`
-  * ✅ `tenantType: direct | tenant`
-  * `tenantLogoFileId?`
-  * `tenantStatus: preparing/open/paused/closed`
-  * index: `by_org_slug`
-
-* `files` テーブル
-
-  * `storageId`
-  * `fileName`
-  * `contentType`
-  * `size`
-  * `status: temporary/attached`
+- `files` テーブル
+    - `storageId`
+    - `fileName`
+    - `contentType`
+    - `size`
+    - `status: temporary/attached`
 
 ---
 
@@ -116,23 +114,22 @@ pnpm add react-hook-form zod @hookform/resolvers filepond react-filepond filepon
 
 `convex/files.ts`
 
-* `generateUploadUrl({ clerkOrgId })`
+- `generateUploadUrl({ clerkOrgId })`
 
 ### B. filesに temporary 保存する
 
 `convex/fileRecords.ts`
 
-* `createFileRecord(...)`
-* `deleteTemporaryFile(...)`（FilePondで削除押した時用）
+- `createFileRecord(...)`
+- `deleteTemporaryFile(...)`（FilePondで削除押した時用）
 
 ### C. tenantsを作る（slug重複チェック込み）
 
 `convex/tenants.ts`
 
-* `createTenant(...)`
-
-  * index `by_org_slug` を使って **slug重複なら弾く**
-  * ロゴがあれば files を `attached` に更新
+- `createTenant(...)`
+    - index `by_org_slug` を使って **slug重複なら弾く**
+    - ロゴがあれば files を `attached` に更新
 
 ---
 
@@ -149,9 +146,9 @@ import "filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css";
 
 `components/CreateTenantForm.tsx`
 
-* FilePond で画像をアップロード
-* 画像がアップロードできたら `tenantLogoFileId` を保持
-* submit で `createTenant` を呼ぶだけ
+- FilePond で画像をアップロード
+- 画像がアップロードできたら `tenantLogoFileId` を保持
+- submit で `createTenant` を呼ぶだけ
 
 ### ページに置く
 
@@ -170,8 +167,8 @@ import "filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css";
 
 保存するのはこれだけ：
 
-* `files.storageId`
-* `tenants.tenantLogoFileId`（files参照）
+- `files.storageId`
+- `tenants.tenantLogoFileId`（files参照）
 
 ---
 
@@ -179,8 +176,8 @@ import "filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css";
 
 「作成ボタン押した時にアップロード」じゃなくて
 
-* 画像選択した瞬間にアップロードして fileId作る
-* 作成ボタンで tenantに紐付ける
+- 画像選択した瞬間にアップロードして fileId作る
+- 作成ボタンで tenantに紐付ける
 
 この方式が一番ラク。
 
@@ -190,8 +187,8 @@ import "filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css";
 
 Convexは unique制約がないから
 
-* `by_org_slug` index を作る
-* 作成前に検索して存在したらエラー
+- `by_org_slug` index を作る
+- 作成前に検索して存在したらエラー
 
 これが正しいやり方。
 
@@ -201,7 +198,7 @@ Convexは unique制約がないから
 
 Tenantにこれを1行追加するだけ。
 
-* `tenantType: "direct" | "tenant"`
+- `tenantType: "direct" | "tenant"`
 
 フォームにはプルダウンで出すだけ。
 
@@ -211,7 +208,7 @@ Tenantにこれを1行追加するだけ。
 
 「adminだけTenant作れる」にしたいなら
 
-* Convex mutation の中で **admin/owner か判定する**
+- Convex mutation の中で **admin/owner か判定する**
 
 これだけ。
 
@@ -227,9 +224,9 @@ Tenantにこれを1行追加するだけ。
 
 ✅ あなたの今のリポジトリ構成に合わせて
 
-* `schema.ts`
-* `files.ts / fileRecords.ts / tenants.ts`
-* `CreateTenantForm.tsx`（FilePond/RHF/Zod）
+- `schema.ts`
+- `files.ts / fileRecords.ts / tenants.ts`
+- `CreateTenantForm.tsx`（FilePond/RHF/Zod）
   を **全部まとめて貼れる形**にして出せるよ。
 
 もし “権限チェックは一旦なしで動かしたい” ならそれ前提で最短版にする。

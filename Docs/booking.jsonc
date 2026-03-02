@@ -49,33 +49,32 @@
                         "id": "q_name",
                         "label": "お名前",
                         "type": "text",
-                        "required": true
+                        "required": true,
                     },
                     {
                         "id": "q_phone",
                         "label": "電話番号",
                         "type": "tel",
-                        "required": true
+                        "required": true,
                     },
                     {
                         "id": "q_note",
                         "label": "備考",
                         "type": "textarea",
-                        "required": false
+                        "required": false,
                     },
                 ],
             },
             // リマインダー
             "reminders": {
                 "email": {
-                    "timing": "beforeStart",
                     "amountMinutes": 1440,
                 }, // 1日前
-                "calendarInvite": {
-                    // Googleカレンダーに限らず「ICS」等の形式で配布する想定
-                    "mode": "icsOrAddUrl",
-                    "enabled": true,
-                },
+                // "calendarInvite": {
+                //     // Googleカレンダーに限らず「ICS」等の形式で配布する想定
+                //     "mode": "icsOrAddUrl",
+                //     "enabled": true,
+                // },
             },
             // キャンセル・変更ポリシー
             "cancellationPolicy": {
@@ -90,6 +89,7 @@
                 // "refundPolicy": { "fullRefundBeforeMinutes": 1440, "partialRefundBeforeMinutes": 120 } // 開始前何分なら全額返金、部分返金等
                 // サービスや運用に応じて必要な属性を拡張して利用できます。
             },
+            // "confirmMode": "immediate", // "immediate" | "approval"
         },
     ],
     // =========================
@@ -105,10 +105,10 @@
             "address": "高知県〇〇市〇〇町1-2-3",
             "geo": {
                 "lat": 33.5597,
-                "lng": 133.5311
+                "lng": 133.5311,
             },
             "details": "入口は北側。駐車場2台分あり。看板が目印。",
-            "mapUrl": "https://maps.example.com/?q=33.5597,133.5311",
+            // "mapUrl": "https://maps.example.com/?q=33.5597,133.5311",
         },
     ],
     // =========================
@@ -133,7 +133,7 @@
             "resources": [
                 {
                     "resourceId": "staffA",
-                    "units": 1
+                    "units": 1,
                 },
                 // 例：コート1、車1なども追加可能
                 // { "resourceId": "court1", "units": 1 },
@@ -147,7 +147,7 @@
                 "defaultVisibility": "public",
                 "acceptanceWindow": {
                     "openBeforeMinutes": 86400,
-                    "closeBeforeMinutes": 180
+                    "closeBeforeMinutes": 180,
                 },
                 "dailyBookingLimit": 4,
                 "form": {
@@ -156,19 +156,19 @@
                             "id": "q_name",
                             "label": "お名前",
                             "type": "text",
-                            "required": true
+                            "required": true,
                         },
                         {
                             "id": "q_phone",
                             "label": "電話番号",
                             "type": "tel",
-                            "required": true
+                            "required": true,
                         },
                         {
                             "id": "q_note",
                             "label": "備考",
                             "type": "textarea",
-                            "required": false
+                            "required": false,
                         },
                     ],
                 },
@@ -179,7 +179,7 @@
                     },
                     "calendarInvite": {
                         "mode": "icsOrAddUrl",
-                        "enabled": true
+                        "enabled": true,
                     },
                 },
                 "cancellationPolicy": {
@@ -196,7 +196,7 @@
                 "address": "高知県〇〇市〇〇町1-2-3",
                 "geo": {
                     "lat": 33.5597,
-                    "lng": 133.5311
+                    "lng": 133.5311,
                 },
                 "details": "入口は北側。駐車場2台分あり。看板が目印。",
                 "mapUrl": "https://maps.example.com/?q=33.5597,133.5311",
