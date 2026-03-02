@@ -24,13 +24,11 @@ export default defineSchema({
     Tenants: defineTable({
         createdByUserId: v.string(),
         tenantName: v.string(),
-        tenantSlug: v.string(),
         tenantType: tenantType,
         tenantLogoFileId: v.optional(v.id("Files")),
         tenantStatus: tenantStatus,
         storeType: storeType,
     })
-        .index("by_slug", ["tenantSlug"])
         .index("by_status", ["tenantStatus"])
         .index("by_type", ["tenantType"])
         .index("by_status_type", ["tenantStatus", "tenantType"]),
@@ -43,7 +41,6 @@ export default defineSchema({
         .index("by_tenant_user", ["tenantId", "clerkUserId"]),
     Locations: defineTable({
         tenantId: v.id("Tenants"),
-        type: storeType,
         name: v.string(),
         autoAddress: v.string(),
         semiAddress: v.string(),
@@ -88,4 +85,32 @@ export default defineSchema({
     })
         .index("by_tenant", ["tenantId"])
         .index("by_tenant_active", ["tenantId", "isActive"]),
+    StaffTags: defineTable({
+        title: v.string(),
+        description: v.string(),
+        color: v.string(),
+        isActive: v.boolean(),
+        createdByUserId: v.string(),
+    }).index("by_active", ["isActive"]),
+    UserProfiles: defineTable({
+        clerkUserId: v.string(),
+        customerMemo: v.optional(v.string()),
+        staffMemo: v.optional(v.string()),
+        staffTags: v.optional(v.array(v.id("StaffTags"))),
+    }).index("by_user", ["clerkUserId"]),
+    // Stripe Connect: ユーザーと Connect アカウントの対応
+    // 将来は tenantId や shopId など別の識別子で紐づけることを推奨（コメント参照）
+    StripeConnectAccounts: defineTable({
+        clerkUserId: v.string(),
+        stripeAccountId: v.string(), // acct_xxx (V2 Connected Account ID)
+    })
+        .index("by_user", ["clerkUserId"])
+        .index("by_stripe_account", ["stripeAccountId"]),
+    // サブスクリプション状態（Webhook で更新）。customer_account = Connect アカウント ID (acct_xxx)
+    StripeConnectSubscriptions: defineTable({
+        customerAccountId: v.string(), // V2 では .customer ではなく .customer_account を使用
+        stripeSubscriptionId: v.optional(v.string()),
+        status: v.string(), // active, canceled, past_due 等
+        cancelAtPeriodEnd: v.optional(v.boolean()),
+    }).index("by_customer_account", ["customerAccountId"]),
 });

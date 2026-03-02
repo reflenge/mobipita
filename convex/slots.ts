@@ -1,5 +1,5 @@
-import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
+import { mutation, query } from "./_generated/server";
 import { requireClerkIdentity, requireClerkUserId } from "./lib/clerkAuth";
 import { slotStatus, slotVisibility } from "./values";
 import type { Id } from "./_generated/dataModel";
@@ -36,7 +36,7 @@ export const createBatch = mutation({
             );
         }
 
-        const insertedIds: import("./_generated/dataModel").Id<"Slots">[] = [];
+        const insertedIds: Id<"Slots">[] = [];
         for (const slot of args.slots) {
             const id = await ctx.db.insert("Slots", {
                 tenantId: args.tenantId,

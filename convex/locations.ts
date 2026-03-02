@@ -1,7 +1,7 @@
-import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
+import { mutation, query } from "./_generated/server";
 import { requireClerkIdentity } from "./lib/clerkAuth";
-import { storeType } from "./values";
+import type { Id } from "./_generated/dataModel";
 
 export const listByTenant = query({
     args: {
@@ -31,10 +31,9 @@ export const listAll = query({
         const limit = typeof args.limit === "number" ? args.limit : 500;
         const tenants = await ctx.db.query("Tenants").order("desc").take(limit);
         const results: Array<{
-            _id: import("./_generated/dataModel").Id<"Locations">;
-            tenantId: import("./_generated/dataModel").Id<"Tenants">;
+            _id: Id<"Locations">;
+            tenantId: Id<"Tenants">;
             tenantName: string;
-            type: "fixed" | "mobile";
             name: string;
             autoAddress: string;
             semiAddress: string;
@@ -53,7 +52,6 @@ export const listAll = query({
                     _id: loc._id,
                     tenantId: loc.tenantId,
                     tenantName: tenant.tenantName,
-                    type: loc.type,
                     name: loc.name,
                     autoAddress: loc.autoAddress,
                     semiAddress: loc.semiAddress,
@@ -80,7 +78,6 @@ export const getById = query({
 export const create = mutation({
     args: {
         tenantId: v.id("Tenants"),
-        type: storeType,
         name: v.string(),
         autoAddress: v.string(),
         semiAddress: v.string(),
@@ -98,7 +95,6 @@ export const create = mutation({
 
         return await ctx.db.insert("Locations", {
             tenantId: args.tenantId,
-            type: args.type,
             name: args.name,
             autoAddress: args.autoAddress,
             semiAddress: args.semiAddress,
@@ -112,7 +108,6 @@ export const create = mutation({
 export const update = mutation({
     args: {
         locationId: v.id("Locations"),
-        type: storeType,
         name: v.string(),
         autoAddress: v.string(),
         semiAddress: v.string(),
@@ -129,7 +124,6 @@ export const update = mutation({
         }
 
         await ctx.db.patch(args.locationId, {
-            type: args.type,
             name: args.name,
             autoAddress: args.autoAddress,
             semiAddress: args.semiAddress,

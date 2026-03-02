@@ -1,0 +1,15 @@
+@keyframes indicator-bar {
+    0% {
+        width: 0;
+    }
+    50% {
+        width: 90%;
+    }
+    100% {
+        width: 100%;
+    }
+}
+
+.indicator {
+    animation: indicator-bar 1000ms ease-in-out forwards;
+}

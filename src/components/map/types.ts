@@ -8,6 +8,6 @@ export type StoreType = "fixed" | "mobile";
 export type MarkerItem = {
     lat: number;
     lng: number;
-    type: StoreType;
+    type?: StoreType;
     name?: string;
 };

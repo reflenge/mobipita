@@ -1,14 +1,13 @@
-import type { Metadata } from "next";
-import { ClerkProvider } from "@clerk/nextjs";
 import { jaJP } from "@clerk/localizations";
+import { ClerkProvider } from "@clerk/nextjs";
 import { Geist, Geist_Mono } from "next/font/google";
 import "@/styles/globals.css";
-import { cn } from "@/lib/utils";
-import ConvexClientProvider from "./ConvexClientProvider";
-// import Messages from "@/components/samples/messages";
+import { NuqsAdapter } from "nuqs/adapters/next/app";
+import type { Metadata } from "next";
+import ConvexClientProvider from "@/components/ConvexClientProvider";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { NuqsAdapter } from "nuqs/adapters/next/app";
+import { cn } from "@/lib/utils";
 // import { Analytics } from "@vercel/analytics/next";
 // import { SpeedInsights } from "@vercel/speed-insights/next";
 // import ClarityInit from "@/components/clarity-init";
@@ -54,7 +53,6 @@ export default function RootLayout({
                         {/* <SpeedInsights />
                         <Analytics />
                         <ClarityInit /> */}
-                        {/* <Messages /> */}
                     </ConvexClientProvider>
                 </body>
             </html>

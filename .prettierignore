@@ -5,3 +5,4 @@ build/
 .env*
 pnpm-lock.yaml
 components.json
+convex/_generated/

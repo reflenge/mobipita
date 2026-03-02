@@ -78,7 +78,6 @@ export default function NotFound() {
                         </div>
                     </div>
                 </section>
-
             </main>
         </div>
     );
