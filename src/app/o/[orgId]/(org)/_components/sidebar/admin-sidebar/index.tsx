@@ -131,6 +131,26 @@ const AdminSidebar = ({ org }: { org: { id: string } }) => {
                                 </SidebarMenuSubItem>
                             </SidebarMenuSub>
                         </SidebarMenuItem>
+                        <SidebarMenuItem>
+                            <SidebarMenuButton asChild>
+                                <Link href={`/o/${org.id}/admin/template`}>
+                                    <Store />
+                                    <span>Template</span>
+                                </Link>
+                            </SidebarMenuButton>
+                            <SidebarMenuSub>
+                                <SidebarMenuSubItem>
+                                    <SidebarMenuButton asChild>
+                                        <Link
+                                            href={`/o/${org.id}/admin/template/slot`}
+                                        >
+                                            <PackagePlus />
+                                            <span>slot</span>
+                                        </Link>
+                                    </SidebarMenuButton>
+                                </SidebarMenuSubItem>
+                            </SidebarMenuSub>
+                        </SidebarMenuItem>
                     </SidebarMenu>
                 </SidebarGroupContent>
             </SidebarGroup>
