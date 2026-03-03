@@ -138,6 +138,31 @@ export const update = mutation({
     },
 });
 
+export const remove = mutation({
+    args: {
+        tenantId: v.id("Tenants"),
+    },
+    handler: async (ctx, args) => {
+        await requireClerkIdentity(ctx);
+
+        const tenant = await ctx.db.get(args.tenantId);
+        if (!tenant) {
+            throw new Error("テナントが存在しません");
+        }
+
+        const detail = await ctx.db
+            .query("TenantDetails")
+            .withIndex("by_tenantId", (q) => q.eq("tenantId", args.tenantId))
+            .unique();
+
+        if (detail) {
+            await ctx.db.delete(detail._id);
+        }
+
+        await ctx.db.delete(args.tenantId);
+    },
+});
+
 export const updateDetail = mutation({
     args: {
         tenantId: v.id("Tenants"),
