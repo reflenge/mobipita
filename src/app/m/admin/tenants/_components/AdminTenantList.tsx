@@ -16,8 +16,6 @@ import {
 import { api } from "@/../convex/_generated/api";
 import { DeleteTenantDialog } from "./DeleteTenantDialog";
 import { StatusChangeDialog } from "./StatusChangeDialog";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import {
@@ -300,25 +298,22 @@ const AdminTenantList = () => {
                                             <h2 className="text-2xl md:text-3xl font-bold line-clamp-1">
                                                 {tenant.tenantName}
                                             </h2>
-                                            <Badge
-                                                variant="outline"
-                                                className={`px-4 py-1.5 text-base font-bold rounded-full ${statusStyle[tenant.tenantStatus] ?? ""}`}
+                                            <span
+                                                className={`inline-flex items-center px-4 py-1.5 text-base font-bold rounded-full border ${statusStyle[tenant.tenantStatus] ?? ""}`}
                                             >
                                                 {status}
-                                            </Badge>
-                                            <Badge
-                                                variant="outline"
-                                                className={`px-4 py-1.5 text-base font-bold rounded-full ${typeStyle[tenant.tenantType] ?? ""}`}
+                                            </span>
+                                            <span
+                                                className={`inline-flex items-center px-4 py-1.5 text-base font-bold rounded-full border ${typeStyle[tenant.tenantType] ?? ""}`}
                                             >
                                                 {type}
-                                            </Badge>
+                                            </span>
                                             {tenant.storeType && (
-                                                <Badge
-                                                    variant="outline"
-                                                    className={`px-4 py-1.5 text-base font-bold rounded-full ${storeTypeStyle[tenant.storeType] ?? ""}`}
+                                                <span
+                                                    className={`inline-flex items-center px-4 py-1.5 text-base font-bold rounded-full border ${storeTypeStyle[tenant.storeType] ?? ""}`}
                                                 >
                                                     {storeType}
-                                                </Badge>
+                                                </span>
                                             )}
                                         </div>
 
@@ -347,26 +342,26 @@ const AdminTenantList = () => {
 
                                     {/* アクションボタン */}
                                     <div className="flex flex-wrap gap-3 mt-6">
-                                        <Button
-                                            variant="outline"
-                                            className="border-2 px-5 py-3 text-lg font-bold"
+                                        <button
+                                            type="button"
+                                            className="inline-flex items-center gap-2 px-5 py-3 border-2 border-gray-200 rounded-lg text-lg font-bold hover:bg-gray-50 transition-colors"
                                             onClick={() =>
                                                 setStatusTarget(tenant)
                                             }
                                         >
                                             <RefreshCw className="size-5" />
                                             ステータス変更
-                                        </Button>
-                                        <Button
-                                            variant="outline"
-                                            className="border-2 border-red-200 text-red-600 px-5 py-3 text-lg font-bold hover:bg-red-50 hover:text-red-700"
+                                        </button>
+                                        <button
+                                            type="button"
+                                            className="inline-flex items-center gap-2 px-5 py-3 border-2 border-red-200 text-red-600 rounded-lg text-lg font-bold hover:bg-red-50 hover:text-red-700 transition-colors"
                                             onClick={() =>
                                                 setDeleteTarget(tenant)
                                             }
                                         >
                                             <Trash2 className="size-5" />
                                             削除する
-                                        </Button>
+                                        </button>
                                     </div>
                                 </div>
                             </div>
