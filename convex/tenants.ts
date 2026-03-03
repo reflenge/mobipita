@@ -1,6 +1,10 @@
-import { v } from "convex/values";
+import { ConvexError, v } from "convex/values";
 import { mutation, query } from "./_generated/server";
-import { requireClerkIdentity, requireClerkUserId } from "./lib/clerkAuth";
+import {
+    requireClerkIdentity,
+    requireClerkUserId,
+    requireMinRole,
+} from "./lib/clerkAuth";
 import { tenantType, tenantStatus, storeType } from "./values";
 
 export const list = query({
@@ -190,6 +194,152 @@ export const updateDetail = mutation({
                 phoneNumber: args.phoneNumber,
             });
         }
+
+        return args.tenantId;
+    },
+});
+
+// ── Admin 専用 ─────────────────────────────
+
+export const adminListAll = query({
+    args: {
+        limit: v.optional(v.number()),
+    },
+    handler: async (ctx, args) => {
+        await requireMinRole(ctx, "admin");
+        const limit = typeof args.limit === "number" ? args.limit : 200;
+        const tenants = await ctx.db
+            .query("Tenants")
+            .order("desc")
+            .take(limit);
+
+        return Promise.all(
+            tenants.map(async (tenant) => {
+                const detail = await ctx.db
+                    .query("TenantDetails")
+                    .withIndex("by_tenantId", (q) =>
+                        q.eq("tenantId", tenant._id),
+                    )
+                    .unique();
+                let logoUrl = null;
+                if (tenant.tenantLogoFileId) {
+                    const fileDoc = await ctx.db.get(
+                        tenant.tenantLogoFileId,
+                    );
+                    if (fileDoc) {
+                        logoUrl = await ctx.storage.getUrl(
+                            fileDoc.storageId,
+                        );
+                    }
+                }
+                return {
+                    ...tenant,
+                    phoneNumber: detail?.phoneNumber ?? "",
+                    logoUrl,
+                };
+            }),
+        );
+    },
+});
+
+export const adminUpdateStatus = mutation({
+    args: {
+        tenantId: v.id("Tenants"),
+        tenantStatus: tenantStatus,
+    },
+    handler: async (ctx, args) => {
+        await requireMinRole(ctx, "admin");
+        const tenant = await ctx.db.get(args.tenantId);
+        if (!tenant) {
+            throw new ConvexError("テナントが存在しません。");
+        }
+        await ctx.db.patch(args.tenantId, {
+            tenantStatus: args.tenantStatus,
+        });
+        return args.tenantId;
+    },
+});
+
+export const adminRemove = mutation({
+    args: {
+        tenantId: v.id("Tenants"),
+    },
+    handler: async (ctx, args) => {
+        await requireMinRole(ctx, "admin");
+        const tenant = await ctx.db.get(args.tenantId);
+        if (!tenant) {
+            throw new ConvexError("テナントが存在しません。");
+        }
+
+        // カスケード削除: 関連データを全て削除
+        // 1. Bookings（テナント単位）
+        const bookings = await ctx.db
+            .query("Bookings")
+            .withIndex("by_tenant", (q) =>
+                q.eq("tenantId", args.tenantId),
+            )
+            .collect();
+        for (const booking of bookings) {
+            await ctx.db.delete(booking._id);
+        }
+
+        // 2. Slots
+        const slots = await ctx.db
+            .query("Slots")
+            .withIndex("by_tenant", (q) =>
+                q.eq("tenantId", args.tenantId),
+            )
+            .collect();
+        for (const slot of slots) {
+            await ctx.db.delete(slot._id);
+        }
+
+        // 3. Services
+        const services = await ctx.db
+            .query("Services")
+            .withIndex("by_tenant", (q) =>
+                q.eq("tenantId", args.tenantId),
+            )
+            .collect();
+        for (const service of services) {
+            await ctx.db.delete(service._id);
+        }
+
+        // 4. Locations
+        const locations = await ctx.db
+            .query("Locations")
+            .withIndex("by_tenant", (q) =>
+                q.eq("tenantId", args.tenantId),
+            )
+            .collect();
+        for (const location of locations) {
+            await ctx.db.delete(location._id);
+        }
+
+        // 5. TenantMemberAssignments
+        const assignments = await ctx.db
+            .query("TenantMemberAssignments")
+            .withIndex("by_tenant", (q) =>
+                q.eq("tenantId", args.tenantId),
+            )
+            .collect();
+        for (const assignment of assignments) {
+            await ctx.db.delete(assignment._id);
+        }
+
+        // 6. TenantDetails
+        const detail = await ctx.db
+            .query("TenantDetails")
+            .withIndex("by_tenantId", (q) =>
+                q.eq("tenantId", args.tenantId),
+            )
+            .unique();
+        if (detail) {
+            await ctx.db.delete(detail._id);
+        }
+
+        // 7. テナント本体
+        await ctx.db.delete(args.tenantId);
 
         return args.tenantId;
     },

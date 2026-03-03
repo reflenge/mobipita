@@ -1,4 +1,4 @@
-import { Users, Link2 } from "lucide-react";
+import { Link2, Store, Users } from "lucide-react";
 import { Link } from "@/components/link";
 import {
     Card,
@@ -19,7 +19,7 @@ export default function AdminPage() {
                 </p>
             </section>
 
-            <div className="grid gap-4 sm:grid-cols-2">
+            <div className="grid gap-4 sm:grid-cols-3">
                 <Link href="/m/admin/users" className="block">
                     <Card className="hover:border-foreground/20 h-full transition-all hover:shadow-md">
                         <CardHeader>
@@ -30,6 +30,19 @@ export default function AdminPage() {
                             <CardDescription>
                                 全ユーザーの一覧・ロール変更・テナント割当・詳細確認。admin
                                 ロールの割り当ても可能です。
+                            </CardDescription>
+                        </CardHeader>
+                    </Card>
+                </Link>
+                <Link href="/m/admin/tenants" className="block">
+                    <Card className="hover:border-foreground/20 h-full transition-all hover:shadow-md">
+                        <CardHeader>
+                            <CardTitle className="flex items-center gap-2 text-base">
+                                <Store className="size-5 text-orange-500" />
+                                テナント管理
+                            </CardTitle>
+                            <CardDescription>
+                                全テナントのステータス変更・削除など、テナント情報を一括管理します。
                             </CardDescription>
                         </CardHeader>
                     </Card>

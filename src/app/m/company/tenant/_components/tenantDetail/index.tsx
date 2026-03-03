@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { useMutation, useQuery } from "convex/react";
+import { useConvexAuth, useMutation, useQuery } from "convex/react";
 import { Edit2, ImageIcon, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -67,9 +67,13 @@ type TenantDetailProps = {
 
 const TenantDetail = ({ tenantId }: TenantDetailProps) => {
     const router = useRouter();
-    const tenant = useQuery(api.tenants.getById, {
-        tenantId: tenantId as Id<"Tenants">,
-    });
+    const { isAuthenticated } = useConvexAuth();
+    const tenant = useQuery(
+        api.tenants.getById,
+        isAuthenticated
+            ? { tenantId: tenantId as Id<"Tenants"> }
+            : "skip",
+    );
     const removeTenant = useMutation(api.tenants.remove);
     const [isDeleting, startTransition] = React.useTransition();
 
