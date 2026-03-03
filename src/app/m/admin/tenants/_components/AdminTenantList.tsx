@@ -47,22 +47,21 @@ const storeTypeLabels: Record<string, string> = {
     fixed: "固定店舗",
 };
 
-const statusVariant: Record<
-    string,
-    "default" | "secondary" | "destructive" | "outline"
-> = {
-    preparing: "outline",
-    open: "default",
-    paused: "secondary",
-    closed: "destructive",
+const statusStyle: Record<string, string> = {
+    preparing: "bg-yellow-100 text-yellow-700 border-yellow-200",
+    open: "bg-green-100 text-green-700 border-green-200",
+    paused: "bg-gray-100 text-gray-600 border-gray-200",
+    closed: "bg-red-100 text-red-700 border-red-200",
 };
 
-const storeTypeVariant: Record<
-    string,
-    "default" | "secondary" | "outline"
-> = {
-    mobile: "outline",
-    fixed: "secondary",
+const typeStyle: Record<string, string> = {
+    direct: "bg-orange-100 text-orange-700 border-orange-200",
+    tenant: "bg-slate-100 text-slate-600 border-slate-200",
+};
+
+const storeTypeStyle: Record<string, string> = {
+    mobile: "bg-blue-100 text-blue-700 border-blue-200",
+    fixed: "bg-slate-100 text-slate-600 border-slate-200",
 };
 
 type TenantItem = NonNullable<
@@ -147,7 +146,7 @@ const AdminTenantList = () => {
             <Card className="rounded-xl p-6">
                 <div className="flex flex-wrap gap-4 items-end">
                     <div className="flex-1 min-w-[300px]">
-                        <label className="block text-sm font-medium mb-2 text-gray-700">
+                        <label className="block text-base font-medium mb-2 text-gray-700">
                             キーワード検索
                         </label>
                         <div className="relative">
@@ -163,7 +162,7 @@ const AdminTenantList = () => {
                         </div>
                     </div>
                     <div className="w-full md:w-auto min-w-[180px]">
-                        <label className="block text-sm font-medium mb-2 text-gray-700">
+                        <label className="block text-base font-medium mb-2 text-gray-700">
                             ステータス
                         </label>
                         <Select
@@ -191,7 +190,7 @@ const AdminTenantList = () => {
                         </Select>
                     </div>
                     <div className="w-full md:w-auto min-w-[180px]">
-                        <label className="block text-sm font-medium mb-2 text-gray-700">
+                        <label className="block text-base font-medium mb-2 text-gray-700">
                             種別
                         </label>
                         <Select
@@ -270,20 +269,26 @@ const AdminTenantList = () => {
                         >
                             <div className="flex flex-col md:flex-row gap-6">
                                 {/* ロゴ */}
-                                <div className="w-36 h-36 shrink-0 bg-gray-100 rounded-xl flex items-center justify-center overflow-hidden border border-gray-200">
-                                    {tenant.logoUrl ? (
+                                <div className="w-36 h-36 shrink-0 bg-gray-100 rounded-xl flex items-center justify-center overflow-hidden border border-gray-200 relative">
+                                    <div className="text-gray-400 flex flex-col items-center">
+                                        <ImageIcon className="size-10" />
+                                        <span className="text-xs mt-1">
+                                            NO IMAGE
+                                        </span>
+                                    </div>
+                                    {tenant.logoUrl && (
                                         <img
                                             src={tenant.logoUrl}
                                             alt={tenant.tenantName}
-                                            className="w-full h-full object-cover"
+                                            loading="eager"
+                                            crossOrigin="anonymous"
+                                            decoding="async"
+                                            className="absolute inset-0 w-full h-full object-cover"
+                                            onError={(e) => {
+                                                e.currentTarget.style.display =
+                                                    "none";
+                                            }}
                                         />
-                                    ) : (
-                                        <div className="text-gray-400 flex flex-col items-center">
-                                            <ImageIcon className="size-10" />
-                                            <span className="text-xs mt-1">
-                                                NO IMAGE
-                                            </span>
-                                        </div>
                                     )}
                                 </div>
 
@@ -296,31 +301,21 @@ const AdminTenantList = () => {
                                                 {tenant.tenantName}
                                             </h2>
                                             <Badge
-                                                variant={
-                                                    statusVariant[
-                                                        tenant
-                                                            .tenantStatus
-                                                    ] ?? "outline"
-                                                }
-                                                className="px-3 py-1 text-sm font-bold rounded-full"
+                                                variant="outline"
+                                                className={`px-4 py-1.5 text-base font-bold rounded-full ${statusStyle[tenant.tenantStatus] ?? ""}`}
                                             >
                                                 {status}
                                             </Badge>
                                             <Badge
-                                                variant="secondary"
-                                                className="px-3 py-1 text-sm font-bold rounded-full"
+                                                variant="outline"
+                                                className={`px-4 py-1.5 text-base font-bold rounded-full ${typeStyle[tenant.tenantType] ?? ""}`}
                                             >
                                                 {type}
                                             </Badge>
                                             {tenant.storeType && (
                                                 <Badge
-                                                    variant={
-                                                        storeTypeVariant[
-                                                            tenant
-                                                                .storeType
-                                                        ] ?? "outline"
-                                                    }
-                                                    className="px-3 py-1 text-sm font-bold rounded-full"
+                                                    variant="outline"
+                                                    className={`px-4 py-1.5 text-base font-bold rounded-full ${storeTypeStyle[tenant.storeType] ?? ""}`}
                                                 >
                                                     {storeType}
                                                 </Badge>
@@ -354,23 +349,23 @@ const AdminTenantList = () => {
                                     <div className="flex flex-wrap gap-3 mt-6">
                                         <Button
                                             variant="outline"
-                                            className="border-2 font-bold text-base"
+                                            className="border-2 px-5 py-3 text-lg font-bold"
                                             onClick={() =>
                                                 setStatusTarget(tenant)
                                             }
                                         >
-                                            <RefreshCw className="size-4" />
+                                            <RefreshCw className="size-5" />
                                             ステータス変更
                                         </Button>
                                         <Button
                                             variant="outline"
-                                            className="border-2 border-red-200 text-red-600 font-bold text-base hover:bg-red-50 hover:text-red-700"
+                                            className="border-2 border-red-200 text-red-600 px-5 py-3 text-lg font-bold hover:bg-red-50 hover:text-red-700"
                                             onClick={() =>
                                                 setDeleteTarget(tenant)
                                             }
                                         >
-                                            <Trash2 className="size-4" />
-                                            削除
+                                            <Trash2 className="size-5" />
+                                            削除する
                                         </Button>
                                     </div>
                                 </div>
