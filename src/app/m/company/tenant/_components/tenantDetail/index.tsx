@@ -20,40 +20,14 @@ import {
     DialogTrigger,
 } from "@/components/ui/dialog";
 import { Skeleton } from "@/components/ui/skeleton";
-
-const statusLabels: Record<string, string> = {
-    preparing: "準備中",
-    open: "公開中",
-    paused: "一時停止",
-    closed: "終了",
-};
-
-const typeLabels: Record<string, string> = {
-    direct: "直営",
-    tenant: "テナント",
-};
-
-const storeTypeLabels: Record<string, string> = {
-    mobile: "移動店舗",
-    fixed: "固定店舗",
-};
-
-const statusStyle: Record<string, string> = {
-    preparing: "bg-yellow-100 text-yellow-700 border-yellow-200",
-    open: "bg-green-100 text-green-700 border-green-200",
-    paused: "bg-gray-100 text-gray-600 border-gray-200",
-    closed: "bg-red-100 text-red-700 border-red-200",
-};
-
-const typeStyle: Record<string, string> = {
-    direct: "bg-orange-100 text-orange-700 border-orange-200",
-    tenant: "bg-slate-100 text-slate-600 border-slate-200",
-};
-
-const storeTypeStyle: Record<string, string> = {
-    mobile: "bg-blue-100 text-blue-700 border-blue-200",
-    fixed: "bg-slate-100 text-slate-600 border-slate-200",
-};
+import {
+    STORE_TYPE_LABELS,
+    STORE_TYPE_STYLE,
+    TENANT_STATUS_LABELS,
+    TENANT_STATUS_STYLE,
+    TENANT_TYPE_LABELS,
+    TENANT_TYPE_STYLE,
+} from "@/lib/tenant";
 
 type TenantDetailProps = {
     tenantId: string;
@@ -136,10 +110,10 @@ const TenantDetail = ({ tenantId }: TenantDetailProps) => {
         );
     }
 
-    const status = statusLabels[tenant.tenantStatus] ?? "不明";
-    const type = typeLabels[tenant.tenantType] ?? "不明";
+    const status = TENANT_STATUS_LABELS[tenant.tenantStatus] ?? "不明";
+    const type = TENANT_TYPE_LABELS[tenant.tenantType] ?? "不明";
     const storeType =
-        storeTypeLabels[tenant.storeType] ?? tenant.storeType;
+        STORE_TYPE_LABELS[tenant.storeType] ?? tenant.storeType;
     const createdAt = new Date(tenant._creationTime).toLocaleString(
         "ja-JP",
         {
@@ -208,7 +182,7 @@ const TenantDetail = ({ tenantId }: TenantDetailProps) => {
                                 ステータス
                             </span>
                             <span
-                                className={`inline-flex items-center rounded-full border px-4 py-1 text-sm font-bold ${statusStyle[tenant.tenantStatus] ?? ""}`}
+                                className={`inline-flex items-center rounded-full border px-4 py-1 text-sm font-bold ${TENANT_STATUS_STYLE[tenant.tenantStatus] ?? ""}`}
                             >
                                 {status}
                             </span>
@@ -218,7 +192,7 @@ const TenantDetail = ({ tenantId }: TenantDetailProps) => {
                                 テナント種別
                             </span>
                             <span
-                                className={`inline-flex items-center rounded-full border px-4 py-1 text-sm font-bold ${typeStyle[tenant.tenantType] ?? ""}`}
+                                className={`inline-flex items-center rounded-full border px-4 py-1 text-sm font-bold ${TENANT_TYPE_STYLE[tenant.tenantType] ?? ""}`}
                             >
                                 {type}
                             </span>
@@ -228,7 +202,7 @@ const TenantDetail = ({ tenantId }: TenantDetailProps) => {
                                 店舗形態
                             </span>
                             <span
-                                className={`inline-flex items-center rounded-full border px-4 py-1 text-sm font-bold ${storeTypeStyle[tenant.storeType] ?? ""}`}
+                                className={`inline-flex items-center rounded-full border px-4 py-1 text-sm font-bold ${STORE_TYPE_STYLE[tenant.storeType] ?? ""}`}
                             >
                                 {storeType}
                             </span>

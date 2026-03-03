@@ -5,6 +5,7 @@ import {
     requireClerkUserId,
     requireMinRole,
 } from "./lib/clerkAuth";
+import { enrichTenant } from "./lib/tenantHelpers";
 import { tenantType, tenantStatus, storeType } from "./values";
 
 export const list = query({
@@ -19,28 +20,7 @@ export const list = query({
             .order("desc")
             .take(limit);
 
-        return Promise.all(
-            tenants.map(async (tenant) => {
-                const detail = await ctx.db
-                    .query("TenantDetails")
-                    .withIndex("by_tenantId", (q) =>
-                        q.eq("tenantId", tenant._id),
-                    )
-                    .unique();
-                let logoUrl = null;
-                if (tenant.tenantLogoFileId) {
-                    const fileDoc = await ctx.db.get(tenant.tenantLogoFileId);
-                    if (fileDoc) {
-                        logoUrl = await ctx.storage.getUrl(fileDoc.storageId);
-                    }
-                }
-                return {
-                    ...tenant,
-                    phoneNumber: detail?.phoneNumber ?? "",
-                    logoUrl,
-                };
-            }),
-        );
+        return Promise.all(tenants.map((t) => enrichTenant(ctx, t)));
     },
 });
 
@@ -53,25 +33,7 @@ export const getById = query({
         const tenant = await ctx.db.get(args.tenantId);
         if (!tenant) return null;
 
-        const detail = await ctx.db
-            .query("TenantDetails")
-            .withIndex("by_tenantId", (q) =>
-                q.eq("tenantId", args.tenantId),
-            )
-            .unique();
-
-        let logoUrl = null;
-        if (tenant.tenantLogoFileId) {
-            const fileDoc = await ctx.db.get(tenant.tenantLogoFileId);
-            if (fileDoc) {
-                logoUrl = await ctx.storage.getUrl(fileDoc.storageId);
-            }
-        }
-        return {
-            ...tenant,
-            phoneNumber: detail?.phoneNumber ?? "",
-            logoUrl,
-        };
+        return enrichTenant(ctx, tenant);
     },
 });
 
@@ -213,32 +175,7 @@ export const adminListAll = query({
             .order("desc")
             .take(limit);
 
-        return Promise.all(
-            tenants.map(async (tenant) => {
-                const detail = await ctx.db
-                    .query("TenantDetails")
-                    .withIndex("by_tenantId", (q) =>
-                        q.eq("tenantId", tenant._id),
-                    )
-                    .unique();
-                let logoUrl = null;
-                if (tenant.tenantLogoFileId) {
-                    const fileDoc = await ctx.db.get(
-                        tenant.tenantLogoFileId,
-                    );
-                    if (fileDoc) {
-                        logoUrl = await ctx.storage.getUrl(
-                            fileDoc.storageId,
-                        );
-                    }
-                }
-                return {
-                    ...tenant,
-                    phoneNumber: detail?.phoneNumber ?? "",
-                    logoUrl,
-                };
-            }),
-        );
+        return Promise.all(tenants.map((t) => enrichTenant(ctx, t)));
     },
 });
 

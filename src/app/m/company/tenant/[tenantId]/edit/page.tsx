@@ -50,6 +50,9 @@ export default function EditTenantPage() {
         );
     }
 
+    // tenant が確定してから Form をマウントすることで、
+    // Select の defaultValues に実データを渡せる（条件付きレンダリングしないと
+    // useForm の defaultValues が undefined → 後から変わるため Select の初期表示が空になる）
     return <EditTenantForm tenant={tenant} tenantId={tenantId} />;
 }
 
