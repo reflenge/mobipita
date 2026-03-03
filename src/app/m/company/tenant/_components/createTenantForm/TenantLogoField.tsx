@@ -3,14 +3,14 @@
 import FilePondPluginImagePreview from "filepond-plugin-image-preview";
 import { FilePond, registerPlugin } from "react-filepond";
 import { Controller, useFormContext } from "react-hook-form";
-import type { CreateTenantFormValues } from "./schema";
-import type { FilePondFile } from "filepond";
 import {
     Field,
     FieldDescription,
     FieldError,
     FieldLabel,
 } from "@/components/ui/field";
+import type { FilePondFile } from "filepond";
+import type { CreateTenantFormValues } from "./schema";
 
 // 画像プレビュー表示用プラグイン（1回だけ登録）
 registerPlugin(FilePondPluginImagePreview);

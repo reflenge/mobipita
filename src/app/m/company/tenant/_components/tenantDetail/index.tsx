@@ -1,9 +1,8 @@
 "use client";
 
-import * as React from "react";
 import { useQuery } from "convex/react";
-import type { Id } from "@/../convex/_generated/dataModel";
 import { api } from "@/../convex/_generated/api";
+import type { Id } from "@/../convex/_generated/dataModel";
 import { Link } from "@/components/link";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -98,31 +97,20 @@ const TenantDetail = ({ tenantId }: TenantDetailProps) => {
                     <CardTitle className="text-xl">
                         {tenant.tenantName}
                     </CardTitle>
-                    {/* ここに編集ボタンを追加 */}
                     <div className="flex items-center gap-2">
-                        <Button asChild variant="outline" size="sm">
-                            <Link href={`/o/${orgId}/admin/tenant/${tenantId}/edit`}>
-                                編集
-                            </Link>
-                        </Button>
-                        <Button asChild variant="outline" size="sm">
-                            <Link href={`/o/${orgId}/admin/tenant/${tenantId}/detail/edit`}>
-                                詳細編集
-                            </Link>
-                        </Button>
                         <Badge
                             variant={
-                                statusVariant[tenant.tenantStatus] ?? "outline"
+                                statusVariant[tenant.tenantStatus] ??
+                                "outline"
                             }
                         >
                             {status}
                         </Badge>
                     </div>
+                </div>
                 <CardDescription className="flex flex-wrap items-center gap-2">
                     <Badge variant="secondary">{type}</Badge>
                 </CardDescription>
-               
-                </div>
             </CardHeader>
             <CardContent className="text-muted-foreground space-y-4 text-sm">
                 <div className="flex items-center justify-between">
@@ -138,9 +126,9 @@ const TenantDetail = ({ tenantId }: TenantDetailProps) => {
                 <div className="flex items-center justify-between">
                     <span>連絡先（電話）</span>
                     <span className="text-foreground">
-                         {tenant.phoneNumber ?? "未設定"}
+                        {tenant.phoneNumber ?? "未設定"}
                     </span>
-                </div>  
+                </div>
                 <div className="flex items-center justify-between">
                     <span>作成日時</span>
                     <span className="text-foreground">{createdAt}</span>
@@ -152,7 +140,6 @@ const TenantDetail = ({ tenantId }: TenantDetailProps) => {
                             {tenant.tenantLogoFileId}
                         </span>
                     </div>
-     
                 )}
             </CardContent>
         </Card>

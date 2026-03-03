@@ -2,9 +2,11 @@
 
 import * as React from "react";
 import { useQuery } from "convex/react";
+import { Edit2, Eye, ImageIcon, Search, Trash2 } from "lucide-react";
 import { api } from "@/../convex/_generated/api";
 import { Link } from "@/components/link";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
     Card,
     CardContent,
@@ -12,10 +14,8 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Edit2, Eye, Trash2, Search, ImageIcon } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const statusLabels: Record<string, string> = {
     preparing: "準備中",
@@ -176,14 +176,14 @@ const TenantList = () => {
                                                         onError={(e) => {
                                                             const img = e.currentTarget as HTMLImageElement;
                                                             img.style.display = "none";
-                                                            const fallback = img.parentElement?.querySelector('.logo-fallback') as HTMLElement | null;
-                                                            if (fallback) fallback.classList.remove('hidden');
+                                                            const fallback = img.parentElement?.querySelector(".logo-fallback") as HTMLElement | null;
+                                                            if (fallback) fallback.classList.remove("hidden");
                                                         }}
                                                         onLoad={(e) => {
                                                             const img = e.currentTarget as HTMLImageElement;
-                                                            const fallback = img.parentElement?.querySelector('.logo-fallback') as HTMLElement | null;
-                                                            if (fallback) fallback.classList.add('hidden');
-                                                            img.style.display = '';
+                                                            const fallback = img.parentElement?.querySelector(".logo-fallback") as HTMLElement | null;
+                                                            if (fallback) fallback.classList.add("hidden");
+                                                            img.style.display = "";
                                                         }}
                                                     />
                                                     <div className="logo-fallback hidden absolute inset-0 flex items-center justify-center bg-gray-100">
@@ -229,7 +229,7 @@ const TenantList = () => {
                                                     {type}
                                                 </Badge>
                                                 {tenant.storeType && (
-                                                    <Badge variant={storeTypeVariant[tenant.storeType] ?? 'outline'} className="font-medium text-xs md:text-sm">
+                                                    <Badge variant={storeTypeVariant[tenant.storeType] ?? "outline"} className="font-medium text-xs md:text-sm">
                                                         {storeTypeLabels[tenant.storeType] ?? tenant.storeType}
                                                     </Badge>
                                                 )}
@@ -308,7 +308,7 @@ const TenantList = () => {
                                 <button
                                     key={idx}
                                     onClick={() => setPage(idx)}
-                                    className={`px-4 py-2 rounded-md text-sm md:text-base ${idx === page ? 'bg-blue-600 text-white' : 'border'}`}
+                                    className={`px-4 py-2 rounded-md text-sm md:text-base ${idx === page ? "bg-blue-600 text-white" : "border"}`}
                                 >
                                     {idx}
                                 </button>
