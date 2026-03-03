@@ -43,18 +43,13 @@ export default function EditTenantDetailPage() {
         defaultValues: {
             phoneNumber: "",
         },
+        values: tenant
+            ? {
+                  phoneNumber: tenant.phoneNumber ?? "",
+              }
+            : undefined,
         mode: "all",
     });
-
-    const hasReset = React.useRef(false);
-    React.useEffect(() => {
-        if (tenant && !hasReset.current) {
-            hasReset.current = true;
-            form.reset({
-                phoneNumber: tenant.phoneNumber ?? "",
-            });
-        }
-    }, [tenant, form]);
 
     async function onSubmit(data: DetailFormValues) {
         startTransition(async () => {

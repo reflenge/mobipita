@@ -24,10 +24,45 @@ import { Skeleton } from "@/components/ui/skeleton";
 const FORM_ID = "form-company-tenant-edit";
 
 export default function EditTenantPage() {
-    const router = useRouter();
     const params = useParams<{ tenantId: string }>();
     const tenantId = params.tenantId as Id<"Tenants">;
     const tenant = useQuery(api.tenants.getById, { tenantId });
+
+    if (tenant === undefined) {
+        return (
+            <div className="container mx-auto flex flex-col gap-8 px-6 py-10">
+                <Skeleton className="h-8 w-48" />
+                <Skeleton className="h-64 w-full" />
+            </div>
+        );
+    }
+
+    if (!tenant) {
+        return (
+            <div className="container mx-auto flex flex-col gap-8 px-6 py-10">
+                <p className="text-muted-foreground">
+                    テナントが見つかりません。
+                </p>
+                <Button asChild variant="outline">
+                    <Link href="/m/company/tenant">一覧へ戻る</Link>
+                </Button>
+            </div>
+        );
+    }
+
+    return <EditTenantForm tenant={tenant} tenantId={tenantId} />;
+}
+
+type TenantData = NonNullable<ReturnType<typeof useQuery<typeof api.tenants.getById>>>;
+
+function EditTenantForm({
+    tenant,
+    tenantId,
+}: {
+    tenant: TenantData;
+    tenantId: Id<"Tenants">;
+}) {
+    const router = useRouter();
     const updateTenant = useMutation(api.tenants.update);
     const generateUploadUrl = useMutation(api.files.generateUploadUrl);
     const saveFile = useMutation(api.files.saveFile);
@@ -37,28 +72,14 @@ export default function EditTenantPage() {
     const form = useForm<CreateTenantFormValues>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            tenantName: "",
-            tenantType: "tenant",
-            tenantStatus: "preparing",
-            storeType: "fixed",
+            tenantName: tenant.tenantName,
+            tenantType: tenant.tenantType ?? "tenant",
+            tenantStatus: tenant.tenantStatus ?? "preparing",
+            storeType: tenant.storeType ?? "fixed",
             tenantLogo: null,
         },
         mode: "all",
     });
-
-    const hasReset = React.useRef(false);
-    React.useEffect(() => {
-        if (tenant && !hasReset.current) {
-            hasReset.current = true;
-            form.reset({
-                tenantName: tenant.tenantName,
-                tenantType: tenant.tenantType,
-                tenantStatus: tenant.tenantStatus,
-                storeType: tenant.storeType,
-                tenantLogo: null,
-            });
-        }
-    }, [tenant, form]);
 
     async function onSubmit(data: CreateTenantFormValues) {
         startTransition(async () => {
@@ -153,28 +174,6 @@ export default function EditTenantPage() {
                 });
             }
         });
-    }
-
-    if (tenant === undefined) {
-        return (
-            <div className="container mx-auto flex flex-col gap-8 px-6 py-10">
-                <Skeleton className="h-8 w-48" />
-                <Skeleton className="h-64 w-full" />
-            </div>
-        );
-    }
-
-    if (!tenant) {
-        return (
-            <div className="container mx-auto flex flex-col gap-8 px-6 py-10">
-                <p className="text-muted-foreground">
-                    テナントが見つかりません。
-                </p>
-                <Button asChild variant="outline">
-                    <Link href="/m/company/tenant">一覧へ戻る</Link>
-                </Button>
-            </div>
-        );
     }
 
     return (
