@@ -13,7 +13,6 @@ import {
 } from "lucide-react";
 import { api } from "@/../convex/_generated/api";
 import { Link } from "@/components/link";
-import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import {
     Select,
@@ -113,21 +112,21 @@ const TenantList = () => {
     if (!tenants) {
         return (
             <div className="space-y-6">
-                <Skeleton className="h-24 w-full rounded-xl" />
+                <Skeleton className="h-28 w-full rounded-xl" />
                 {Array.from({ length: 3 }).map((_, i) => (
-                    <Card
+                    <div
                         key={`skeleton-${i}`}
-                        className="rounded-xl p-5"
+                        className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm"
                     >
                         <div className="flex flex-col md:flex-row gap-5">
-                            <Skeleton className="w-24 h-24 shrink-0 rounded-lg" />
+                            <Skeleton className="w-20 h-20 shrink-0 rounded-xl" />
                             <div className="flex-1 space-y-3">
-                                <Skeleton className="h-6 w-1/3" />
-                                <Skeleton className="h-4 w-1/2" />
-                                <Skeleton className="h-8 w-full mt-3" />
+                                <Skeleton className="h-7 w-1/3" />
+                                <Skeleton className="h-5 w-1/2" />
+                                <Skeleton className="h-5 w-2/3 mt-3" />
                             </div>
                         </div>
-                    </Card>
+                    </div>
                 ))}
             </div>
         );
@@ -136,16 +135,22 @@ const TenantList = () => {
     return (
         <div className="space-y-6">
             {/* ── フィルタバー ── */}
-            <Card className="rounded-xl p-4">
-                <div className="flex flex-wrap gap-3 items-end">
+            <section className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+                <div className="flex items-center gap-2 border-b border-slate-100 bg-slate-50/50 px-6 py-4">
+                    <Search className="size-5 text-orange-500" />
+                    <h2 className="text-lg font-semibold">
+                        検索・絞り込み
+                    </h2>
+                </div>
+                <div className="flex flex-wrap gap-3 items-end p-5">
                     <div className="flex-1 min-w-[240px]">
-                        <label className="block text-sm font-medium mb-1.5 text-gray-700">
+                        <label className="block text-sm font-medium mb-1.5 text-slate-500">
                             キーワード検索
                         </label>
                         <div className="relative">
-                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-gray-400" />
+                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-slate-400" />
                             <Input
-                                placeholder="テナントを検索..."
+                                placeholder="テナント名で検索..."
                                 value={searchQuery}
                                 onChange={(e) =>
                                     setSearchQuery(e.target.value)
@@ -156,7 +161,7 @@ const TenantList = () => {
                     </div>
                     <div className="flex gap-3 items-end">
                         <div className="min-w-[140px]">
-                            <label className="block text-sm font-medium mb-1.5 text-gray-700">
+                            <label className="block text-sm font-medium mb-1.5 text-slate-500">
                                 ステータス
                             </label>
                             <Select
@@ -184,7 +189,7 @@ const TenantList = () => {
                             </Select>
                         </div>
                         <div className="min-w-[140px]">
-                            <label className="block text-sm font-medium mb-1.5 text-gray-700">
+                            <label className="block text-sm font-medium mb-1.5 text-slate-500">
                                 種別
                             </label>
                             <Select
@@ -212,7 +217,7 @@ const TenantList = () => {
                             </Select>
                         </div>
                         <div className="min-w-[140px]">
-                            <label className="block text-sm font-medium mb-1.5 text-gray-700">
+                            <label className="block text-sm font-medium mb-1.5 text-slate-500">
                                 営業形態
                             </label>
                             <Select
@@ -241,13 +246,13 @@ const TenantList = () => {
                         </div>
                     </div>
                 </div>
-            </Card>
+            </section>
 
             {/* ── 件数表示 ── */}
             {filteredTenants && filteredTenants.length > 0 && (
-                <p className="text-sm font-medium text-gray-600">
+                <p className="text-base font-medium text-slate-600">
                     全{" "}
-                    <span className="font-bold text-base text-gray-900">
+                    <span className="text-lg font-bold text-slate-900">
                         {filteredTenants.length}
                     </span>{" "}
                     件のテナント
@@ -256,12 +261,12 @@ const TenantList = () => {
 
             {/* ── 空状態 ── */}
             {filteredTenants && filteredTenants.length === 0 && (
-                <div className="border-2 border-dashed border-gray-300 rounded-xl p-8 flex flex-col items-center justify-center text-gray-500 bg-gray-50/50">
-                    <SearchX className="size-12 mb-3" />
-                    <p className="text-base font-bold">
+                <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-slate-300 bg-slate-50/50 p-10 text-slate-500">
+                    <SearchX className="mb-3 size-12" />
+                    <p className="text-lg font-bold">
                         該当するテナントはありません
                     </p>
-                    <p className="mt-1.5 text-sm">
+                    <p className="mt-1.5 text-base">
                         検索条件を変更してお試しください。
                     </p>
                 </div>
@@ -291,13 +296,13 @@ const TenantList = () => {
                             href={`/m/company/tenant/${tenant._id}`}
                             className="block"
                         >
-                            <Card className="rounded-xl p-5 shadow-sm hover:shadow-md transition-shadow">
+                            <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm transition-shadow hover:shadow-md">
                                 <div className="flex flex-col md:flex-row gap-5">
                                     {/* ロゴ */}
-                                    <div className="w-24 h-24 shrink-0 bg-gray-100 rounded-lg flex items-center justify-center overflow-hidden border border-gray-200 relative">
-                                        <div className="text-gray-400 flex flex-col items-center">
+                                    <div className="relative flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-slate-200 bg-slate-100">
+                                        <div className="flex flex-col items-center text-slate-400">
                                             <ImageIcon className="size-8" />
-                                            <span className="text-[10px] mt-0.5">
+                                            <span className="mt-0.5 text-[10px]">
                                                 NO IMAGE
                                             </span>
                                         </div>
@@ -308,7 +313,7 @@ const TenantList = () => {
                                                 loading="eager"
                                                 crossOrigin="anonymous"
                                                 decoding="async"
-                                                className="absolute inset-0 w-full h-full object-cover"
+                                                className="absolute inset-0 h-full w-full object-cover"
                                                 onError={(e) => {
                                                     e.currentTarget.style.display =
                                                         "none";
@@ -320,25 +325,25 @@ const TenantList = () => {
                                     {/* 情報エリア */}
                                     <div className="flex-1 min-w-0">
                                         {/* テナント名 */}
-                                        <h2 className="text-lg md:text-xl font-bold line-clamp-1 mb-2">
+                                        <h2 className="text-xl md:text-2xl font-bold text-slate-900 line-clamp-1 mb-2">
                                             {tenant.tenantName}
                                         </h2>
 
                                         {/* バッジ（1行に並べる） */}
                                         <div className="flex items-center gap-2 flex-nowrap">
                                             <span
-                                                className={`inline-flex items-center shrink-0 px-2.5 py-0.5 text-xs font-semibold rounded-full border ${statusStyle[tenant.tenantStatus] ?? ""}`}
+                                                className={`inline-flex shrink-0 items-center rounded-full border px-3 py-0.5 text-sm font-bold ${statusStyle[tenant.tenantStatus] ?? ""}`}
                                             >
                                                 {status}
                                             </span>
                                             <span
-                                                className={`inline-flex items-center shrink-0 px-2.5 py-0.5 text-xs font-semibold rounded-full border ${typeStyle[tenant.tenantType] ?? ""}`}
+                                                className={`inline-flex shrink-0 items-center rounded-full border px-3 py-0.5 text-sm font-bold ${typeStyle[tenant.tenantType] ?? ""}`}
                                             >
                                                 {type}
                                             </span>
                                             {tenant.storeType && (
                                                 <span
-                                                    className={`inline-flex items-center shrink-0 px-2.5 py-0.5 text-xs font-semibold rounded-full border ${storeTypeStyle[tenant.storeType] ?? ""}`}
+                                                    className={`inline-flex shrink-0 items-center rounded-full border px-3 py-0.5 text-sm font-bold ${storeTypeStyle[tenant.storeType] ?? ""}`}
                                                 >
                                                     {storeType}
                                                 </span>
@@ -346,7 +351,7 @@ const TenantList = () => {
                                         </div>
 
                                         {/* メタ情報 */}
-                                        <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-3 text-gray-500 text-sm">
+                                        <div className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-1 text-base text-slate-500">
                                             <div className="flex items-center gap-1.5">
                                                 <Calendar className="size-4" />
                                                 <span>
@@ -368,7 +373,7 @@ const TenantList = () => {
                                         </div>
                                     </div>
                                 </div>
-                            </Card>
+                            </div>
                         </Link>
                     );
                 })}
@@ -376,14 +381,14 @@ const TenantList = () => {
 
             {/* ── ページネーション ── */}
             {filteredTenants && filteredTenants.length > PAGE_SIZE && (
-                <div className="flex flex-col sm:flex-row items-center justify-between gap-3 mt-2">
-                    <div className="text-sm text-gray-500">
+                <div className="mt-2 flex flex-col items-center justify-between gap-3 sm:flex-row">
+                    <div className="text-base text-slate-500">
                         {total}件中 {rangeStart}-{rangeEnd}
                         件を表示
                     </div>
                     <nav className="flex items-center gap-1.5">
                         <button
-                            className="p-2 rounded-md border border-gray-300 hover:bg-white disabled:opacity-50"
+                            className="rounded-lg border border-slate-300 p-2 hover:bg-white disabled:opacity-50"
                             onClick={() =>
                                 setPage((p) => Math.max(1, p - 1))
                             }
@@ -399,10 +404,10 @@ const TenantList = () => {
                                     <button
                                         key={idx}
                                         onClick={() => setPage(idx)}
-                                        className={`w-9 h-9 flex items-center justify-center rounded-md font-semibold text-sm ${
+                                        className={`flex h-9 w-9 items-center justify-center rounded-lg text-sm font-semibold ${
                                             idx === page
-                                                ? "bg-blue-600 text-white"
-                                                : "border border-gray-300 hover:bg-white"
+                                                ? "bg-orange-500 text-white"
+                                                : "border border-slate-300 hover:bg-white"
                                         }`}
                                     >
                                         {idx}
@@ -411,7 +416,7 @@ const TenantList = () => {
                             },
                         )}
                         <button
-                            className="p-2 rounded-md border border-gray-300 hover:bg-white disabled:opacity-50"
+                            className="rounded-lg border border-slate-300 p-2 hover:bg-white disabled:opacity-50"
                             onClick={() =>
                                 setPage((p) =>
                                     Math.min(totalPages, p + 1),

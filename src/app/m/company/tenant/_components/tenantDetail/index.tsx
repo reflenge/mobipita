@@ -2,19 +2,13 @@
 
 import * as React from "react";
 import { useConvexAuth, useMutation, useQuery } from "convex/react";
-import { Edit2, ImageIcon, Trash2 } from "lucide-react";
+import { Edit2, FileText, ImageIcon, Info, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { api } from "@/../convex/_generated/api";
 import type { Id } from "@/../convex/_generated/dataModel";
 import { Link } from "@/components/link";
 import { Button } from "@/components/ui/button";
-import {
-    Card,
-    CardContent,
-    CardHeader,
-    CardTitle,
-} from "@/components/ui/card";
 import {
     Dialog,
     DialogClose,
@@ -100,83 +94,87 @@ const TenantDetail = ({ tenantId }: TenantDetailProps) => {
 
     if (tenant === undefined) {
         return (
-            <div className="space-y-6">
-                <Card>
-                    <CardHeader className="gap-3">
+            <div className="grid gap-8">
+                <section className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+                    <div className="flex items-center gap-3 border-b border-slate-100 bg-slate-50/50 px-6 py-5">
                         <Skeleton className="h-6 w-48" />
-                    </CardHeader>
-                    <CardContent className="space-y-4">
+                    </div>
+                    <div className="space-y-4 p-6">
+                        <Skeleton className="h-20 w-20 rounded-xl" />
                         <Skeleton className="h-4 w-56" />
                         <Skeleton className="h-4 w-40" />
                         <Skeleton className="h-4 w-44" />
-                    </CardContent>
-                </Card>
-                <Card>
-                    <CardHeader className="gap-3">
+                    </div>
+                </section>
+                <section className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+                    <div className="flex items-center gap-3 border-b border-slate-100 bg-slate-50/50 px-6 py-5">
                         <Skeleton className="h-6 w-32" />
-                    </CardHeader>
-                    <CardContent>
+                    </div>
+                    <div className="p-6">
                         <Skeleton className="h-4 w-40" />
-                    </CardContent>
-                </Card>
+                    </div>
+                </section>
             </div>
         );
     }
 
     if (!tenant) {
         return (
-            <Card className="border-dashed">
-                <CardHeader>
-                    <CardTitle>テナントが見つかりません</CardTitle>
-                </CardHeader>
-                <CardContent>
-                    <p className="text-muted-foreground mb-4">
+            <section className="overflow-hidden rounded-xl border-2 border-dashed border-slate-200 bg-white shadow-sm">
+                <div className="p-6">
+                    <h2 className="text-xl font-semibold">
+                        テナントが見つかりません
+                    </h2>
+                    <p className="mt-2 text-base text-slate-500">
                         すでに削除されたか、権限がありません。
                     </p>
-                    <Button asChild variant="outline">
+                    <Button asChild variant="outline" className="mt-4">
                         <Link href="/m/company/tenant">一覧へ戻る</Link>
                     </Button>
-                </CardContent>
-            </Card>
+                </div>
+            </section>
         );
     }
 
     const status = statusLabels[tenant.tenantStatus] ?? "不明";
     const type = typeLabels[tenant.tenantType] ?? "不明";
-    const storeType = storeTypeLabels[tenant.storeType] ?? tenant.storeType;
-    const createdAt = new Date(tenant._creationTime).toLocaleString("ja-JP", {
-        year: "numeric",
-        month: "2-digit",
-        day: "2-digit",
-        hour: "2-digit",
-        minute: "2-digit",
-    });
+    const storeType =
+        storeTypeLabels[tenant.storeType] ?? tenant.storeType;
+    const createdAt = new Date(tenant._creationTime).toLocaleString(
+        "ja-JP",
+        {
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+            hour: "2-digit",
+            minute: "2-digit",
+        },
+    );
 
     return (
-        <div className="space-y-6">
+        <div className="grid gap-8">
             {/* ── カード1: テナント基本情報 ── */}
-            <Card>
-                <CardHeader>
-                    <div className="flex flex-wrap items-center justify-between gap-3">
-                        <CardTitle className="text-xl">
-                            基本情報
-                        </CardTitle>
-                        <Button asChild variant="outline" size="sm">
-                            <Link
-                                href={`/m/company/tenant/${tenantId}/edit`}
-                            >
-                                <Edit2 className="size-4" />
-                                基本情報を編集
-                            </Link>
-                        </Button>
-                    </div>
-                </CardHeader>
-                <CardContent className="space-y-5">
+            <section className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+                <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 bg-slate-50/50 px-6 py-5">
+                    <h2 className="flex items-center gap-2 text-xl font-semibold">
+                        <Info className="size-5 text-orange-500" />
+                        基本情報
+                    </h2>
+                    <Button asChild variant="outline" size="sm">
+                        <Link
+                            href={`/m/company/tenant/${tenantId}/edit`}
+                        >
+                            <Edit2 className="size-4" />
+                            基本情報を編集
+                        </Link>
+                    </Button>
+                </div>
+                <div className="space-y-8 p-6">
                     {/* ロゴ + テナント名 */}
-                    <div className="flex items-center gap-4">
-                        <div className="w-16 h-16 shrink-0 bg-gray-100 rounded-lg flex items-center justify-center overflow-hidden border border-gray-200 relative">
-                            <div className="text-gray-400 flex flex-col items-center">
-                                <ImageIcon className="size-6" />
+                    <div className="flex items-center gap-6">
+                        <div className="relative flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-slate-200 bg-slate-100">
+                            <div className="flex flex-col items-center text-slate-400">
+                                <ImageIcon className="size-8" />
                             </div>
                             {tenant.logoUrl && (
                                 <img
@@ -185,7 +183,7 @@ const TenantDetail = ({ tenantId }: TenantDetailProps) => {
                                     loading="eager"
                                     crossOrigin="anonymous"
                                     decoding="async"
-                                    className="absolute inset-0 w-full h-full object-cover"
+                                    className="absolute inset-0 h-full w-full object-cover"
                                     onError={(e) => {
                                         e.currentTarget.style.display =
                                             "none";
@@ -193,88 +191,109 @@ const TenantDetail = ({ tenantId }: TenantDetailProps) => {
                                 />
                             )}
                         </div>
-                        <h2 className="text-lg font-bold">
-                            {tenant.tenantName}
-                        </h2>
+                        <div>
+                            <p className="mb-1 text-sm font-medium text-slate-500">
+                                テナント名
+                            </p>
+                            <h3 className="text-2xl font-bold text-slate-900">
+                                {tenant.tenantName}
+                            </h3>
+                        </div>
                     </div>
 
                     {/* 情報テーブル */}
-                    <div className="text-muted-foreground space-y-3 text-base">
-                        <div className="flex items-center justify-between">
-                            <span>ステータス</span>
+                    <div className="grid max-w-2xl gap-0">
+                        <div className="flex items-center justify-between border-b border-slate-100 py-3">
+                            <span className="text-base font-medium text-slate-500">
+                                ステータス
+                            </span>
                             <span
-                                className={`inline-flex items-center px-2.5 py-0.5 text-sm font-semibold rounded-full border ${statusStyle[tenant.tenantStatus] ?? ""}`}
+                                className={`inline-flex items-center rounded-full border px-4 py-1 text-sm font-bold ${statusStyle[tenant.tenantStatus] ?? ""}`}
                             >
                                 {status}
                             </span>
                         </div>
-                        <div className="flex items-center justify-between">
-                            <span>テナント種別</span>
+                        <div className="flex items-center justify-between border-b border-slate-100 py-3">
+                            <span className="text-base font-medium text-slate-500">
+                                テナント種別
+                            </span>
                             <span
-                                className={`inline-flex items-center px-2.5 py-0.5 text-sm font-semibold rounded-full border ${typeStyle[tenant.tenantType] ?? ""}`}
+                                className={`inline-flex items-center rounded-full border px-4 py-1 text-sm font-bold ${typeStyle[tenant.tenantType] ?? ""}`}
                             >
                                 {type}
                             </span>
                         </div>
-                        <div className="flex items-center justify-between">
-                            <span>店舗形態</span>
+                        <div className="flex items-center justify-between border-b border-slate-100 py-3">
+                            <span className="text-base font-medium text-slate-500">
+                                店舗形態
+                            </span>
                             <span
-                                className={`inline-flex items-center px-2.5 py-0.5 text-sm font-semibold rounded-full border ${storeTypeStyle[tenant.storeType] ?? ""}`}
+                                className={`inline-flex items-center rounded-full border px-4 py-1 text-sm font-bold ${storeTypeStyle[tenant.storeType] ?? ""}`}
                             >
                                 {storeType}
                             </span>
                         </div>
-                        <div className="flex items-center justify-between">
-                            <span>作成日時</span>
-                            <span className="text-foreground">
+                        <div className="flex items-center justify-between border-b border-slate-100 py-3">
+                            <span className="text-base font-medium text-slate-500">
+                                作成日時
+                            </span>
+                            <span className="text-base font-semibold text-slate-800">
                                 {createdAt}
                             </span>
                         </div>
-                        <div className="flex items-center justify-between">
-                            <span>作成者</span>
-                            <span className="text-foreground">
+                        <div className="flex items-center justify-between py-3">
+                            <span className="text-base font-medium text-slate-500">
+                                作成者
+                            </span>
+                            <span className="font-mono text-base text-slate-800">
                                 {tenant.createdByUserId ?? "不明"}
                             </span>
                         </div>
                     </div>
-                </CardContent>
-            </Card>
+                </div>
+            </section>
 
             {/* ── カード2: 詳細情報 ── */}
-            <Card>
-                <CardHeader>
-                    <div className="flex flex-wrap items-center justify-between gap-3">
-                        <CardTitle className="text-xl">
-                            詳細情報
-                        </CardTitle>
-                        <Button asChild variant="outline" size="sm">
-                            <Link
-                                href={`/m/company/tenant/${tenantId}/edit-detail`}
-                            >
-                                <Edit2 className="size-4" />
-                                詳細情報を編集
-                            </Link>
-                        </Button>
+            <section className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+                <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 bg-slate-50/50 px-6 py-5">
+                    <h2 className="flex items-center gap-2 text-xl font-semibold">
+                        <FileText className="size-5 text-orange-500" />
+                        詳細情報
+                    </h2>
+                    <Button asChild variant="outline" size="sm">
+                        <Link
+                            href={`/m/company/tenant/${tenantId}/edit-detail`}
+                        >
+                            <Edit2 className="size-4" />
+                            詳細情報を編集
+                        </Link>
+                    </Button>
+                </div>
+                <div className="p-6">
+                    <div className="grid max-w-2xl gap-0">
+                        <div className="flex items-center justify-between py-3">
+                            <span className="text-base font-medium text-slate-500">
+                                連絡先（電話番号）
+                            </span>
+                            <span className="text-lg font-bold tracking-wider text-slate-900">
+                                {tenant.phoneNumber || "未設定"}
+                            </span>
+                        </div>
                     </div>
-                </CardHeader>
-                <CardContent className="text-muted-foreground space-y-3 text-base">
-                    <div className="flex items-center justify-between">
-                        <span>連絡先（電話番号）</span>
-                        <span className="text-foreground">
-                            {tenant.phoneNumber || "未設定"}
-                        </span>
-                    </div>
-                </CardContent>
-            </Card>
+                </div>
+            </section>
 
             {/* ── 削除セクション ── */}
-            <div className="flex justify-end pt-2">
+            <div className="flex justify-center pt-2">
                 <Dialog>
                     <DialogTrigger asChild>
-                        <Button variant="destructive">
-                            <Trash2 className="size-4" />
+                        <button
+                            type="button"
+                            className="inline-flex items-center justify-center rounded-xl border-2 border-red-200 bg-white px-6 py-3 text-base font-bold text-red-600 shadow-sm transition-all hover:bg-red-50"
+                        >
+                            <Trash2 className="mr-2 size-5" />
                             テナントを削除
-                        </Button>
+                        </button>
                     </DialogTrigger>
                     <DialogContent>
                         <DialogHeader>
