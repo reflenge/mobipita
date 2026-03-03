@@ -1,6 +1,6 @@
 "use client";
 
-import { useQuery } from "convex/react";
+import { useConvexAuth, useQuery } from "convex/react";
 import { api } from "@/../convex/_generated/api";
 import type { Id } from "@/../convex/_generated/dataModel";
 import { Link } from "@/components/link";
@@ -42,9 +42,13 @@ type TenantDetailProps = {
 };
 
 const TenantDetail = ({ tenantId }: TenantDetailProps) => {
-    const tenant = useQuery(api.tenants.getById, {
-        tenantId: tenantId as Id<"Tenants">,
-    });
+    const { isAuthenticated } = useConvexAuth();
+    const tenant = useQuery(
+        api.tenants.getById,
+        isAuthenticated
+            ? { tenantId: tenantId as Id<"Tenants"> }
+            : "skip",
+    );
 
     if (tenant === undefined) {
         return (
