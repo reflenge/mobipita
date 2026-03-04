@@ -1,4 +1,7 @@
-// company / admin 両方の画面で表示ラベル・バッジスタイルを共有するために集約
+/**
+ * テナント関連の表示ラベル・バッジスタイル定義。
+ * company / admin 両方の画面で共有するため、UI 側の定義を一箇所に集約。
+ */
 export type TenantStatus = "preparing" | "open" | "paused" | "closed";
 export type TenantType = "direct" | "tenant";
 export type StoreType = "mobile" | "fixed";

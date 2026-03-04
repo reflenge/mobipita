@@ -4,7 +4,10 @@
       "Bash(rm:*)",
       "Bash(npx tsc:*)",
       "Bash(npx convex:*)",
-      "Bash(node:*)"
+      "Bash(node:*)",
+      "Bash(gh run:*)",
+      "Bash(npx next:*)",
+      "WebFetch(domain:zenn.dev)"
     ]
   }
 }

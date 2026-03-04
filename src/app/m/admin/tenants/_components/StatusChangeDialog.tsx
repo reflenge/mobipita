@@ -37,6 +37,10 @@ type StatusChangeDialogProps = {
     currentStatus: string;
 };
 
+/**
+ * admin 用テナントステータス変更ダイアログ。
+ * 現在のステータスをプリセットし、変更がある場合のみ保存ボタンを有効化する。
+ */
 export function StatusChangeDialog({
     open,
     onOpenChange,

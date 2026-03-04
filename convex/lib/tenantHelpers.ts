@@ -1,8 +1,10 @@
-// list / getById / adminListAll で同じ TenantDetails 結合 + logoUrl 取得が
-// 3箇所に重複していたため、読み取り専用ヘルパーとして切り出した
 import type { Doc } from "../_generated/dataModel";
 import type { QueryCtx } from "../_generated/server";
 
+/**
+ * Tenant ドキュメントに TenantDetails（電話番号等）と logoUrl を結合して返す。
+ * list / getById / adminListAll で同じ結合ロジックが重複していたため共通化。
+ */
 export async function enrichTenant(
     ctx: QueryCtx,
     tenant: Doc<"Tenants">,

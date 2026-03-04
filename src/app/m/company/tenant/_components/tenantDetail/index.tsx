@@ -33,6 +33,11 @@ type TenantDetailProps = {
     tenantId: string;
 };
 
+/**
+ * company ロール向けテナント詳細ページ。
+ * 基本情報カード + 詳細情報カード + 削除セクションの3構成。
+ * 各セクションから対応する編集ページへ遷移できる。
+ */
 const TenantDetail = ({ tenantId }: TenantDetailProps) => {
     const router = useRouter();
     const { isAuthenticated } = useConvexAuth();

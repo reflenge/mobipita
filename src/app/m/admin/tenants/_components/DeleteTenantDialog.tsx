@@ -22,6 +22,10 @@ type DeleteTenantDialogProps = {
     tenantName: string;
 };
 
+/**
+ * admin 用テナント削除確認ダイアログ。
+ * カスケード削除の影響範囲を警告し、確定後に adminRemove を実行する。
+ */
 export function DeleteTenantDialog({
     open,
     onOpenChange,

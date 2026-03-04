@@ -68,6 +68,11 @@ type TenantItem = NonNullable<
 
 const PAGE_SIZE = 6;
 
+/**
+ * admin ロール専用テナント一覧。
+ * company 版と異なり、ステータス変更・削除のアクションボタンを各カードに表示する。
+ * 削除はカスケード（関連する予約・スロット等も全て削除）。
+ */
 const AdminTenantList = () => {
     const tenants = useQuery(api.tenants.adminListAll, { limit: 200 });
 

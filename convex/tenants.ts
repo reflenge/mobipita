@@ -8,6 +8,7 @@ import {
 import { enrichTenant } from "./lib/tenantHelpers";
 import { tenantType, tenantStatus, storeType } from "./values";
 
+/** company ロール向け: 自社テナント一覧を取得（TenantDetails + logoUrl 結合済み） */
 export const list = query({
     args: {
         limit: v.optional(v.number()),
@@ -24,6 +25,7 @@ export const list = query({
     },
 });
 
+/** テナント詳細ページ向け: 単一テナントの全情報を返す */
 export const getById = query({
     args: {
         tenantId: v.id("Tenants"),
@@ -37,6 +39,7 @@ export const getById = query({
     },
 });
 
+/** テナント新規作成。Tenants 本体と TenantDetails を同時に作成する */
 export const create = mutation({
     args: {
         tenantName: v.string(),
@@ -65,6 +68,7 @@ export const create = mutation({
     },
 });
 
+/** テナント基本情報の更新。Tenants と TenantDetails の両方を更新する */
 export const update = mutation({
     args: {
         id: v.id("Tenants"),
@@ -104,6 +108,7 @@ export const update = mutation({
     },
 });
 
+/** company ロール向け: テナント削除（本体 + TenantDetails のみ） */
 export const remove = mutation({
     args: {
         tenantId: v.id("Tenants"),
@@ -129,6 +134,7 @@ export const remove = mutation({
     },
 });
 
+/** TenantDetails のみを更新する（詳細情報編集ページ向け） */
 export const updateDetail = mutation({
     args: {
         tenantId: v.id("Tenants"),
@@ -163,6 +169,7 @@ export const updateDetail = mutation({
 
 // ── Admin 専用 ─────────────────────────────
 
+/** admin ロール専用: 全テナント一覧（上限 200 件） */
 export const adminListAll = query({
     args: {
         limit: v.optional(v.number()),
@@ -179,6 +186,7 @@ export const adminListAll = query({
     },
 });
 
+/** admin ロール専用: テナントのステータスだけを変更する */
 export const adminUpdateStatus = mutation({
     args: {
         tenantId: v.id("Tenants"),
@@ -197,6 +205,10 @@ export const adminUpdateStatus = mutation({
     },
 });
 
+/**
+ * admin ロール専用: テナントとその関連データをカスケード削除する。
+ * Bookings → Slots → Services → Locations → Assignments → Details → Tenant の順に削除。
+ */
 export const adminRemove = mutation({
     args: {
         tenantId: v.id("Tenants"),

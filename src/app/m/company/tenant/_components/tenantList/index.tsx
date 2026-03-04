@@ -33,6 +33,11 @@ import {
 
 const PAGE_SIZE = 6;
 
+/**
+ * company ロール向けテナント一覧。
+ * キーワード・ステータス・種別・営業形態でフィルタリングし、
+ * カード形式でページネーション表示する。
+ */
 const TenantList = () => {
     const tenants = useQuery(api.tenants.list, { limit: 50 });
 
