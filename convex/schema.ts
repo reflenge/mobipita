@@ -29,6 +29,7 @@ export default defineSchema({
         tenantStatus: tenantStatus,
         storeType: storeType,
     })
+        .index("by_tenantName", ["tenantName"])
         .index("by_status", ["tenantStatus"])
         .index("by_type", ["tenantType"])
         .index("by_status_type", ["tenantStatus", "tenantType"]),
@@ -42,6 +43,8 @@ export default defineSchema({
     TenantDetails: defineTable({
         tenantId: v.id("Tenants"),
         phoneNumber: v.optional(v.string()),
+        email: v.optional(v.string()),
+        address: v.optional(v.string()),
     }).index("by_tenantId", ["tenantId"]),
     Locations: defineTable({
         tenantId: v.id("Tenants"),

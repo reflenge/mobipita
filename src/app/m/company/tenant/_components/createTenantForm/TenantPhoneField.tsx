@@ -14,7 +14,7 @@ export function TenantPhoneField() {
 
     return (
         <Field>
-            <FieldLabel>連絡先（電話番号）</FieldLabel>
+            <FieldLabel>電話番号</FieldLabel>
             <Input
                 {...register("phoneNumber")}
                 placeholder="03-1234-5678"

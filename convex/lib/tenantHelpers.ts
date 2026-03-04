@@ -1,8 +1,27 @@
-import type { Doc } from "../_generated/dataModel";
-import type { QueryCtx } from "../_generated/server";
+import { ConvexError } from "convex/values";
+import type { Doc, Id } from "../_generated/dataModel";
+import type { MutationCtx, QueryCtx } from "../_generated/server";
+
+/** tenantName の重複をチェックし、重複があれば ConvexError を投げる */
+export async function assertUniqueTenantName(
+    ctx: QueryCtx | MutationCtx,
+    tenantName: string,
+    excludeTenantId?: Id<"Tenants">,
+) {
+    const existing = await ctx.db
+        .query("Tenants")
+        .withIndex("by_tenantName", (q) => q.eq("tenantName", tenantName))
+        .first();
+
+    if (existing && existing._id !== excludeTenantId) {
+        throw new ConvexError(
+            "同じテナント名が既に存在します。",
+        );
+    }
+}
 
 /**
- * Tenant ドキュメントに TenantDetails（電話番号等）と logoUrl を結合して返す。
+ * Tenant ドキュメントに TenantDetails（電話番号・メール・住所）と logoUrl を結合して返す。
  * list / getById / adminListAll で同じ結合ロジックが重複していたため共通化。
  */
 export async function enrichTenant(
@@ -25,6 +44,8 @@ export async function enrichTenant(
     return {
         ...tenant,
         phoneNumber: detail?.phoneNumber ?? "",
+        email: detail?.email ?? "",
+        address: detail?.address ?? "",
         logoUrl,
     };
 }

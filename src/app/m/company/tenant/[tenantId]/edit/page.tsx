@@ -3,6 +3,7 @@
 import * as React from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQuery } from "convex/react";
+import { Info, Settings } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { FormProvider, useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -30,16 +31,17 @@ export default function EditTenantPage() {
 
     if (tenant === undefined) {
         return (
-            <div className="container mx-auto flex flex-col gap-8 px-6 py-10">
+            <div className="mx-auto flex max-w-3xl flex-col gap-8 px-6 py-10">
                 <Skeleton className="h-8 w-48" />
                 <Skeleton className="h-64 w-full" />
+                <Skeleton className="h-48 w-full" />
             </div>
         );
     }
 
     if (!tenant) {
         return (
-            <div className="container mx-auto flex flex-col gap-8 px-6 py-10">
+            <div className="mx-auto flex max-w-3xl flex-col gap-8 px-6 py-10">
                 <p className="text-muted-foreground">
                     テナントが見つかりません。
                 </p>
@@ -180,8 +182,8 @@ function EditTenantForm({
     }
 
     return (
-        <div className="container mx-auto flex flex-col gap-8 px-6 py-10">
-            <div className="flex flex-wrap items-start justify-between gap-4">
+        <div className="mx-auto flex max-w-3xl flex-col gap-8 px-6 py-10">
+            <div className="flex items-center justify-between">
                 <h1 className="text-3xl font-semibold">
                     基本情報の編集
                 </h1>
@@ -201,15 +203,39 @@ function EditTenantForm({
                     })}
                     className="flex flex-col gap-6"
                 >
-                    <FieldGroup>
-                        <TenantNameField />
-                        <TenantTypeField />
-                        <TenantStatusField />
-                        <TenantStoreTypeField />
-                    </FieldGroup>
-                    <FieldGroup>
-                        <TenantLogoField />
-                    </FieldGroup>
+                    {/* カード1: テナント識別情報 */}
+                    <section className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+                        <div className="flex items-center gap-3 border-b border-slate-100 bg-slate-50/50 px-6 py-5">
+                            <h2 className="flex items-center gap-2 text-xl font-semibold">
+                                <Info className="size-5 text-orange-500" />
+                                テナント識別
+                            </h2>
+                        </div>
+                        <div className="p-6">
+                            <FieldGroup>
+                                <TenantNameField />
+                                <TenantLogoField />
+                            </FieldGroup>
+                        </div>
+                    </section>
+
+                    {/* カード2: 営業設定 */}
+                    <section className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+                        <div className="flex items-center gap-3 border-b border-slate-100 bg-slate-50/50 px-6 py-5">
+                            <h2 className="flex items-center gap-2 text-xl font-semibold">
+                                <Settings className="size-5 text-orange-500" />
+                                営業設定
+                            </h2>
+                        </div>
+                        <div className="p-6">
+                            <FieldGroup>
+                                <TenantTypeField />
+                                <TenantStoreTypeField />
+                                <TenantStatusField />
+                            </FieldGroup>
+                        </div>
+                    </section>
+
                     <div className="flex justify-end gap-3 pt-4">
                         <Button
                             type="button"

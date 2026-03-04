@@ -5,7 +5,10 @@ import {
     requireClerkUserId,
     requireMinRole,
 } from "./lib/clerkAuth";
-import { enrichTenant } from "./lib/tenantHelpers";
+import {
+    assertUniqueTenantName,
+    enrichTenant,
+} from "./lib/tenantHelpers";
 import { tenantType, tenantStatus, storeType } from "./values";
 
 /** company ロール向け: 自社テナント一覧を取得（TenantDetails + logoUrl 結合済み） */
@@ -44,6 +47,8 @@ export const create = mutation({
     args: {
         tenantName: v.string(),
         phoneNumber: v.optional(v.string()),
+        email: v.optional(v.string()),
+        address: v.optional(v.string()),
         tenantType: tenantType,
         tenantLogoFileId: v.optional(v.id("Files")),
         tenantStatus: tenantStatus,
@@ -51,6 +56,7 @@ export const create = mutation({
     },
     handler: async (ctx, args) => {
         const createdByUserId = await requireClerkUserId(ctx);
+        await assertUniqueTenantName(ctx, args.tenantName);
 
         const tenantId = await ctx.db.insert("Tenants", {
             createdByUserId,
@@ -63,6 +69,8 @@ export const create = mutation({
         await ctx.db.insert("TenantDetails", {
             tenantId: tenantId,
             phoneNumber: args.phoneNumber,
+            email: args.email,
+            address: args.address,
         });
         return tenantId;
     },
@@ -74,6 +82,8 @@ export const update = mutation({
         id: v.id("Tenants"),
         tenantName: v.string(),
         phoneNumber: v.optional(v.string()),
+        email: v.optional(v.string()),
+        address: v.optional(v.string()),
         tenantType: tenantType,
         tenantStatus: tenantStatus,
         storeType: storeType,
@@ -81,6 +91,7 @@ export const update = mutation({
     },
     handler: async (ctx, args) => {
         await requireClerkIdentity(ctx);
+        await assertUniqueTenantName(ctx, args.tenantName, args.id);
 
         await ctx.db.patch(args.id, {
             tenantName: args.tenantName,
@@ -96,11 +107,17 @@ export const update = mutation({
             .unique();
 
         if (detail) {
-            await ctx.db.patch(detail._id, { phoneNumber: args.phoneNumber });
+            await ctx.db.patch(detail._id, {
+                phoneNumber: args.phoneNumber,
+                email: args.email,
+                address: args.address,
+            });
         } else {
             await ctx.db.insert("TenantDetails", {
                 tenantId: args.id,
                 phoneNumber: args.phoneNumber,
+                email: args.email,
+                address: args.address,
             });
         }
 
@@ -139,6 +156,8 @@ export const updateDetail = mutation({
     args: {
         tenantId: v.id("Tenants"),
         phoneNumber: v.optional(v.string()),
+        email: v.optional(v.string()),
+        address: v.optional(v.string()),
     },
     handler: async (ctx, args) => {
         await requireClerkIdentity(ctx);
@@ -155,11 +174,17 @@ export const updateDetail = mutation({
             .unique();
 
         if (detail) {
-            await ctx.db.patch(detail._id, { phoneNumber: args.phoneNumber });
+            await ctx.db.patch(detail._id, {
+                phoneNumber: args.phoneNumber,
+                email: args.email,
+                address: args.address,
+            });
         } else {
             await ctx.db.insert("TenantDetails", {
                 tenantId: args.tenantId,
                 phoneNumber: args.phoneNumber,
+                email: args.email,
+                address: args.address,
             });
         }
 

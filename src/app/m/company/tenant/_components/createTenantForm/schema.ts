@@ -62,6 +62,20 @@ export const formSchema = z.object({
         .max(20, "20文字以内で入力してください")
         .transform((val) => (val === "" ? undefined : val))
         .optional(),
+    /** メールアドレス（任意） */
+    email: z
+        .string()
+        .email("有効なメールアドレスを入力してください")
+        .max(254, "254文字以内で入力してください")
+        .transform((val) => (val === "" ? undefined : val))
+        .optional()
+        .or(z.literal("")),
+    /** 住所（任意） */
+    address: z
+        .string()
+        .max(200, "200文字以内で入力してください")
+        .transform((val) => (val === "" ? undefined : val))
+        .optional(),
     tenantType: z.enum(["direct", "tenant"]),
     tenantStatus: z.enum(["preparing", "open", "paused", "closed"]),
     storeType: z.enum(["mobile", "fixed"]),

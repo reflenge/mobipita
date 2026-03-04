@@ -248,14 +248,41 @@ const TenantDetail = ({ tenantId }: TenantDetailProps) => {
                         </Link>
                     </Button>
                 </div>
-                <div className="p-6">
-                    <div className="grid max-w-2xl gap-0">
+                {/* p-2 + 連絡先グループの p-4 = 基本情報カードの p-6 と行頭を揃える */}
+                <div className="space-y-6 p-2">
+                    {/* 連絡先グループ */}
+                    <div className="rounded-lg border border-slate-100 bg-slate-50/30 p-4">
+                        <p className="mb-3 text-sm font-semibold text-slate-400">
+                            連絡先
+                        </p>
+                        <div className="grid max-w-2xl gap-0">
+                            <div className="flex items-center justify-between border-b border-slate-100 py-3">
+                                <span className="text-base font-medium text-slate-500">
+                                    電話番号
+                                </span>
+                                <span className="text-lg font-bold tracking-wider text-slate-900">
+                                    {tenant.phoneNumber || "未設定"}
+                                </span>
+                            </div>
+                            <div className="flex items-center justify-between py-3">
+                                <span className="text-base font-medium text-slate-500">
+                                    メールアドレス
+                                </span>
+                                <span className="text-lg font-bold tracking-wider text-slate-900">
+                                    {tenant.email || "未設定"}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* 住所 — 連絡先グループの p-4 と行頭を揃える */}
+                    <div className="grid max-w-2xl gap-0 px-4">
                         <div className="flex items-center justify-between py-3">
                             <span className="text-base font-medium text-slate-500">
-                                連絡先（電話番号）
+                                住所
                             </span>
                             <span className="text-lg font-bold tracking-wider text-slate-900">
-                                {tenant.phoneNumber || "未設定"}
+                                {tenant.address || "未設定"}
                             </span>
                         </div>
                     </div>

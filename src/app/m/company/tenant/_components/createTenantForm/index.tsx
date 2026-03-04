@@ -7,6 +7,8 @@ import { useRouter } from "next/navigation";
 import { FormProvider, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { CreateTenantFormActions } from "./CreateTenantFormActions";
+import { TenantAddressField } from "./TenantAddressField";
+import { TenantEmailField } from "./TenantEmailField";
 import { TenantLogoField } from "./TenantLogoField";
 import { TenantNameField } from "./TenantNameField";
 import { TenantPhoneField } from "./TenantPhoneField";
@@ -39,6 +41,8 @@ export default function CreateTenantForm() {
         defaultValues: {
             tenantName: "",
             phoneNumber: undefined,
+            email: undefined,
+            address: undefined,
             tenantType: "tenant",
             tenantStatus: "preparing",
             storeType: "fixed",
@@ -50,6 +54,9 @@ export default function CreateTenantForm() {
     const handleReset = React.useCallback(() => {
         form.reset({
             tenantName: "",
+            phoneNumber: undefined,
+            email: undefined,
+            address: undefined,
             tenantType: "tenant",
             tenantStatus: "preparing",
             storeType: "fixed",
@@ -111,6 +118,8 @@ export default function CreateTenantForm() {
                 const tenantId = await createTenant({
                     tenantName: data.tenantName,
                     phoneNumber: data.phoneNumber,
+                    email: data.email,
+                    address: data.address,
                     tenantType: data.tenantType,
                     tenantStatus: data.tenantStatus,
                     storeType: data.storeType,
@@ -160,6 +169,8 @@ export default function CreateTenantForm() {
                     <FieldGroup>
                         <TenantNameField />
                         <TenantPhoneField />
+                        <TenantEmailField />
+                        <TenantAddressField />
                         <TenantTypeField />
                         <TenantStatusField />
                         <TenantStoreTypeField />
