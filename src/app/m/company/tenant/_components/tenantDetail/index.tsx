@@ -19,6 +19,7 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog";
+import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
     STORE_TYPE_LABELS,
@@ -186,31 +187,34 @@ const TenantDetail = ({ tenantId }: TenantDetailProps) => {
                             <span className="text-base font-medium text-slate-500">
                                 ステータス
                             </span>
-                            <span
-                                className={`inline-flex items-center rounded-full border px-4 py-1 text-sm font-bold ${TENANT_STATUS_STYLE[tenant.tenantStatus] ?? ""}`}
+                            {/* span → Badge に復元 */}
+                            <Badge
+                                className={TENANT_STATUS_STYLE[tenant.tenantStatus] ?? ""}
                             >
                                 {status}
-                            </span>
+                            </Badge>
                         </div>
                         <div className="flex items-center justify-between border-b border-slate-100 py-3">
                             <span className="text-base font-medium text-slate-500">
                                 テナント種別
                             </span>
-                            <span
-                                className={`inline-flex items-center rounded-full border px-4 py-1 text-sm font-bold ${TENANT_TYPE_STYLE[tenant.tenantType] ?? ""}`}
+                            {/* span → Badge に復元 */}
+                            <Badge
+                                className={TENANT_TYPE_STYLE[tenant.tenantType] ?? ""}
                             >
                                 {type}
-                            </span>
+                            </Badge>
                         </div>
                         <div className="flex items-center justify-between border-b border-slate-100 py-3">
                             <span className="text-base font-medium text-slate-500">
                                 店舗形態
                             </span>
-                            <span
-                                className={`inline-flex items-center rounded-full border px-4 py-1 text-sm font-bold ${STORE_TYPE_STYLE[tenant.storeType] ?? ""}`}
+                            {/* span → Badge に復元 */}
+                            <Badge
+                                className={STORE_TYPE_STYLE[tenant.storeType] ?? ""}
                             >
                                 {storeType}
-                            </span>
+                            </Badge>
                         </div>
                         <div className="flex items-center justify-between border-b border-slate-100 py-3">
                             <span className="text-base font-medium text-slate-500">

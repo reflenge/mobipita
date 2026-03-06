@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { BreadcrumbDropdown } from "./BreadcrumbDropdown";
 import { getSegmentLabel, isExistingRoute, truncateLabel } from "./utils";
@@ -17,11 +16,6 @@ import {
 
 export default function AutoBreadcrumb() {
     const pathname = usePathname();
-    const [mounted, setMounted] = useState(false);
-
-    useEffect(() => {
-        setMounted(true);
-    }, []);
 
     // パスをセグメントに分割（空文字列を除外）
     const segments = pathname.split("/").filter((s) => s.length > 0);
@@ -62,11 +56,6 @@ export default function AutoBreadcrumb() {
             index !== prevIndex &&
             index !== currentIndex,
     );
-
-    // Radix UI の hydration 問題を回避するため、マウント後のみレンダリング
-    if (!mounted) {
-        return null;
-    }
 
     return (
         <Breadcrumb>
