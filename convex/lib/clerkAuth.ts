@@ -88,6 +88,9 @@ export const requireMinRole = async (
 
 /**
  * company 以上の権限を要求する。
+ *
+ * 関数名は "Admin" だが、実際は company ロール以上で通過する。
+ * 既存の呼び出し箇所が多いため名前は維持している。
  */
 export const requireAdmin = async (
     ctx: ClerkAuthContext,

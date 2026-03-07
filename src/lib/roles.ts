@@ -25,6 +25,7 @@ export const ALL_ROLES: AppRole[] = ["admin", "company", "staff", "customer"];
 
 const VALID_ROLES = new Set<string>(Object.keys(ROLE_LEVEL));
 
+/** Claims からロールを取得する。無効値や未設定時は "customer" を返す。 */
 export function getRoleFromClaims(
     claims: { metadata?: { role?: string } } | null | undefined,
 ): AppRole {
@@ -33,6 +34,7 @@ export function getRoleFromClaims(
     return "customer";
 }
 
+/** userRole が minRole 以上の権限を持つか判定する。 */
 export function hasMinRole(userRole: AppRole, minRole: AppRole): boolean {
     return ROLE_LEVEL[userRole] >= ROLE_LEVEL[minRole];
 }

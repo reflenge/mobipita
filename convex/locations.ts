@@ -3,6 +3,7 @@ import { mutation, query } from "./_generated/server";
 import { requireClerkIdentity } from "./lib/clerkAuth";
 import type { Id } from "./_generated/dataModel";
 
+/** 指定テナントに属する場所一覧を取得する。 */
 export const listByTenant = query({
     args: {
         tenantId: v.id("Tenants"),

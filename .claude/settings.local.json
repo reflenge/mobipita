@@ -7,7 +7,9 @@
       "Bash(node:*)",
       "Bash(gh run:*)",
       "Bash(npx next:*)",
-      "WebFetch(domain:zenn.dev)"
+      "WebFetch(domain:zenn.dev)",
+      "WebFetch(domain:ics.media)",
+      "WebFetch(domain:ja.wordpress.org)"
     ]
   }
 }
