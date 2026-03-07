@@ -151,47 +151,6 @@ export const remove = mutation({
     },
 });
 
-/** TenantDetails のみを更新する（詳細情報編集ページ向け） */
-export const updateDetail = mutation({
-    args: {
-        tenantId: v.id("Tenants"),
-        phoneNumber: v.optional(v.string()),
-        email: v.optional(v.string()),
-        address: v.optional(v.string()),
-    },
-    handler: async (ctx, args) => {
-        await requireClerkIdentity(ctx);
-
-        const tenant = await ctx.db.get(args.tenantId);
-        if (!tenant) {
-            throw new Error("テナントが存在しません");
-        }
-
-        // 詳細テーブルの更新
-        const detail = await ctx.db
-            .query("TenantDetails")
-            .withIndex("by_tenantId", (q) => q.eq("tenantId", args.tenantId))
-            .unique();
-
-        if (detail) {
-            await ctx.db.patch(detail._id, {
-                phoneNumber: args.phoneNumber,
-                email: args.email,
-                address: args.address,
-            });
-        } else {
-            await ctx.db.insert("TenantDetails", {
-                tenantId: args.tenantId,
-                phoneNumber: args.phoneNumber,
-                email: args.email,
-                address: args.address,
-            });
-        }
-
-        return args.tenantId;
-    },
-});
-
 // ── Admin 専用 ─────────────────────────────
 
 /** admin ロール専用: 全テナント一覧（上限 200 件） */

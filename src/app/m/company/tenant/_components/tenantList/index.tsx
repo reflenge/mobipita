@@ -6,7 +6,6 @@ import {
     Calendar,
     ChevronLeft,
     ChevronRight,
-    ImageIcon,
     Phone,
     Search,
     SearchX,
@@ -21,6 +20,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
+import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
     STORE_TYPE_LABELS,
@@ -29,7 +29,9 @@ import {
     TENANT_STATUS_STYLE,
     TENANT_TYPE_LABELS,
     TENANT_TYPE_STYLE,
+    getTenantDisplayLabels,
 } from "@/lib/tenant";
+import TenantLogo from "../TenantLogo";
 
 const PAGE_SIZE = 6;
 
@@ -254,13 +256,8 @@ const TenantList = () => {
             {/* ── カード一覧 ── */}
             <div className="grid grid-cols-1 gap-4">
                 {displayedTenants?.map((tenant) => {
-                    const status =
-                        TENANT_STATUS_LABELS[tenant.tenantStatus] ?? "不明";
-                    const type =
-                        TENANT_TYPE_LABELS[tenant.tenantType] ?? "不明";
-                    const storeType =
-                        STORE_TYPE_LABELS[tenant.storeType] ??
-                        tenant.storeType;
+                    const { status, type, storeType } =
+                        getTenantDisplayLabels(tenant);
                     const createdAt = new Date(
                         tenant._creationTime,
                     ).toLocaleDateString("ja-JP", {
@@ -275,57 +272,46 @@ const TenantList = () => {
                             href={`/m/company/tenant/${tenant._id}`}
                             className="block"
                         >
-                            <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm transition-shadow hover:shadow-md">
+                            <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm transition-all hover:-translate-y-0.5 hover:border-orange-300 hover:shadow-md">
                                 <div className="flex flex-col md:flex-row gap-5">
                                     {/* ロゴ */}
-                                    <div className="relative flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-slate-200 bg-slate-100">
-                                        <div className="flex flex-col items-center text-slate-400">
-                                            <ImageIcon className="size-8" />
-                                            <span className="mt-0.5 text-[10px]">
-                                                NO IMAGE
-                                            </span>
-                                        </div>
-                                        {tenant.logoUrl && (
-                                            <img
-                                                src={tenant.logoUrl}
-                                                alt={tenant.tenantName}
-                                                loading="eager"
-                                                crossOrigin="anonymous"
-                                                decoding="async"
-                                                className="absolute inset-0 h-full w-full object-cover"
-                                                onError={(e) => {
-                                                    e.currentTarget.style.display =
-                                                        "none";
-                                                }}
-                                            />
-                                        )}
-                                    </div>
+                                    <TenantLogo
+                                        logoUrl={tenant.logoUrl}
+                                        tenantName={tenant.tenantName}
+                                        showLabel
+                                    />
 
                                     {/* 情報エリア */}
                                     <div className="flex-1 min-w-0">
-                                        {/* テナント名 */}
-                                        <h2 className="text-xl md:text-2xl font-bold text-slate-900 line-clamp-1 mb-2">
-                                            {tenant.tenantName}
-                                        </h2>
+                                        {/* テナント名 + 詳細リンク案内 */}
+                                        <div className="flex items-start justify-between gap-2">
+                                            <h2 className="text-xl md:text-2xl font-bold text-slate-900 line-clamp-1 mb-2">
+                                                {tenant.tenantName}
+                                            </h2>
+                                            <span className="hidden shrink-0 items-center gap-0.5 text-sm text-slate-400 md:flex">
+                                                詳細を見る
+                                                <ChevronRight className="size-4" />
+                                            </span>
+                                        </div>
 
                                         {/* バッジ（1行に並べる） */}
                                         <div className="flex items-center gap-2 flex-nowrap">
-                                            <span
-                                                className={`inline-flex shrink-0 items-center rounded-full border px-3 py-0.5 text-sm font-bold ${TENANT_STATUS_STYLE[tenant.tenantStatus] ?? ""}`}
+                                            <Badge
+                                                className={TENANT_STATUS_STYLE[tenant.tenantStatus] ?? ""}
                                             >
                                                 {status}
-                                            </span>
-                                            <span
-                                                className={`inline-flex shrink-0 items-center rounded-full border px-3 py-0.5 text-sm font-bold ${TENANT_TYPE_STYLE[tenant.tenantType] ?? ""}`}
+                                            </Badge>
+                                            <Badge
+                                                className={TENANT_TYPE_STYLE[tenant.tenantType] ?? ""}
                                             >
                                                 {type}
-                                            </span>
+                                            </Badge>
                                             {tenant.storeType && (
-                                                <span
-                                                    className={`inline-flex shrink-0 items-center rounded-full border px-3 py-0.5 text-sm font-bold ${STORE_TYPE_STYLE[tenant.storeType] ?? ""}`}
+                                                <Badge
+                                                    className={STORE_TYPE_STYLE[tenant.storeType] ?? ""}
                                                 >
                                                     {storeType}
-                                                </span>
+                                                </Badge>
                                             )}
                                         </div>
 

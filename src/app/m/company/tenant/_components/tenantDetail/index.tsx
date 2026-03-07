@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { useConvexAuth, useMutation, useQuery } from "convex/react";
-import { Edit2, FileText, ImageIcon, Info, Trash2 } from "lucide-react";
+import { Edit2, Info, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { api } from "@/../convex/_generated/api";
@@ -22,13 +22,12 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
-    STORE_TYPE_LABELS,
     STORE_TYPE_STYLE,
-    TENANT_STATUS_LABELS,
     TENANT_STATUS_STYLE,
-    TENANT_TYPE_LABELS,
     TENANT_TYPE_STYLE,
+    getTenantDisplayLabels,
 } from "@/lib/tenant";
+import TenantLogo from "../TenantLogo";
 
 type TenantDetailProps = {
     tenantId: string;
@@ -36,8 +35,8 @@ type TenantDetailProps = {
 
 /**
  * company ロール向けテナント詳細ページ。
- * 基本情報カード + 詳細情報カード + 削除セクションの3構成。
- * 各セクションから対応する編集ページへ遷移できる。
+ * テナント情報カード + 削除セクションの2構成。
+ * 編集ボタンから編集ページへ遷移できる。
  */
 const TenantDetail = ({ tenantId }: TenantDetailProps) => {
     const router = useRouter();
@@ -84,14 +83,9 @@ const TenantDetail = ({ tenantId }: TenantDetailProps) => {
                         <Skeleton className="h-4 w-56" />
                         <Skeleton className="h-4 w-40" />
                         <Skeleton className="h-4 w-44" />
-                    </div>
-                </section>
-                <section className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
-                    <div className="flex items-center gap-3 border-b border-slate-100 bg-slate-50/50 px-6 py-5">
-                        <Skeleton className="h-6 w-32" />
-                    </div>
-                    <div className="p-6">
-                        <Skeleton className="h-4 w-40" />
+                        <Skeleton className="h-4 w-36" />
+                        <Skeleton className="h-4 w-48" />
+                        <Skeleton className="h-4 w-52" />
                     </div>
                 </section>
             </div>
@@ -116,10 +110,7 @@ const TenantDetail = ({ tenantId }: TenantDetailProps) => {
         );
     }
 
-    const status = TENANT_STATUS_LABELS[tenant.tenantStatus] ?? "不明";
-    const type = TENANT_TYPE_LABELS[tenant.tenantType] ?? "不明";
-    const storeType =
-        STORE_TYPE_LABELS[tenant.storeType] ?? tenant.storeType;
+    const { status, type, storeType } = getTenantDisplayLabels(tenant);
     const createdAt = new Date(tenant._creationTime).toLocaleString(
         "ja-JP",
         {
@@ -133,44 +124,29 @@ const TenantDetail = ({ tenantId }: TenantDetailProps) => {
 
     return (
         <div className="grid gap-8">
-            {/* ── カード1: テナント基本情報 ── */}
+            {/* ── テナント情報 ── */}
             <section className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
                 <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 bg-slate-50/50 px-6 py-5">
                     <h2 className="flex items-center gap-2 text-xl font-semibold">
                         <Info className="size-5 text-orange-500" />
-                        基本情報
+                        テナント情報
                     </h2>
-                    <Button asChild variant="outline" size="sm">
+                    <Button asChild variant="outline">
                         <Link
                             href={`/m/company/tenant/${tenantId}/edit`}
                         >
                             <Edit2 className="size-4" />
-                            基本情報を編集
+                            編集
                         </Link>
                     </Button>
                 </div>
                 <div className="space-y-8 p-6">
                     {/* ロゴ + テナント名 */}
                     <div className="flex items-center gap-6">
-                        <div className="relative flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-slate-200 bg-slate-100">
-                            <div className="flex flex-col items-center text-slate-400">
-                                <ImageIcon className="size-8" />
-                            </div>
-                            {tenant.logoUrl && (
-                                <img
-                                    src={tenant.logoUrl}
-                                    alt={tenant.tenantName}
-                                    loading="eager"
-                                    crossOrigin="anonymous"
-                                    decoding="async"
-                                    className="absolute inset-0 h-full w-full object-cover"
-                                    onError={(e) => {
-                                        e.currentTarget.style.display =
-                                            "none";
-                                    }}
-                                />
-                            )}
-                        </div>
+                        <TenantLogo
+                            logoUrl={tenant.logoUrl}
+                            tenantName={tenant.tenantName}
+                        />
                         <div>
                             <p className="mb-1 text-sm font-medium text-slate-500">
                                 テナント名
@@ -187,7 +163,6 @@ const TenantDetail = ({ tenantId }: TenantDetailProps) => {
                             <span className="text-base font-medium text-slate-500">
                                 ステータス
                             </span>
-                            {/* span → Badge に復元 */}
                             <Badge
                                 className={TENANT_STATUS_STYLE[tenant.tenantStatus] ?? ""}
                             >
@@ -198,7 +173,6 @@ const TenantDetail = ({ tenantId }: TenantDetailProps) => {
                             <span className="text-base font-medium text-slate-500">
                                 テナント種別
                             </span>
-                            {/* span → Badge に復元 */}
                             <Badge
                                 className={TENANT_TYPE_STYLE[tenant.tenantType] ?? ""}
                             >
@@ -209,7 +183,6 @@ const TenantDetail = ({ tenantId }: TenantDetailProps) => {
                             <span className="text-base font-medium text-slate-500">
                                 店舗形態
                             </span>
-                            {/* span → Badge に復元 */}
                             <Badge
                                 className={STORE_TYPE_STYLE[tenant.storeType] ?? ""}
                             >
@@ -224,7 +197,7 @@ const TenantDetail = ({ tenantId }: TenantDetailProps) => {
                                 {createdAt}
                             </span>
                         </div>
-                        <div className="flex items-center justify-between py-3">
+                        <div className="flex items-center justify-between border-b border-slate-100 py-3">
                             <span className="text-base font-medium text-slate-500">
                                 作成者
                             </span>
@@ -232,60 +205,27 @@ const TenantDetail = ({ tenantId }: TenantDetailProps) => {
                                 {tenant.createdByUserId ?? "不明"}
                             </span>
                         </div>
-                    </div>
-                </div>
-            </section>
-
-            {/* ── カード2: 詳細情報 ── */}
-            <section className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
-                <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 bg-slate-50/50 px-6 py-5">
-                    <h2 className="flex items-center gap-2 text-xl font-semibold">
-                        <FileText className="size-5 text-orange-500" />
-                        詳細情報
-                    </h2>
-                    <Button asChild variant="outline" size="sm">
-                        <Link
-                            href={`/m/company/tenant/${tenantId}/edit-detail`}
-                        >
-                            <Edit2 className="size-4" />
-                            詳細情報を編集
-                        </Link>
-                    </Button>
-                </div>
-                {/* p-2 + 連絡先グループの p-4 = 基本情報カードの p-6 と行頭を揃える */}
-                <div className="space-y-6 p-2">
-                    {/* 連絡先グループ */}
-                    <div className="rounded-lg border border-slate-100 bg-slate-50/30 p-4">
-                        <p className="mb-3 text-sm font-semibold text-slate-400">
-                            連絡先
-                        </p>
-                        <div className="grid max-w-2xl gap-0">
-                            <div className="flex items-center justify-between border-b border-slate-100 py-3">
-                                <span className="text-base font-medium text-slate-500">
-                                    電話番号
-                                </span>
-                                <span className="text-lg font-bold tracking-wider text-slate-900">
-                                    {tenant.phoneNumber || "未設定"}
-                                </span>
-                            </div>
-                            <div className="flex items-center justify-between py-3">
-                                <span className="text-base font-medium text-slate-500">
-                                    メールアドレス
-                                </span>
-                                <span className="text-lg font-bold tracking-wider text-slate-900">
-                                    {tenant.email || "未設定"}
-                                </span>
-                            </div>
+                        <div className="flex items-center justify-between border-b border-slate-100 py-3">
+                            <span className="text-base font-medium text-slate-500">
+                                電話番号
+                            </span>
+                            <span className="text-base font-semibold text-slate-800">
+                                {tenant.phoneNumber || "未設定"}
+                            </span>
                         </div>
-                    </div>
-
-                    {/* 住所 — 連絡先グループの p-4 と行頭を揃える */}
-                    <div className="grid max-w-2xl gap-0 px-4">
+                        <div className="flex items-center justify-between border-b border-slate-100 py-3">
+                            <span className="text-base font-medium text-slate-500">
+                                メールアドレス
+                            </span>
+                            <span className="text-base font-semibold text-slate-800">
+                                {tenant.email || "未設定"}
+                            </span>
+                        </div>
                         <div className="flex items-center justify-between py-3">
                             <span className="text-base font-medium text-slate-500">
                                 住所
                             </span>
-                            <span className="text-lg font-bold tracking-wider text-slate-900">
+                            <span className="text-base font-semibold text-slate-800">
                                 {tenant.address || "未設定"}
                             </span>
                         </div>

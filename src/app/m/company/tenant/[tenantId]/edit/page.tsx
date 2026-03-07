@@ -3,12 +3,15 @@
 import * as React from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQuery } from "convex/react";
-import { Info, Settings } from "lucide-react";
+import { FileText, Info, Settings } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { FormProvider, useForm } from "react-hook-form";
 import { toast } from "sonner";
+import { TenantAddressField } from "../../_components/createTenantForm/TenantAddressField";
+import { TenantEmailField } from "../../_components/createTenantForm/TenantEmailField";
 import { TenantLogoField } from "../../_components/createTenantForm/TenantLogoField";
 import { TenantNameField } from "../../_components/createTenantForm/TenantNameField";
+import { TenantPhoneField } from "../../_components/createTenantForm/TenantPhoneField";
 import { TenantStatusField } from "../../_components/createTenantForm/TenantStatusField";
 import { TenantStoreTypeField } from "../../_components/createTenantForm/TenantStoreTypeField";
 import { TenantTypeField } from "../../_components/createTenantForm/TenantTypeField";
@@ -81,6 +84,9 @@ function EditTenantForm({
             tenantType: tenant.tenantType ?? "tenant",
             tenantStatus: tenant.tenantStatus ?? "preparing",
             storeType: tenant.storeType ?? "fixed",
+            phoneNumber: tenant.phoneNumber ?? "",
+            email: tenant.email ?? "",
+            address: tenant.address ?? "",
             tenantLogo: null,
         },
         mode: "all",
@@ -141,6 +147,9 @@ function EditTenantForm({
                     tenantType: data.tenantType,
                     tenantStatus: data.tenantStatus,
                     storeType: data.storeType,
+                    phoneNumber: data.phoneNumber,
+                    email: data.email,
+                    address: data.address,
                     tenantLogoFileId:
                         uploadedFile?.fileId ??
                         tenant?.tenantLogoFileId,
@@ -164,7 +173,7 @@ function EditTenantForm({
                     }
                 }
 
-                toast("基本情報を更新しました", {
+                toast("テナント情報を更新しました", {
                     position: "bottom-right",
                 });
                 router.push(`/m/company/tenant/${tenantId}`);
@@ -185,7 +194,7 @@ function EditTenantForm({
         <div className="mx-auto flex max-w-3xl flex-col gap-8 px-6 py-10">
             <div className="flex items-center justify-between">
                 <h1 className="text-3xl font-semibold">
-                    基本情報の編集
+                    テナント情報の編集
                 </h1>
                 <Button asChild variant="outline">
                     <Link href={`/m/company/tenant/${tenantId}`}>
@@ -232,6 +241,23 @@ function EditTenantForm({
                                 <TenantTypeField />
                                 <TenantStoreTypeField />
                                 <TenantStatusField />
+                            </FieldGroup>
+                        </div>
+                    </section>
+
+                    {/* カード3: 連絡先・住所 */}
+                    <section className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+                        <div className="flex items-center gap-3 border-b border-slate-100 bg-slate-50/50 px-6 py-5">
+                            <h2 className="flex items-center gap-2 text-xl font-semibold">
+                                <FileText className="size-5 text-orange-500" />
+                                連絡先・住所
+                            </h2>
+                        </div>
+                        <div className="p-6">
+                            <FieldGroup>
+                                <TenantPhoneField />
+                                <TenantEmailField />
+                                <TenantAddressField />
                             </FieldGroup>
                         </div>
                     </section>

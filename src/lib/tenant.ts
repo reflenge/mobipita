@@ -39,3 +39,17 @@ export const STORE_TYPE_STYLE: Record<StoreType, string> = {
     mobile: "bg-blue-100 text-blue-700 border-blue-200",
     fixed: "bg-slate-100 text-slate-600 border-slate-200",
 };
+
+/** テナントのステータス・種別・店舗形態を表示用ラベルに変換する。 */
+export function getTenantDisplayLabels(tenant: {
+    tenantStatus: TenantStatus;
+    tenantType: TenantType;
+    storeType: StoreType;
+}) {
+    return {
+        status: TENANT_STATUS_LABELS[tenant.tenantStatus] ?? "不明",
+        type: TENANT_TYPE_LABELS[tenant.tenantType] ?? "不明",
+        storeType:
+            STORE_TYPE_LABELS[tenant.storeType] ?? tenant.storeType,
+    };
+}
