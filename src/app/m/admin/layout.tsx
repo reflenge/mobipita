@@ -1,6 +1,5 @@
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
-import { AdminWarningBanner } from "./_components/admin-warning-banner";
 import { getRoleFromClaims, hasMinRole } from "@/lib/roles";
 
 export default async function AdminLayout({
@@ -15,10 +14,5 @@ export default async function AdminLayout({
         redirect("/home");
     }
 
-    return (
-        <>
-            {children}
-            <AdminWarningBanner />
-        </>
-    );
+    return <>{children}</>;
 }

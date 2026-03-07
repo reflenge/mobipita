@@ -55,6 +55,18 @@ export function MemberTenantContent({ tenantId }: Props) {
                         {tenant.tenantName}
                     </CardTitle>
                 </CardHeader>
+                <CardContent className="space-y-4 text-sm text-muted-foreground">
+                    <div className="flex items-center justify-between">
+                        <span>テナント名</span>
+                        <span className="text-foreground">{tenant.tenantName}</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                        <span>連絡先（電話）</span>
+                        <span className="text-foreground">
+                            {tenant.phoneNumber ?? "未設定"}
+                        </span>
+                    </div>
+                </CardContent>
             </Card>
         </div>
     );

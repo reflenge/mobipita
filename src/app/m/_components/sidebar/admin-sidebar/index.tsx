@@ -1,4 +1,4 @@
-import { Shield, Users } from "lucide-react";
+import { Shield, Store, Users } from "lucide-react";
 import { Link } from "@/components/link";
 import {
     SidebarGroup,
@@ -31,6 +31,14 @@ export default function AdminSidebar() {
                                 <Link href="/m/admin/users">
                                     <Users />
                                     <span>ユーザー管理</span>
+                                </Link>
+                            </SidebarMenuButton>
+                        </SidebarMenuItem>
+                        <SidebarMenuItem>
+                            <SidebarMenuButton asChild>
+                                <Link href="/m/admin/tenants">
+                                    <Store />
+                                    <span>テナント管理</span>
                                 </Link>
                             </SidebarMenuButton>
                         </SidebarMenuItem>

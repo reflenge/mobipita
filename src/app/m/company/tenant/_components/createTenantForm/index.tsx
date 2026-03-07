@@ -7,8 +7,11 @@ import { useRouter } from "next/navigation";
 import { FormProvider, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { CreateTenantFormActions } from "./CreateTenantFormActions";
+import { TenantAddressField } from "./TenantAddressField";
+import { TenantEmailField } from "./TenantEmailField";
 import { TenantLogoField } from "./TenantLogoField";
 import { TenantNameField } from "./TenantNameField";
+import { TenantPhoneField } from "./TenantPhoneField";
 import { TenantStatusField } from "./TenantStatusField";
 import { TenantStoreTypeField } from "./TenantStoreTypeField";
 import { TenantTypeField } from "./TenantTypeField";
@@ -37,6 +40,9 @@ export default function CreateTenantForm() {
         resolver: zodResolver(formSchema),
         defaultValues: {
             tenantName: "",
+            phoneNumber: undefined,
+            email: undefined,
+            address: undefined,
             tenantType: "tenant",
             tenantStatus: "preparing",
             storeType: "fixed",
@@ -48,6 +54,9 @@ export default function CreateTenantForm() {
     const handleReset = React.useCallback(() => {
         form.reset({
             tenantName: "",
+            phoneNumber: undefined,
+            email: undefined,
+            address: undefined,
             tenantType: "tenant",
             tenantStatus: "preparing",
             storeType: "fixed",
@@ -108,6 +117,9 @@ export default function CreateTenantForm() {
             try {
                 const tenantId = await createTenant({
                     tenantName: data.tenantName,
+                    phoneNumber: data.phoneNumber,
+                    email: data.email,
+                    address: data.address,
                     tenantType: data.tenantType,
                     tenantStatus: data.tenantStatus,
                     storeType: data.storeType,
@@ -156,6 +168,9 @@ export default function CreateTenantForm() {
                 >
                     <FieldGroup>
                         <TenantNameField />
+                        <TenantPhoneField />
+                        <TenantEmailField />
+                        <TenantAddressField />
                         <TenantTypeField />
                         <TenantStatusField />
                         <TenantStoreTypeField />

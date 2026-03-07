@@ -11,6 +11,7 @@
 import type * as bookings from "../bookings.js";
 import type * as files from "../files.js";
 import type * as lib_clerkAuth from "../lib/clerkAuth.js";
+import type * as lib_tenantHelpers from "../lib/tenantHelpers.js";
 import type * as locations from "../locations.js";
 import type * as services from "../services.js";
 import type * as slots from "../slots.js";
@@ -31,6 +32,7 @@ declare const fullApi: ApiFromModules<{
   bookings: typeof bookings;
   files: typeof files;
   "lib/clerkAuth": typeof lib_clerkAuth;
+  "lib/tenantHelpers": typeof lib_tenantHelpers;
   locations: typeof locations;
   services: typeof services;
   slots: typeof slots;
