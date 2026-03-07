@@ -1,72 +1,47 @@
-import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
+import { mutation, query } from "./_generated/server";
 import { requireClerkIdentity, requireClerkUserId } from "./lib/clerkAuth";
+import { tenantType, tenantStatus, storeType } from "./values";
 
-const tenantType = v.union(v.literal("direct"), v.literal("tenant"));
-const tenantStatus = v.union(
-    v.literal("preparing"),
-    v.literal("open"),
-    v.literal("paused"),
-    v.literal("closed"),
-);
-
-// 組織単位でテナント一覧を取得する。
-export const listByOrg = query({
+export const list = query({
     args: {
-        clerkOrgId: v.string(),
         limit: v.optional(v.number()),
     },
     handler: async (ctx, args) => {
-        // 認証必須。
         await requireClerkIdentity(ctx);
         const limit = typeof args.limit === "number" ? args.limit : 50;
-        return ctx.db
-            .query("Tenants")
-            .withIndex("by_clerkOrgId", (q) =>
-                q.eq("clerkOrgId", args.clerkOrgId),
-            )
-            .order("desc")
-            .take(limit);
+        return ctx.db.query("Tenants").order("desc").take(limit);
     },
 });
 
-// 組織スコープ内のテナントを取得する。
-export const getByIdInOrg = query({
+export const getById = query({
     args: {
-        clerkOrgId: v.string(),
         tenantId: v.id("Tenants"),
     },
     handler: async (ctx, args) => {
-        // 認証必須。
         await requireClerkIdentity(ctx);
-        const tenant = await ctx.db.get(args.tenantId);
-        if (!tenant || tenant.clerkOrgId !== args.clerkOrgId) {
-            return null;
-        }
-        return tenant;
+        return await ctx.db.get(args.tenantId);
     },
 });
 
 export const create = mutation({
     args: {
-        clerkOrgId: v.string(),
         tenantName: v.string(),
-        tenantSlug: v.string(),
         tenantType: tenantType,
         tenantLogoFileId: v.optional(v.id("Files")),
         tenantStatus: tenantStatus,
+        storeType: storeType,
     },
     handler: async (ctx, args) => {
-        // 作成者を認証情報から取得する。
         const createdByUserId = await requireClerkUserId(ctx);
+
         const tenantId = await ctx.db.insert("Tenants", {
-            clerkOrgId: args.clerkOrgId,
-            createdByUserId: createdByUserId,
+            createdByUserId,
             tenantName: args.tenantName,
-            tenantSlug: args.tenantSlug,
             tenantType: args.tenantType,
             tenantLogoFileId: args.tenantLogoFileId,
             tenantStatus: args.tenantStatus,
+            storeType: args.storeType,
         });
 
         return tenantId;

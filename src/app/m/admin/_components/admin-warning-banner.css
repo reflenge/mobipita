@@ -1,0 +1,21 @@
+@keyframes admin-border-flow {
+    0% {
+        background-position: 0% 50%;
+    }
+    100% {
+        background-position: 200% 50%;
+    }
+}
+
+.admin-warning-border {
+    background: linear-gradient(
+        90deg,
+        #dc2626,
+        #fbbf24,
+        #dc2626,
+        #fbbf24,
+        #dc2626
+    );
+    background-size: 200% 100%;
+    animation: admin-border-flow 2.5s linear infinite;
+}
